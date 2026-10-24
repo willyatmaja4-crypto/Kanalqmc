@@ -77,6 +77,10 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
 .tab-pilihan{display:flex; gap:6px; margin-bottom:15px;}
 .tab-pilihan button{flex:1; padding:10px; background:#ddd; color:#333;}
 .tab-pilihan button.aktif{background:#2d5a27; color:#fff;}
+
+.info-hutang{background:#fff8e1; border:1px solid #ffc107; padding:8px; border-radius:6px; margin:8px 0; font-size:13px;}
+.progress-bayar{height:8px; background:#e0e0e0; border-radius:4px; margin-top:5px; overflow:hidden;}
+.progress-bar{height:100%; background:#4caf50; border-radius:4px; transition:width 0.3s;}
 </style>
 </head>
 <body>
@@ -101,7 +105,7 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
       
       <div id="formMintaKode" class="sembunyi">
         <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
-        <p style="font-size:14px; color:#66; margin-bottom:10px;">Masukkan nomor WhatsApp Anda, kode akses akan dibuatkan.</p>
+        <p style="font-size:14px; color:#66; margin-bottom:10px;">Masukkan nomor WhatsApp Anda untuk mendapatkan kode demo.<br><small>⚠️ 1 HP & 1 Nomor hanya boleh 1 kali saja</small></p>
         <input type="tel" id="nomorWAPeminta" placeholder="Contoh: 08123456789" autocomplete="off">
         <button onclick="buatDanKirimKode()">✅ BUAT KODE</button>
         <p id="pesanMinta" class="pesan-salah sembunyi"></p>
@@ -109,7 +113,10 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
       
       <div id="formMasukKode" class="sembunyi">
         <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
-        <input type="text" id="kodeAkses" placeholder="Masukkan Kode Akses" autocomplete="off">
+        <p style="font-size:13px; color:#66; margin-bottom:8px;">Masukkan nomor WA pemilik kode ini:</p>
+        <input type="tel" id="nomorWAMasuk" placeholder="Nomor WhatsApp" autocomplete="off">
+        <p style="font-size:13px; color:#66; margin-bottom:8px;">Masukkan kode akses:</p>
+        <input type="text" id="kodeAkses" placeholder="Kode Akses" autocomplete="off">
         <button onclick="cekKode()">✅ MASUK</button>
         <p id="pesanSalah" class="pesan-salah sembunyi"></p>
       </div>
@@ -174,14 +181,14 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
         </div>
       </div>
       <div class="baris" style="margin-top:8px;">
-        <span>Kembalian:</span>
+        <span>Kembalian / Sisa Hutang:</span>
         <span id="kembalian" style="font-weight:bold;">Rp 0</span>
       </div>
       
-      <div style="display:flex; gap:8px; margin-top:12px;">
+      <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
         <button class="btn-abu" style="flex:1;" onclick="kosongkanKeranjang()">🗑️ KOSONGKAN</button>
-        <button class="btn-kuning" style="flex:1;" onclick="catatHutang()">💰 CATAT HUTANG</button>
-        <button class="btn-hijau" style="flex:1.5;" onclick="bayarLunas()">✅ BAYAR LUNAS</button>
+        <button class="btn-kuning" style="flex:1;" onclick="catatHutang()">💰 HUTANG</button>
+        <button class="btn-hijau" style="flex:1.5;" onclick="bayar()">✅ BAYAR</button>
       </div>
     </div>
     
@@ -234,8 +241,11 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     <h3>📊 LAPORAN PENJUALAN</h3>
     <div class="kotak-rekap">
       <div class="baris"><span>Total Penjualan:</span><span id="totalJual">Rp 0</span></div>
-      <div class="baris"><span>Total Keuntungan:</span><span id="totalUntung">Rp 0</span></div>
-      <div class="baris"><span>Total Piutang:</span><span id="totalLapHutang">Rp 0</span></div>
+      <div class="baris"><span>✅ Total Lunas:</span><span id="totalLunas">Rp 0</span></div>
+      <div class="baris"><span>💰 Total Piutang Belum Dibayar:</span><span id="totalLapHutang">Rp 0</span></div>
+      <div class="baris" style="font-size:15px; font-weight:bold; color:#2d5a27; margin-top:5px; padding-top:5px; border-top:1px dashed #ccc;">
+        <span>💰 TOTAL KEUNTUNGAN:</span><span id="totalUntung">Rp 0</span>
+      </div>
       <div class="baris"><span>Jumlah Transaksi:</span><span id="jumlahTransaksi">0</span></div>
     </div>
     
@@ -259,6 +269,8 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     <h3>💰 DAFTAR PIUTANG</h3>
     <div class="kotak-rekap">
       <div class="baris"><strong>TOTAL PIUTANG:</strong><strong id="totalHutang">Rp 0</strong></div>
+      <div class="baris"><strong>✅ Sudah Dibayar:</strong><strong id="totalSudahBayar">Rp 0</strong></div>
+      <div class="baris" style="color:#e65100; font-weight:bold;"><strong>⏳ Sisa Hutang:</strong><strong id="totalSisaHutang">Rp 0</strong></div>
     </div>
     <div id="daftarHutang"></div>
   </div>
@@ -362,8 +374,12 @@ const db = firebase.firestore();
 const KODE_ADMIN = "qwerty";
 const BATAS_DEMO_JAM = 72;
 
+// ✅ ID Perangkat untuk membatasi 1 HP = 1 Demo
+const ID_PERANGKAT = localStorage.getItem('idPerangkat') || 'dev_' + Math.random().toString(36).slice(2) + Date.now();
+localStorage.setItem('idPerangkat', ID_PERANGKAT);
+
 let penggunaSaatIni = null;
-let nomorWAPemilikDemo = null; // Menyimpan nomor WA pemilik kode demo
+let nomorWAPemilikDemo = null;
 let daftarPinKasir = [];
 let riwayatMasukKaryawan = [];
 let daftarBarang = [];
@@ -371,6 +387,7 @@ let keranjang = [];
 let riwayat = [];
 let daftarHutang = [];
 let namaToko = "TOKO SAYA";
+let totalKeuntunganTerakumulasi = 0;
 
 function gantiTab(tab){
   document.getElementById('tabKodeAkses').classList.toggle('aktif', tab === 'kode');
@@ -435,6 +452,18 @@ function tentukanTipeKode(kode){
   return 'lainnya';
 }
 
+function normalisasiNoHP(no){
+  if(!no) return '';
+  no = no.replace(/\D/g, '');
+  if(no.startsWith('0')) no = '62' + no.slice(1);
+  return no;
+}
+
+async function perangkatSudahMintaDemo(){
+  const snapshot = await db.collection('permintaan_perangkat').doc(ID_PERANGKAT).get();
+  return snapshot.exists;
+}
+
 async function nomorSudahPernahDaftarDemo(nomorWA){
   const snapshot = await db.collection('kode_akses')
     .where('nomorWA', '==', nomorWA)
@@ -443,41 +472,22 @@ async function nomorSudahPernahDaftarDemo(nomorWA){
   return !snapshot.empty;
 }
 
-async function nomorSudahDemoSelesai(nomorWA){
-  const snapshot = await db.collection('kode_akses')
-    .where('nomorWA', '==', nomorWA)
-    .where('tipe', '==', 'demo')
-    .where('demoSelesai', '==', true)
-    .get();
-  return !snapshot.empty;
-}
-
 async function buatDanKirimKode(){
-  const nomorWA = document.getElementById('nomorWAPeminta').value.trim();
+  const nomorWA = normalisasiNoHP(document.getElementById('nomorWAPeminta').value.trim());
   if(!nomorWA || nomorWA.length < 10){
     tampilPesan('pesanMinta', '❌ Masukkan nomor WhatsApp yang benar!');
     return;
   }
   
-  // ✅ Aturan: 1 nomor WA hanya boleh 1 kali dapat kode demo
+  // ✅ Cek: Perangkat ini sudah pernah minta demo?
+  if(await perangkatSudahMintaDemo()){
+    tampilPesan('pesanMinta', '❌ Perangkat ini sudah pernah meminta kode demo.\nHubungi admin untuk versi penuh.', true);
+    return;
+  }
+  
+  // ✅ Cek: Nomor WA ini sudah pernah dapat demo?
   if(await nomorSudahPernahDaftarDemo(nomorWA)){
-    tampilPesan('pesanMinta', '⏰ Nomor ini sudah terdaftar untuk versi demo.\nHubungi admin jika butuh versi penuh.', true);
-    return;
-  }
-  
-  if(await nomorSudahDemoSelesai(nomorWA)){
-    tampilPesan('pesanMinta', '⏰ Nomor ini sudah selesai masa demonya. Hubungi admin untuk kode versi penuh.', true);
-    return;
-  }
-  
-  const cekAktif = await db.collection('kode_akses')
-    .where('nomorWA', '==', nomorWA)
-    .where('tipe', '==', 'demo')
-    .where('demoSelesai', '==', false)
-    .get();
-  if(!cekAktif.empty){
-    const kodeAda = cekAktif.docs[0].id;
-    tampilPesan('pesanMinta', '✅ Kode Anda sudah ada: ' + kodeAda + '\nGunakan kode tersebut untuk masuk.', false);
+    tampilPesan('pesanMinta', '❌ Nomor WA ini sudah pernah mendapatkan kode demo.\nSatu nomor hanya boleh 1 kali saja.', true);
     return;
   }
   
@@ -501,7 +511,14 @@ async function buatDanKirimKode(){
       waktuMasukPertama: null,
       demoBerakhirPada: null,
       demoSelesai: false,
-      nomorWAPemilik: nomorWA // Catat nomor pemilik kode ini
+      nomorWAPemilik: nomorWA,
+      idPerangkat: ID_PERANGKAT
+    });
+    
+    // ✅ Catat perangkat ini sudah minta demo
+    await db.collection('permintaan_perangkat').doc(ID_PERANGKAT).set({
+      nomorWA: nomorWA,
+      dimintaPada: new Date().toISOString()
     });
     
     tampilPesan('pesanMinta', '✅ Kode Demo Anda: ' + kodeAkses + '\nMasa berlaku 72 jam sejak pertama digunakan.', false);
@@ -512,11 +529,10 @@ async function buatDanKirimKode(){
 }
 
 async function buatKodeDemoBaru(){
-  const nomorWA = document.getElementById('nomorWAKodeBaru').value.trim() || '-';
+  const nomorWA = normalisasiNoHP(document.getElementById('nomorWAKodeBaru').value.trim()) || '-';
   
-  // Admin juga dibatasi: 1 nomor = 1 kode demo
   if(nomorWA !== '-' && await nomorSudahPernahDaftarDemo(nomorWA)){
-    alert('⏰ Nomor ini sudah pernah dapat kode demo! 1 nomor hanya boleh 1 kali saja.');
+    alert('❌ Nomor ini sudah pernah dapat kode demo!\n1 nomor hanya boleh 1 kali saja.');
     return;
   }
   
@@ -546,7 +562,7 @@ async function buatKodeDemoBaru(){
 }
 
 async function buatKodePenuhBaru(){
-  const nomorWA = document.getElementById('nomorWAKodeBaru').value.trim() || '-';
+  const nomorWA = normalisasiNoHP(document.getElementById('nomorWAKodeBaru').value.trim()) || '-';
   try{
     let kodeAkses, kodeAda = true, percobaan = 0;
     while(kodeAda && percobaan < 10){
@@ -572,21 +588,26 @@ async function buatKodePenuhBaru(){
 }
 
 async function cekKode(){
+  const nomorWAMasuk = normalisasiNoHP(document.getElementById('nomorWAMasuk').value.trim());
   const input = document.getElementById('kodeAkses').value.trim().toUpperCase();
-  if(!input){ tampilPesan('pesanSalah', '❌ Masukkan kode akses!'); return; }
   
-  // Minta nomor WA pengguna untuk verifikasi
-  const nomorWAMasuk = prompt('Masukkan nomor WhatsApp Anda untuk verifikasi:').trim();
   if(!nomorWAMasuk || nomorWAMasuk.length < 10){
-    tampilPesan('pesanSalah', '❌ Nomor WhatsApp tidak valid!');
+    tampilPesan('pesanSalah', '❌ Masukkan nomor WhatsApp Anda!');
     return;
   }
+  if(!input){ tampilPesan('pesanSalah', '❌ Masukkan kode akses!'); return; }
   
   const tipeKode = tentukanTipeKode(input);
   try{
     const doc = await db.collection('kode_akses').doc(input).get();
     if(!doc.exists){ tampilPesan('pesanSalah', '❌ Kode akses tidak ditemukan!'); return; }
     const data = doc.data();
+    
+    // ✅ Verifikasi nomor WA: harus sama dengan yang terdaftar
+    if(data.nomorWAPemilik && data.nomorWAPemilik !== nomorWAMasuk){
+      tampilPesan('pesanSalah', '❌ Nomor WA tidak cocok dengan pemilik kode ini!\nHanya pemilik nomor yang boleh masuk.', true);
+      return;
+    }
     
     if(tipeKode === 'penuh'){
       penggunaSaatIni = { tipe:'penuh', kode:input, nama:'PEMILIK USAHA', nomorWA: nomorWAMasuk };
@@ -597,12 +618,6 @@ async function cekKode(){
     
     if(data.demoSelesai){
       tampilPesan('pesanSalah', '⏰ Masa demo sudah habis.\nHubungi admin untuk kode versi penuh.');
-      return;
-    }
-    
-    // ✅ Verifikasi nomor WA: hanya nomor pemilik yang boleh masuk
-    if(data.nomorWAPemilik && data.nomorWAPemilik !== nomorWAMasuk){
-      tampilPesan('pesanSalah', '❌ Kode ini terdaftar untuk nomor lain.\nHanya pemilik nomor yang boleh masuk dengan kode ini!', true);
       return;
     }
     
@@ -618,7 +633,6 @@ async function cekKode(){
       alert('✅ Selamat datang! Demo berlaku 72 jam dari sekarang.');
       masukBerhasil('demo');
     }else{
-      // Cek apakah nomor WA yang masuk sama dengan pemilik
       if(nomorWAPemilikDemo && nomorWAPemilikDemo !== nomorWAMasuk){
         tampilPesan('pesanSalah', '❌ Kode ini sedang dipakai oleh nomor lain!', true);
         return;
@@ -740,371 +754,492 @@ function masukBerhasil(tipe){
     if(elInfoVersi) elInfoVersi.classList.add('sembunyi');
     if(elFooter) elFooter.style.display = 'none';
     if(elLabelVersi) elLabelVersi.textContent = '';
-    buka('kasir');
-  }
-  
-  ['kodeAkses','kodeAdmin','pinKasirMasuk'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+buka('kasir');
 }
 
 function sembunyikanSemuaMenu(){
-  ['menuDaftarKode','menuBarang','menuLaporan','menuHutang','menuPengaturan','menuKelolaPin','menuRiwayatMasuk'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.classList.add('sembunyi');
-  });
-}
-
-function keluarAplikasi(){
-  if(confirm('Yakin ingin keluar?')){
-    document.getElementById('halamanUtama').classList.add('sembunyi');
-    document.getElementById('halamanLogin').classList.remove('sembunyi');
-    penggunaSaatIni = null;
-    kembaliKePilihan();
-    gantiTab('kode');
-  }
-}
-
-async function tampilDaftarKodeFirebase(){
-  const tbody = document.getElementById('tabelKodeFirebaseBody');
-  if(!tbody) return;
-  try{
-    const snapshot = await db.collection('kode_akses').orderBy('dibuatPada','desc').get();
-    if(snapshot.empty){
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#666;">Belum ada kode akses</td></tr>';
-      return;
-    }
-    tbody.innerHTML = '';
-    let nomor = 1;
-    snapshot.forEach(doc=>{
-      const kode = doc.id, d = doc.data();
-      const tipeText = d.tipe === 'penuh' ? '♾️ PENUH' : '⏰ DEMO';
-      let statusText, statusClass;
-      
-              if(d.tipe === 'penuh'){
-          statusText = '✅ AKTIF SELAMANYA'; statusClass = 'tersedia';
-        }else{
-          if(!d.terpakai){
-            statusText = '🆓 BELUM DIPAKAI'; statusClass = 'tersedia';
-          }else if(d.demoSelesai){
-            statusText = '⏰ SELESAI'; statusClass = 'terpakai';
-          }else if(d.demoBerakhirPada){
-            const sekarang = new Date();
-            const akhir = new Date(d.demoBerakhirPada);
-            if(sekarang > akhir){
-              statusText = '⏰ HABIS'; statusClass = 'terpakai';
-            }else{
-              const sisaJam = Math.ceil((akhir - sekarang) / 3600000);
-              statusText = '⏳ Sisa ' + sisaJam + ' jam'; statusClass = '';
-            }
-          }else{
-            statusText = '✅ AKTIF'; statusClass = '';
-          }
-        }
-
-      const mulai = d.waktuMasukPertama ? new Date(d.waktuMasukPertama).toLocaleString('id-ID') : '-';
-      const akhirDemo = d.demoBerakhirPada ? new Date(d.demoBerakhirPada).toLocaleString('id-ID') : '-';
-
-      tbody.innerHTML += `
-        <tr>
-          <td>${nomor++}</td>
-          <td><strong>${kode}</strong></td>
-          <td>${tipeText}</td>
-          <td class="${statusClass}">${statusText}</td>
-          <td>${d.nomorWA || '-'}</td>
-          <td>${mulai}</td>
-          <td>${akhirDemo}</td>
-        </tr>
-      `;
-    });
-  }catch(error){
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">❌ Gagal memuat data: ' + error.message + '</td></tr>';
-  }
-}
-
-function filterKodeFirebase(){
-  const kata = document.getElementById('cariKodeFirebase').value.toLowerCase();
-  const baris = document.querySelectorAll('#tabelKodeFirebaseBody tr');
-  baris.forEach(baris=>{
-    const teks = baris.textContent.toLowerCase();
-    baris.style.display = teks.includes(kata) ? '' : 'none';
+  const menuIds = ['menuKasir','menuBarang','menuLaporan','menuHutang','menuPengaturan','menuKelolaPin','menuRiwayatMasuk','menuDaftarKode'];
+  menuIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.add('sembunyi');
   });
 }
 
 function buka(namaHalaman){
-  const daftarHalaman = ['kasir','barang','laporan','hutang','pengaturan','kelolapin','riwayatmasuk','daftarkode'];
-  daftarHalaman.forEach(h=>{
-    const el = document.getElementById('pg'+h.charAt(0).toUpperCase()+h.slice(1));
-    if(el) el.classList.add('sembunyi');
-  });
-  const halamanAktif = document.getElementById('pg'+namaHalaman.charAt(0).toUpperCase()+namaHalaman.slice(1));
-  if(halamanAktif) halamanAktif.classList.remove('sembunyi');
+  document.querySelectorAll('#halamanUtama > .konten').forEach(el => el.classList.add('sembunyi'));
+  const halaman = document.getElementById('pg' + namaHalaman.charAt(0).toUpperCase() + namaHalaman.slice(1));
+  if(halaman) halaman.classList.remove('sembunyi');
   
-  if(namaHalaman === 'barang') tampilDaftarBarang();
+  if(namaHalaman === 'kasir') tampilDaftarBarangKasir();
+  if(namaHalaman === 'barang') tampilDaftarBarangTabel();
   if(namaHalaman === 'laporan') tampilLaporan();
-  if(namaHalaman === 'hutang') tampilHutang();
+  if(namaHalaman === 'hutang') tampilDaftarHutang();
   if(namaHalaman === 'kelolapin') tampilDaftarPinKasir();
   if(namaHalaman === 'riwayatmasuk') tampilRiwayatMasuk();
-  if(namaHalaman === 'kasir') tampilBarangKasir();
+  if(namaHalaman === 'daftarkode') tampilDaftarKodeFirebase();
 }
 
-function tampilBarangKasir(){
-  const el = document.getElementById('daftarKasir');
-  if(!el) return;
-  if(daftarBarang.length === 0){
-    el.innerHTML = '<p style="color:#666; text-align:center; width:100%;">Belum ada barang. Tambahkan di menu Barang.</p>';
-    return;
+// ==========================================
+// DATA & PENYIMPANAN
+// ==========================================
+function simpanSemua(){
+  localStorage.setItem('daftarBarang', JSON.stringify(daftarBarang));
+  localStorage.setItem('riwayat', JSON.stringify(riwayat));
+  localStorage.setItem('daftarHutang', JSON.stringify(daftarHutang));
+  localStorage.setItem('daftarPinKasir', JSON.stringify(daftarPinKasir));
+  localStorage.setItem('riwayatMasukKaryawan', JSON.stringify(riwayatMasukKaryawan));
+  localStorage.setItem('namaToko', namaToko);
+  localStorage.setItem('totalKeuntunganTerakumulasi', totalKeuntunganTerakumulasi.toString());
+}
+
+function muatData(){
+  const brg = localStorage.getItem('daftarBarang');
+  const rwy = localStorage.getItem('riwayat');
+  const hut = localStorage.getItem('daftarHutang');
+  const pin = localStorage.getItem('daftarPinKasir');
+  const rwyMasuk = localStorage.getItem('riwayatMasukKaryawan');
+  const nmToko = localStorage.getItem('namaToko');
+  const totUntung = localStorage.getItem('totalKeuntunganTerakumulasi');
+  
+  if(brg) daftarBarang = JSON.parse(brg);
+  if(rwy) riwayat = JSON.parse(rwy);
+  if(hut) daftarHutang = JSON.parse(hut);
+  if(pin) daftarPinKasir = JSON.parse(pin);
+  if(rwyMasuk) riwayatMasukKaryawan = JSON.parse(rwyMasuk);
+  if(nmToko) {
+    namaToko = nmToko;
+    document.title = namaToko;
+    document.querySelectorAll('.nama-toko').forEach(el => el.textContent = namaToko);
   }
-  el.innerHTML = '';
-  daftarBarang.forEach((brg, idx)=>{
-    el.innerHTML += `
-      <div class="item-barang" onclick="tambahKeKeranjang(${idx})">
-        <div><strong>${brg.nama}</strong></div>
-        <div style="font-size:12px; color:#666;">Stok: ${brg.stok}</div>
-        <div style="font-weight:bold; color:#2d5a27;">Rp ${formatAngka(brg.jual)}</div>
-      </div>
-    `;
-  });
+  if(totUntung) totalKeuntunganTerakumulasi = parseFloat(totUntung);
+  
+  if(daftarBarang.length === 0){
+    daftarBarang = [
+      {id:1, nama:'Gula Pasir 1kg', stok:50, modal:12000, jual:15000},
+      {id:2, nama:'Minyak Goreng 1L', stok:40, modal:14000, jual:17500},
+      {id:3, nama:'Telur Ayam 1kg', stok:30, modal:24000, jual:28000},
+      {id:4, nama:'Beras 5kg', stok:25, modal:65000, jual:72000},
+      {id:5, nama:'Kopi Bubuk 100g', stok:100, modal:8000, jual:10000},
+      {id:6, nama:'Sabun Mandi', stok:80, modal:3500, jual:5000},
+    ];
+    simpanSemua();
+  }
+}
+
+function keluarAplikasi(){
+  if(confirm('Yakin ingin keluar aplikasi?')){
+    penggunaSaatIni = null;
+    keranjang = [];
+    document.getElementById('halamanUtama').classList.add('sembunyi');
+    document.getElementById('halamanLogin').classList.remove('sembunyi');
+    kembaliKePilihan();
+    document.getElementById('pinKasirMasuk').value = '';
+    document.getElementById('nomorWAMasuk').value = '';
+    document.getElementById('kodeAkses').value = '';
+    document.getElementById('kodeAdmin').value = '';
+  }
+}
+
+// ==========================================
+// FUNGSI FORMAT UANG
+// ==========================================
+function formatUang(angka){
+  if(!angka) angka = 0;
+  return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+// ==========================================
+// HALAMAN KASIR
+// ==========================================
+function tampilDaftarBarangKasir(){
+  const el = document.getElementById('daftarKasir');
+  const cari = document.getElementById('cariBarangKasir').value.toLowerCase();
+  const tampil = daftarBarang.filter(b => 
+    b.nama.toLowerCase().includes(cari) && b.stok > 0
+  );
+  
+  el.innerHTML = tampil.map(b => `
+    <div class="item-barang" onclick="tambahKeKeranjang(${b.id})">
+      <div style="font-weight:bold; font-size:14px;">${b.nama}</div>
+      <div style="font-size:12px; color:#666;">Stok: ${b.stok}</div>
+      <div style="color:#2d5a27; font-weight:bold;">${formatUang(b.jual)}</div>
+    </div>
+  `).join('');
+  
+  tampilKeranjang();
 }
 
 function filterBarangKasir(){
-  const kata = document.getElementById('cariBarangKasir').value.toLowerCase();
-  const el = document.getElementById('daftarKasir');
-  if(!el) return;
-  if(daftarBarang.length === 0){
-    el.innerHTML = '<p style="color:#666; text-align:center; width:100%;">Belum ada barang. Tambahkan di menu Barang.</p>';
-    return;
-  }
-  const hasil = daftarBarang.filter(b=>b.nama.toLowerCase().includes(kata));
-  el.innerHTML = '';
-  hasil.forEach((brg, idx)=>{
-    const idxAsli = daftarBarang.indexOf(brg);
-    el.innerHTML += `
-      <div class="item-barang" onclick="tambahKeKeranjang(${idxAsli})">
-        <div><strong>${brg.nama}</strong></div>
-        <div style="font-size:12px; color:#666;">Stok: ${brg.stok}</div>
-        <div style="font-weight:bold; color:#2d5a27;">Rp ${formatAngka(brg.jual)}</div>
-      </div>
-    `;
-  });
+  tampilDaftarBarangKasir();
 }
 
-function tambahKeKeranjang(idx){
-  const brg = daftarBarang[idx];
-  if(brg.stok <= 0){ alert('Stok habis!'); return; }
-  const ada = keranjang.find(k=>k.idx === idx);
-  if(ada){
-    ada.jumlah++;
+function tambahKeKeranjang(idBarang){
+  const brg = daftarBarang.find(b => b.id === idBarang);
+  if(!brg || brg.stok <= 0) { alert('Stok habis!'); return; }
+  
+  const item = keranjang.find(k => k.id === idBarang);
+  if(item){
+    if(item.jumlah < brg.stok) item.jumlah++;
+    else { alert('Stok tidak cukup!'); return; }
   }else{
-    keranjang.push({ idx:idx, nama:brg.nama, harga:brg.jual, jumlah:1 });
+    keranjang.push({
+      id: brg.id,
+      nama: brg.nama,
+      hargaModal: brg.modal,
+      hargaJual: brg.jual,
+      jumlah: 1
+    });
   }
-  brg.stok--;
-  simpanSemua();
   tampilKeranjang();
-  tampilBarangKasir();
+}
+
+function kurangiDariKeranjang(idBarang){
+  const idx = keranjang.findIndex(k => k.id === idBarang);
+  if(idx > -1){
+    keranjang[idx].jumlah--;
+    if(keranjang[idx].jumlah <= 0) keranjang.splice(idx, 1);
+  }
+  tampilKeranjang();
+}
+
+function hapusDariKeranjang(idBarang){
+  keranjang = keranjang.filter(k => k.id !== idBarang);
+  tampilKeranjang();
 }
 
 function tampilKeranjang(){
   const el = document.getElementById('keranjangIsi');
-  if(!el) return;
   if(keranjang.length === 0){
-    el.innerHTML = '<p style="color:#666;">Keranjang kosong</p>';
-    document.getElementById('lblTotal').textContent = 'Rp 0';
-    hitungKembalian();
+    el.innerHTML = '<p style="color:#999; text-align:center; padding:10px;">Keranjang kosong</p>';
+    document.getElementById('lblTotal').textContent = formatUang(0);
+    document.getElementById('kembalian').textContent = formatUang(0);
     return;
   }
-  let total = 0;
-  el.innerHTML = '';
-  keranjang.forEach((item, urut)=>{
-    const subtotal = item.harga * item.jumlah;
-    total += subtotal;
-    el.innerHTML += `
-      <div class="baris">
-        <span>${item.nama} × ${item.jumlah}</span>
-        <span>Rp ${formatAngka(subtotal)}</span>
+  
+  el.innerHTML = keranjang.map(k => `
+    <div class="baris" style="align-items:center;">
+      <div style="flex:2;">
+        <div style="font-weight:bold; font-size:13px;">${k.nama}</div>
+        <div style="font-size:12px; color:#666;">${formatUang(k.hargaJual)} × ${k.jumlah}</div>
       </div>
-    `;
-  });
-  document.getElementById('lblTotal').textContent = 'Rp ' + formatAngka(total);
+      <div style="flex:1; text-align:right; font-weight:bold;">${formatUang(k.hargaJual * k.jumlah)}</div>
+      <div style="display:flex; gap:3px; margin-left:5px;">
+        <button style="padding:2px 6px; width:auto; font-size:14px; background:#f39c12;" onclick="kurangiDariKeranjang(${k.id})">-</button>
+        <button style="padding:2px 6px; width:auto; font-size:14px; background:#e74c3c;" onclick="hapusDariKeranjang(${k.id})">×</button>
+      </div>
+    </div>
+  `).join('');
+  
+  const total = hitungTotal();
+  document.getElementById('lblTotal').textContent = formatUang(total);
   hitungKembalian();
+}
+
+function hitungTotal(){
+  return keranjang.reduce((sum, k) => sum + (k.hargaJual * k.jumlah), 0);
 }
 
 function hitungKembalian(){
   const total = hitungTotal();
   const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
-  const kembali = bayar - total;
-  document.getElementById('kembalian').textContent = 'Rp ' + formatAngka(Math.max(0, kembali));
-}
-
-function hitungTotal(){
-  return keranjang.reduce((sum, i)=> sum + (i.harga * i.jumlah), 0);
+  const sisa = bayar - total;
+  
+  if(sisa >= 0){
+    document.getElementById('kembalian').textContent = formatUang(sisa);
+  }else{
+    document.getElementById('kembalian').innerHTML = `<span style="color:#e74c3c;">Kurang: ${formatUang(Math.abs(sisa))}</span>`;
+  }
 }
 
 function kosongkanKeranjang(){
-  if(keranjang.length === 0) return;
-  keranjang.forEach(item=>{
-    daftarBarang[item.idx].stok += item.jumlah;
-  });
+  if(keranjang.length > 0 && !confirm('Kosongkan keranjang?')) return;
   keranjang = [];
   document.getElementById('uangBayar').value = '';
+  document.getElementById('namaPelanggan').value = '';
+  document.getElementById('nomorMeja').value = '';
   tampilKeranjang();
-  tampilBarangKasir();
-  simpanSemua();
 }
 
-function buatStruk(jenisBayar){
-  const tgl = new Date().toLocaleString('id-ID');
-  const meja = document.getElementById('nomorMeja').value || '-';
-  const pelanggan = document.getElementById('namaPelanggan').value || 'Umum';
+function buatStruk(total, dibayar, sisa, lunas){
+  const namaPel = document.getElementById('namaPelanggan').value.trim() || 'Umum';
+  const meja = document.getElementById('nomorMeja').value.trim() || '-';
+  const sekarang = new Date().toLocaleString('id-ID');
+  
   let isi = `
-    <div style="text-align:center;">
-      <h3 style="margin:0; border:none;">${namaToko}</h3>
-      <p style="font-size:12px; margin:5px 0;">Tanggal: ${tgl}</p>
-      <p style="font-size:12px; margin:5px 0;">Meja: ${meja} | Pelanggan: ${pelanggan}</p>
-      <div class="garis"></div>
-    </div>
+    <div style="text-align:center; font-weight:bold; font-size:16px;">${namaToko}</div>
+    <div style="text-align:center; font-size:12px; margin:5px 0;">${sekarang}</div>
+    <div class="garis"></div>
+    <div style="font-size:12px;">Pelanggan: ${namaPel}</div>
+    <div style="font-size:12px;">Meja: ${meja}</div>
+    <div class="garis"></div>
   `;
-  keranjang.forEach(item=>{
+  
+  keranjang.forEach(k => {
     isi += `
-      <div class="baris" style="font-size:13px;">
-        <span>${item.nama} × ${item.jumlah}</span>
-        <span>Rp ${formatAngka(item.harga * item.jumlah)}</span>
+      <div style="display:flex; justify-content:space-between; font-size:12px;">
+        <span>${k.nama} × ${k.jumlah}</span>
+        <span>${formatUang(k.hargaJual * k.jumlah)}</span>
       </div>
     `;
   });
-  isi += `<div class="garis"></div>`;
-  isi += `<div class="baris" style="font-weight:bold; font-size:15px;"><span>TOTAL</span><span>Rp ${formatAngka(hitungTotal())}</span></div>`;
   
-  if(jenisBayar === 'lunas'){
-    const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
-    isi += `<div class="baris"><span>Uang Bayar</span><span>Rp ${formatAngka(bayar)}</span></div>`;
-    isi += `<div class="baris"><span>Kembalian</span><span>Rp ${formatAngka(Math.max(0, bayar - hitungTotal()))}</span></div>`;
+  isi += `
+    <div class="garis"></div>
+    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;">
+      <span>TOTAL</span>
+      <span>${formatUang(total)}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:13px;">
+      <span>Bayar</span>
+      <span>${formatUang(dibayar)}</span>
+    </div>
+  `;
+  
+  if(lunas){
+    isi += `
+      <div style="display:flex; justify-content:space-between; font-size:13px; color:#2e7d32;">
+        <span>Kembalian</span>
+        <span>${formatUang(sisa)}</span>
+      </div>
+      <div class="garis"></div>
+      <div style="text-align:center; font-weight:bold; color:#2e7d32; margin-top:8px;">✅ LUNAS</div>
+    `;
   }else{
-    isi += `<div class="baris" style="color:#e65100; font-weight:bold;"><span>STATUS</span><span>PIUTANG</span></div>`;
+    isi += `
+      <div style="display:flex; justify-content:space-between; font-size:13px; color:#e65100; font-weight:bold;">
+        <span>Sisa Hutang</span>
+        <span>${formatUang(sisa)}</span>
+      </div>
+      <div class="garis"></div>
+      <div style="text-align:center; font-weight:bold; color:#e65100; margin-top:8px;">⚠️ BELUM LUNAS</div>
+    `;
   }
-  isi += `<p style="text-align:center; font-size:11px; margin-top:10px;">Terima kasih atas kunjungan Anda ✨</p>`;
-  return isi;
+  
+  isi += `<div style="text-align:center; font-size:11px; margin-top:10px;">Terima kasih atas kunjungan Anda</div>`;
+  
+  document.getElementById('isiStruk').innerHTML = isi;
+  document.getElementById('areaStruk').classList.remove('sembunyi');
 }
 
-function bayarLunas(){
+function tutupStruk(){
+  document.getElementById('areaStruk').classList.add('sembunyi');
+  kosongkanKeranjang();
+}
+
+function bayar(){
   const total = hitungTotal();
   if(total <= 0){ alert('Keranjang masih kosong!'); return; }
-  const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
-  if(bayar < total){ alert('Uang bayar kurang! Kurang Rp ' + formatAngka(total - bayar)); return; }
   
-  const untung = keranjang.reduce((sum,item)=> sum + ((daftarBarang[item.idx].jual - daftarBarang[item.idx].modal) * item.jumlah), 0);
-  riwayat.unshift({
-    tanggal: new Date().toISOString(),
-    jenis: 'lunas',
-    items: keranjang.map(i=>({nama:i.nama, jumlah:i.jumlah})),
-    total: total,
-    keuntungan: untung,
-    meja: document.getElementById('nomorMeja').value || '-',
-    pelanggan: document.getElementById('namaPelanggan').value || 'Umum',
-    kasir: penggunaSaatIni ? penggunaSaatIni.nama : 'Anonim'
-  });
+  const uangDibayar = parseInt(document.getElementById('uangBayar').value) || 0;
+  const namaPel = document.getElementById('namaPelanggan').value.trim() || 'Umum';
+  const meja = document.getElementById('nomorMeja').value.trim() || '-';
   
-  document.getElementById('isiStruk').innerHTML = buatStruk('lunas');
-  document.getElementById('areaStruk').classList.remove('sembunyi');
-  
-  keranjang = [];
-  document.getElementById('uangBayar').value = '';
-  document.getElementById('nomorMeja').value = '';
-  document.getElementById('namaPelanggan').value = '';
-  tampilKeranjang();
-  simpanSemua();
+  if(uangDibayar >= total){
+    // ✅ LUNAS
+    const kembalian = uangDibayar - total;
+    const keuntungan = keranjang.reduce((sum, k) => sum + ((k.hargaJual - k.hargaModal) * k.jumlah), 0);
+    
+    // Kurangi stok
+    keranjang.forEach(k => {
+      const brg = daftarBarang.find(b => b.id === k.id);
+      if(brg) brg.stok -= k.jumlah;
+    });
+    
+    riwayat.unshift({
+      id: Date.now(),
+      tanggal: new Date().toISOString(),
+      namaPelanggan: namaPel,
+      meja: meja,
+      items: keranjang.map(i => ({...i})),
+      total: total,
+      dibayar: uangDibayar,
+      kembalian: kembalian,
+      lunas: true,
+      keuntungan: keuntungan
+    });
+    
+    totalKeuntunganTerakumulasi += keuntungan;
+    simpanSemua();
+    buatStruk(total, uangDibayar, kembalian, true);
+    alert('✅ Pembayaran Lunas!\nKembalian: ' + formatUang(kembalian));
+    
+  }else if(uangDibayar > 0){
+    // ✅ BAYAR SEBAGIAN — CATAT HUTANG
+    const sisa = total - uangDibayar;
+    const hutangIndex = daftarHutang.findIndex(h => 
+      h.namaPelanggan === namaPel && h.meja === meja && !h.lunas
+    );
+    
+    if(hutangIndex > -1){
+      // Tambah cicilan ke hutang yang sudah ada
+      daftarHutang[hutangIndex].dibayar += uangDibayar;
+      daftarHutang[hutangIndex].cicilan.push({
+        tanggal: new Date().toISOString(),
+        jumlah: uangDibayar
+      });
+      daftarHutang[hutangIndex].sisa = daftarHutang[hutangIndex].total - daftarHutang[hutangIndex].dibayar;
+      
+      if(daftarHutang[hutangIndex].sisa <= 0){
+        daftarHutang[hutangIndex].lunas = true;
+        const untung = daftarHutang[hutangIndex].items.reduce((sum, k) => sum + ((k.hargaJual - k.hargaModal) * k.jumlah), 0);
+        totalKeuntunganTerakumulasi += untung;
+        alert('✅ Hutang sudah LUNAS!');
+      }else{
+        alert('✅ Pembayaran dicatat!\nSisa hutang: ' + formatUang(daftarHutang[hutangIndex].sisa));
+      }
+    }else{
+      // Hutang baru
+      daftarHutang.unshift({
+        id: Date.now(),
+        namaPelanggan: namaPel,
+        meja: meja,
+        tanggal: new Date().toISOString(),
+        items: keranjang.map(i => ({...i})),
+        total: total,
+        dibayar: uangDibayar,
+        sisa: sisa,
+        cicilan: [{tanggal: new Date().toISOString(), jumlah: uangDibayar}],
+        lunas: false
+      });
+      alert('✅ Dicatat sebagai Hutang!\nTotal: ' + formatUang(total) + 
+            '\nDibayar: ' + formatUang(uangDibayar) + 
+            '\nSisa Hutang: ' + formatUang(sisa));
+    }
+    
+    // Kurangi stok
+    keranjang.forEach(k => {
+      const brg = daftarBarang.find(b => b.id === k.id);
+      if(brg) brg.stok -= k.jumlah;
+    });
+    
+    riwayat.unshift({
+      id: Date.now(),
+      tanggal: new Date().toISOString(),
+      namaPelanggan: namaPel,
+      meja: meja,
+      items: keranjang.map(i => ({...i})),
+      total: total,
+      dibayar: uangDibayar,
+      sisaHutang: sisa,
+      lunas: false
+    });
+    
+    simpanSemua();
+    buatStruk(total, uangDibayar, sisa, false);
+    
+  }else{
+    // ✅ TIDAK ADA UANG DIPAYAR — CATAT HUTANG PENUH
+    if(!namaPel){ alert('Masukkan nama pelanggan untuk mencatat hutang!'); return; }
+    
+    daftarHutang.unshift({
+      id: Date.now(),
+      namaPelanggan: namaPel,
+      meja: meja,
+      tanggal: new Date().toISOString(),
+      items: keranjang.map(i => ({...i})),
+      total: total,
+      dibayar: 0,
+      sisa: total,
+      cicilan: [],
+      lunas: false
+    });
+    
+    // Kurangi stok
+    keranjang.forEach(k => {
+      const brg = daftarBarang.find(b => b.id === k.id);
+      if(brg) brg.stok -= k.jumlah;
+    });
+    
+    riwayat.unshift({
+      id: Date.now(),
+      tanggal: new Date().toISOString(),
+      namaPelanggan: namaPel,
+      meja: meja,
+      items: keranjang.map(i => ({...i})),
+      total: total,
+      dibayar: 0,
+      sisaHutang: total,
+      lunas: false
+    });
+    
+    simpanSemua();
+    alert('💰 Dicatat sebagai Hutang Penuh!\nTotal Hutang: ' + formatUang(total));
+    buatStruk(total, 0, total, false);
+  }
 }
 
 function catatHutang(){
   const total = hitungTotal();
   if(total <= 0){ alert('Keranjang masih kosong!'); return; }
+  
   const namaPel = document.getElementById('namaPelanggan').value.trim();
-  if(!namaPel){ alert('Masukkan nama pelanggan untuk dicatat sebagai piutang!'); return; }
+  if(!namaPel){ alert('Masukkan nama pelanggan!'); return; }
+  
+  const meja = document.getElementById('nomorMeja').value.trim() || '-';
   
   daftarHutang.unshift({
     id: Date.now(),
     namaPelanggan: namaPel,
-    meja: document.getElementById('nomorMeja').value || '-',
+    meja: meja,
     tanggal: new Date().toISOString(),
-    items: keranjang.map(i=>({nama:i.nama, jumlah:i.jumlah})),
+    items: keranjang.map(i => ({...i})),
     total: total,
+    dibayar: 0,
+    sisa: total,
+    cicilan: [],
     lunas: false
   });
   
+  // Kurangi stok
+  keranjang.forEach(k => {
+    const brg = daftarBarang.find(b => b.id === k.id);
+    if(brg) brg.stok -= k.jumlah;
+  });
+  
   riwayat.unshift({
+    id: Date.now(),
     tanggal: new Date().toISOString(),
-    jenis: 'hutang',
-    items: keranjang.map(i=>({nama:i.nama, jumlah:i.jumlah})),
+    namaPelanggan: namaPel,
+    meja: meja,
+    items: keranjang.map(i => ({...i})),
     total: total,
-    keuntungan: 0,
-    meja: document.getElementById('nomorMeja').value || '-',
-    pelanggan: namaPel,
-    kasir: penggunaSaatIni ? penggunaSaatIni.nama : 'Anonim'
+    dibayar: 0,
+    sisaHutang: total,
+    lunas: false
   });
   
-  document.getElementById('isiStruk').innerHTML = buatStruk('hutang');
-  document.getElementById('areaStruk').classList.remove('sembunyi');
-  
-  keranjang = [];
-  document.getElementById('uangBayar').value = '';
-  document.getElementById('nomorMeja').value = '';
-  document.getElementById('namaPelanggan').value = '';
-  tampilKeranjang();
   simpanSemua();
+  alert('💰 Hutang dicatat!\nTotal: ' + formatUang(total));
+  buatStruk(total, 0, total, false);
 }
 
-function tutupStruk(){
-  document.getElementById('areaStruk').classList.add('sembunyi');
-}
+// ==========================================
+// HALAMAN BARANG
+// ==========================================
+let idUbah = null;
 
-function tampilDaftarBarang(){
-  const tbody = document.getElementById('tabelDaftarBody');
-  if(!tbody) return;
-  if(daftarBarang.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666;">Belum ada barang</td></tr>';
-    return;
-  }
-  tbody.innerHTML = '';
-  daftarBarang.forEach((brg, idx)=>{
-    tbody.innerHTML += `
-      <tr>
-        <td>${idx+1}</td>
-        <td>${brg.nama}</td>
-        <td>${brg.stok}</td>
-        <td>Rp ${formatAngka(brg.modal)}</td>
-        <td>Rp ${formatAngka(brg.jual)}</td>
-        <td>
-          <button class="btn-kecil btn-biru" onclick="bukaFormUbah(${idx})">✏️ Ubah</button>
-          <button class="btn-kecil btn-merah" onclick="hapusBarang(${idx})">🗑️ Hapus</button>
-        </td>
-      </tr>
-    `;
-  });
+function tampilDaftarBarangTabel(){
+  const el = document.getElementById('tabelDaftarBody');
+  const cari = document.getElementById('cariBarangTabel').value.toLowerCase();
+  const tampil = daftarBarang.filter(b => b.nama.toLowerCase().includes(cari));
+  
+  el.innerHTML = tampil.map((b, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td style="text-align:left;">${b.nama}</td>
+      <td>${b.stok}</td>
+      <td>${formatUang(b.modal)}</td>
+      <td>${formatUang(b.jual)}</td>
+      <td>
+        <button class="btn-kecil btn-kuning" onclick="bukaFormUbah(${b.id})">Ubah</button>
+        <button class="btn-kecil btn-merah" onclick="hapusBarang(${b.id})">Hapus</button>
+      </td>
+    </tr>
+  `).join('');
 }
 
 function filterBarangTabel(){
-  const kata = document.getElementById('cariBarangTabel').value.toLowerCase();
-  const tbody = document.getElementById('tabelDaftarBody');
-  if(!tbody) return;
-  if(daftarBarang.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666;">Belum ada barang</td></tr>';
-    return;
-  }
-  const hasil = daftarBarang.filter(b=>b.nama.toLowerCase().includes(kata));
-  tbody.innerHTML = '';
-  hasil.forEach((brg)=>{
-    const idx = daftarBarang.indexOf(brg);
-    tbody.innerHTML += `
-      <tr>
-        <td>${idx+1}</td>
-        <td>${brg.nama}</td>
-        <td>${brg.stok}</td>
-        <td>Rp ${formatAngka(brg.modal)}</td>
-        <td>Rp ${formatAngka(brg.jual)}</td>
-        <td>
-          <button class="btn-kecil btn-biru" onclick="bukaFormUbah(${idx})">✏️ Ubah</button>
-          <button class="btn-kecil btn-merah" onclick="hapusBarang(${idx})">🗑️ Hapus</button>
-        </td>
-      </tr>
-    `;
-  });
+  tampilDaftarBarangTabel();
 }
 
 function simpanBarang(){
@@ -1112,311 +1247,461 @@ function simpanBarang(){
   const stok = parseInt(document.getElementById('stokBrg').value) || 0;
   const modal = parseInt(document.getElementById('modalBrg').value) || 0;
   const jual = parseInt(document.getElementById('jualBrg').value) || 0;
-  if(!nama){ alert('Nama barang tidak boleh kosong!'); return; }
-  daftarBarang.push({ nama:nama, stok:stok, modal:modal, jual:jual });
+  
+  if(!nama || stok < 0 || modal <= 0 || jual <= 0){
+    alert('Lengkapi semua data barang!');
+    return;
+  }
+  
+  daftarBarang.push({
+    id: Date.now(),
+    nama: nama,
+    stok: stok,
+    modal: modal,
+    jual: jual
+  });
+  
+  simpanSemua();
   document.getElementById('namaBrg').value = '';
   document.getElementById('stokBrg').value = '';
   document.getElementById('modalBrg').value = '';
   document.getElementById('jualBrg').value = '';
-  tampilDaftarBarang();
-  tampilBarangKasir();
-  simpanSemua();
-  alert('✅ Barang disimpan!');
+  tampilDaftarBarangTabel();
+  tampilDaftarBarangKasir();
+  alert('✅ Barang berhasil ditambahkan!');
 }
 
-let idxUbahSekarang = null;
-function bukaFormUbah(idx){
-  idxUbahSekarang = idx;
-  document.getElementById('idBarangUbah').value = idx;
-  document.getElementById('namaBarangUbah').textContent = daftarBarang[idx].nama;
-  document.getElementById('modalBaru').value = daftarBarang[idx].modal;
-  document.getElementById('jualBaru').value = daftarBarang[idx].jual;
+function bukaFormUbah(id){
+  const brg = daftarBarang.find(b => b.id === id);
+  if(!brg) return;
+  idUbah = id;
+  document.getElementById('namaBarangUbah').textContent = brg.nama;
+  document.getElementById('idBarangUbah').value = id;
+  document.getElementById('modalBaru').value = brg.modal;
+  document.getElementById('jualBaru').value = brg.jual;
   document.getElementById('formUbahHarga').classList.remove('sembunyi');
 }
 
 function batalUbahHarga(){
-  idxUbahSekarang = null;
+  idUbah = null;
   document.getElementById('formUbahHarga').classList.add('sembunyi');
 }
 
 function simpanPerubahanHarga(){
-  if(idxUbahSekarang === null) return;
-  const modal = parseInt(document.getElementById('modalBaru').value) || 0;
-  const jual = parseInt(document.getElementById('jualBaru').value) || 0;
-  daftarBarang[idxUbahSekarang].modal = modal;
-  daftarBarang[idxUbahSekarang].jual = jual;
+  const modalBaru = parseInt(document.getElementById('modalBaru').value) || 0;
+  const jualBaru = parseInt(document.getElementById('jualBaru').value) || 0;
+  
+  if(!idUbah || modalBaru <= 0 || jualBaru <= 0){
+    alert('Masukkan harga yang valid!');
+    return;
+  }
+  
+  const idx = daftarBarang.findIndex(b => b.id === idUbah);
+  if(idx > -1){
+    daftarBarang[idx].modal = modalBaru;
+    daftarBarang[idx].jual = jualBaru;
+  }
+  
+  simpanSemua();
   batalUbahHarga();
-  tampilDaftarBarang();
-  tampilBarangKasir();
-  simpanSemua();
-  alert('✅ Harga diperbarui!');
+  tampilDaftarBarangTabel();
+  tampilDaftarBarangKasir();
+  alert('✅ Harga berhasil diperbarui!');
 }
 
-function hapusBarang(idx){
+function hapusBarang(id){
   if(!confirm('Yakin ingin menghapus barang ini?')) return;
-  daftarBarang.splice(idx, 1);
-  tampilDaftarBarang();
-  tampilBarangKasir();
+  daftarBarang = daftarBarang.filter(b => b.id !== id);
   simpanSemua();
+  tampilDaftarBarangTabel();
+  tampilDaftarBarangKasir();
 }
 
+// ==========================================
+// HALAMAN LAPORAN
+// ==========================================
 function tampilLaporan(){
-  const totalJual = riwayat.reduce((sum,r)=> sum + r.total, 0);
-  const totalUntung = riwayat.reduce((sum,r)=> sum + (r.keuntungan || 0), 0);
-  const totalHutang = daftarHutang.filter(h=>!h.lunas).reduce((sum,h)=> sum + h.total, 0);
-  document.getElementById('totalJual').textContent = 'Rp ' + formatAngka(totalJual);
-  document.getElementById('totalUntung').textContent = 'Rp ' + formatAngka(totalUntung);
-  document.getElementById('totalLapHutang').textContent = 'Rp ' + formatAngka(totalHutang);
+  let totalJual = 0, totalLunas = 0, totalHutangBelum = 0;
+  
+  riwayat.forEach(r => {
+    totalJual += r.total;
+    if(r.lunas) totalLunas += r.total;
+    else totalHutangBelum += (r.sisaHutang || 0);
+  });
+  
+  document.getElementById('totalJual').textContent = formatUang(totalJual);
+  document.getElementById('totalLunas').textContent = formatUang(totalLunas);
+  document.getElementById('totalLapHutang').textContent = formatUang(totalHutangBelum);
+  document.getElementById('totalUntung').textContent = formatUang(totalKeuntunganTerakumulasi);
   document.getElementById('jumlahTransaksi').textContent = riwayat.length;
   
   const el = document.getElementById('daftarRiwayat');
   if(riwayat.length === 0){
-    el.innerHTML = '<p style="color:#666; text-align:center;">Belum ada transaksi</p>';
+    el.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">Belum ada transaksi</p>';
     return;
   }
-  el.innerHTML = '';
-  riwayat.forEach((r, urut)=>{
-    const tgl = new Date(r.tanggal).toLocaleString('id-ID');
-    const kelas = r.jenis === 'hutang' ? 'status-belum' : 'status-lunas';
-    const label = r.jenis === 'hutang' ? '💰 PIUTANG' : '✅ LUNAS';
-    el.innerHTML += `
-      <div style="padding:8px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <input type="checkbox" class="pilih-transaksi" data-urut="${urut}">
-          <strong>${tgl}</strong> — ${r.pelanggan} (Meja: ${r.meja})<br>
-          <span style="font-size:12px; color:#666;">Kasir: ${r.kasir || 'Anonim'}</span>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-weight:bold;">Rp ${formatAngka(r.total)}</div>
-          <div class="${kelas}" style="font-size:12px;">${label}</div>
-        </div>
+  
+  el.innerHTML = riwayat.map((r, i) => `
+    <div style="border-bottom:1px solid #eee; padding:10px 5px;">
+      <div style="display:flex; justify-content:space-between; font-size:13px;">
+        <span><input type="checkbox" class="cekRiwayat" value="${r.id}"> ${i+1}. ${new Date(r.tanggal).toLocaleString('id-ID')}</span>
+        <span style="font-weight:bold; ${r.lunas?'color:#2e7d32':'color:#e65100'}">${r.lunas?'✅ LUNAS':'⚠️ BELUM LUNAS'}</span>
       </div>
-    `;
-  });
+      <div style="font-size:12px; margin-top:5px;">
+        Pelanggan: ${r.namaPelanggan} | Meja: ${r.meja}<br>
+        Total: <strong>${formatUang(r.total)}</strong> | 
+        Dibayar: ${formatUang(r.dibayar)}
+        ${r.sisaHutang ? `| Sisa Hutang: <span style="color:#e65100; font-weight:bold;">${formatUang(r.sisaHutang)}</span>` : ''}
+        ${r.keuntungan ? `<br>Keuntungan: <span style="color:#2d5a27;">${formatUang(r.keuntungan)}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
 }
 
 function togglePilihSemua(){
   const cek = document.getElementById('pilihSemua').checked;
-  document.querySelectorAll('.pilih-transaksi').forEach(cb=>cb.checked = cek);
+  document.querySelectorAll('.cekRiwayat').forEach(c => c.checked = cek);
 }
 
 function hapusTerpilihRiwayat(){
-  const terpilih = Array.from(document.querySelectorAll('.pilih-transaksi:checked')).map(cb=>parseInt(cb.dataset.urut));
-  if(terpilih.length === 0){ alert('Pilih dulu yang ingin dihapus!'); return; }
+  const terpilih = Array.from(document.querySelectorAll('.cekRiwayat:checked')).map(c => parseInt(c.value));
+  if(terpilih.length === 0){ alert('Pilih transaksi yang ingin dihapus!'); return; }
   if(!confirm(`Yakin ingin menghapus ${terpilih.length} transaksi?`)) return;
-  riwayat = riwayat.filter((_,i)=> !terpilih.includes(i));
-  tampilLaporan();
-  simpanSemua();
-}
-
-function tampilHutang(){
-  const total = daftarHutang.filter(h=>!h.lunas).reduce((sum,h)=> sum + h.total, 0);
-  document.getElementById('totalHutang').textContent = 'Rp ' + formatAngka(total);
-  const el = document.getElementById('daftarHutang');
-  if(daftarHutang.filter(h=>!h.lunas).length === 0){
-    el.innerHTML = '<p style="color:#666; text-align:center;">Tidak ada piutang</p>';
-    return;
-  }
-  el.innerHTML = '';
-  daftarHutang.filter(h=>!h.lunas).forEach(h=>{
-    const tgl = new Date(h.tanggal).toLocaleString('id-ID');
-    el.innerHTML += `
-      <div class="kotak-hutang">
-        <div class="baris"><strong>${h.namaPelanggan}</strong><strong>Rp ${formatAngka(h.total)}</strong></div>
-        <div style="font-size:13px; color:#666;">Tanggal: ${tgl} | Meja: ${h.meja}</div>
-        <div style="margin-top:8px; display:flex; gap:8px;">
-          <button class="btn-hijau" style="flex:1;" onclick="tandaiLunas(${h.id})">✅ TANDAI LUNAS</button>
-          <button class="btn-kuning" style="flex:1;" onclick="tambahCicilan(${h.id})">➕ CICILAN</button>
-        </div>
-        <div id="daftarCicilan${h.id}"></div>
-      </div>
-    `;
-  });
-}
-
-function tandaiLunas(id){
-  const h = daftarHutang.find(x=>x.id === id);
-  if(h){
-    h.lunas = true;
-    tampilHutang();
-    tampilLaporan();
-    simpanSemua();
-    alert('✅ Piutang ditandai lunas!');
-  }
-}
-
-function tambahCicilan(id){
-  const jumlah = parseInt(prompt('Masukkan jumlah cicilan:'));
-  if(!jumlah || jumlah <= 0) return;
-  const h = daftarHutang.find(x=>x.id === id);
-  if(!h) return;
-  if(!h.cicilan) h.cicilan = [];
-  h.cicilan.push({ jumlah:jumlah, tanggal:new Date().toLocaleString('id-ID') });
-  const totalCicil = h.cicilan.reduce((sum,c)=> sum + c.jumlah, 0);
-  if(totalCicil >= h.total){
-    h.lunas = true;
-    alert('✅ Piutang sudah lunas dari cicilan!');
-  }
-  tampilHutang();
-  tampilLaporan();
-  simpanSemua();
-}
-
-function simpanNamaToko(){
-  const nama = document.getElementById('inputNamaToko').value.trim();
-  if(!nama){ alert('Nama toko tidak boleh kosong!'); return; }
-  namaToko = nama;
-  document.querySelectorAll('.nama-toko').forEach(el=>el.textContent = nama);
-  simpanSemua();
-  alert('✅ Nama toko disimpan!');
-}
-
-function buatPinKasir(){
-  const nama = document.getElementById('namaKasirBaru').value.trim();
-  const noHP = document.getElementById('nomorHPKaryawan').value.trim();
-  const pin = document.getElementById('pinKasirBaru').value.trim();
-  if(!nama || !pin || pin.length !== 4){ alert('Isi nama dan PIN 4 angka!'); return; }
-  if(daftarPinKasir.some(d=>d.pin === pin)){ alert('PIN ini sudah dipakai! Gunakan yang lain.'); return; }
-  daftarPinKasir.push({ nama:nama, nomorHP:noHP, pin:pin });
-  document.getElementById('namaKasirBaru').value = '';
-  document.getElementById('nomorHPKaryawan').value = '';
-  document.getElementById('pinKasirBaru').value = '';
-  tampilDaftarPinKasir();
-  simpanSemua();
-  alert('✅ Karyawan terdaftar!');
-}
-
-function tampilDaftarPinKasir(){
-  const tbody = document.getElementById('tabelPinKasirBody');
-  if(!tbody) return;
-  if(daftarPinKasir.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada karyawan</td></tr>';
-    return;
-  }
-  tbody.innerHTML = '';
-  daftarPinKasir.forEach((d, idx)=>{
-    tbody.innerHTML += `
-      <tr>
-        <td>${idx+1}</td>
-        <td>${d.nama}</td>
-        <td>${d.nomorHP || '-'}</td>
-        <td>${d.pin}</td>
-        <td><button class="btn-kecil btn-merah" onclick="hapusKaryawan(${idx})">🗑️ Hapus</button></td>
-      </tr>
-    `;
-  });
-}
-
-function hapusKaryawan(idx){
-  if(!confirm('Yakin ingin menghapus karyawan ini?')) return;
-  daftarPinKasir.splice(idx, 1);
-  tampilDaftarPinKasir();
-  simpanSemua();
-}
-
-function tampilRiwayatMasuk(){
-  const tbody = document.getElementById('tabelRiwayatMasukBody');
-  if(!tbody) return;
-  if(riwayatMasukKaryawan.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada riwayat</td></tr>';
-    return;
-  }
-  tbody.innerHTML = '';
-  riwayatMasukKaryawan.forEach((d, idx)=>{
-    tbody.innerHTML += `
-      <tr>
-        <td>${idx+1}</td>
-        <td>${d.nama}</td>
-        <td>${d.nomorHP || '-'}</td>
-        <td>${d.pin}</td>
-        <td>${d.jamMasuk}</td>
-      </tr>
-    `;
-  });
-}
-
-function formatAngka(x){
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-function simpanSemua(){
-  localStorage.setItem('daftarBarang', JSON.stringify(daftarBarang));
-  localStorage.setItem('riwayat', JSON.stringify(riwayat));
-  localStorage.setItem('daftarHutang', JSON.stringify(daftarHutang));
-  localStorage.setItem('namaToko', namaToko);
-  localStorage.setItem('daftarPinKasir', JSON.stringify(daftarPinKasir));
-  localStorage.setItem('riwayatMasukKaryawan', JSON.stringify(riwayatMasukKaryawan));
-}
-
-function muatSemua(){
-  const brg = localStorage.getItem('daftarBarang');
-  const rwy = localStorage.getItem('riwayat');
-  const hut = localStorage.getItem('daftarHutang');
-  const nmToko = localStorage.getItem('namaToko');
-  const pinKasir = localStorage.getItem('daftarPinKasir');
-  const rwyMasuk = localStorage.getItem('riwayatMasukKaryawan');
   
-  if(brg) daftarBarang = JSON.parse(brg);
-  if(rwy) riwayat = JSON.parse(rwy);
-  if(hut) daftarHutang = JSON.parse(hut);
-  if(nmToko) {
-    namaToko = nmToko;
-    document.querySelectorAll('.nama-toko').forEach(el=>el.textContent = namaToko);
-  }
-  if(pinKasir) daftarPinKasir = JSON.parse(pinKasir);
-  if(rwyMasuk) riwayatMasukKaryawan = JSON.parse(rwyMasuk);
+  riwayat = riwayat.filter(r => !terpilih.includes(r.id));
+  simpanSemua();
+  tampilLaporan();
 }
 
 function cadangkanData(){
   const data = {
     versi: '1.0',
-    tanggalCadangan: new Date().toISOString(),
     namaToko: namaToko,
     daftarBarang: daftarBarang,
     riwayat: riwayat,
     daftarHutang: daftarHutang,
     daftarPinKasir: daftarPinKasir,
-    riwayatMasukKaryawan: riwayatMasukKaryawan
+    riwayatMasukKaryawan: riwayatMasukKaryawan,
+    totalKeuntunganTerakumulasi: totalKeuntunganTerakumulasi,
+    tanggalCadangan: new Date().toISOString()
   };
+  
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  a.href = url;
   a.download = 'cadangan_toko_' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
-  URL.revokeObjectURL(a.href);
-  alert('✅ Data dicadangkan!');
+  URL.revokeObjectURL(url);
+  alert('✅ Data berhasil dicadangkan!');
 }
 
 function pulihkanData(e){
   const file = e.target.files[0];
   if(!file) return;
-  if(!confirm('⚠️ Data saat ini akan diganti dengan data dari file. Lanjutkan?')) return;
+  
+  if(!confirm('⚠️ Memulihkan data akan menimpa data yang ada sekarang. Lanjutkan?')) return;
+  
   const reader = new FileReader();
   reader.onload = function(event){
     try{
       const data = JSON.parse(event.target.result);
-      namaToko = data.namaToko || 'TOKO SAYA';
-      daftarBarang = data.daftarBarang || [];
-      riwayat = data.riwayat || [];
-      daftarHutang = data.daftarHutang || [];
-      daftarPinKasir = data.daftarPinKasir || [];
-      riwayatMasukKaryawan = data.riwayatMasukKaryawan || [];
+      if(data.daftarBarang) daftarBarang = data.daftarBarang;
+      if(data.riwayat) riwayat = data.riwayat;
+      if(data.daftarHutang) daftarHutang = data.daftarHutang;
+      if(data.daftarPinKasir) daftarPinKasir = data.daftarPinKasir;
+      if(data.riwayatMasukKaryawan) riwayatMasukKaryawan = data.riwayatMasukKaryawan;
+      if(data.namaToko) namaToko = data.namaToko;
+      if(data.totalKeuntunganTerakumulasi) totalKeuntunganTerakumulasi = data.totalKeuntunganTerakumulasi;
       
-      document.querySelectorAll('.nama-toko').forEach(el=>el.textContent = namaToko);
       simpanSemua();
-      buka('kasir');
-      alert('✅ Data dipulihkan!');
+      tampilDaftarBarangKasir();
+      tampilDaftarBarangTabel();
+      tampilLaporan();
+      tampilDaftarHutang();
+      tampilDaftarPinKasir();
+      alert('✅ Data berhasil dipulihkan! Halaman akan dimuat ulang.');
+      location.reload();
     }catch(err){
-      alert('❌ File tidak valid!');
+      alert('❌ Gagal membaca file data!');
     }
   };
   reader.readAsText(file);
+  e.target.value = '';
 }
 
-window.onload = function(){
-  muatSemua();
-  document.querySelectorAll('.nama-toko').forEach(el=>el.textContent = namaToko);
-};
+// ==========================================
+// HALAMAN PIUTANG / HUTANG
+// ==========================================
+function tampilDaftarHutang(){
+  const el = document.getElementById('daftarHutang');
+  let totalHutang = 0, totalSudahBayar = 0, totalSisa = 0;
+  
+  daftarHutang.forEach(h => {
+    totalHutang += h.total;
+    totalSudahBayar += h.dibayar;
+    totalSisa += h.sisa;
+  });
+  
+  document.getElementById('totalHutang').textContent = formatUang(totalHutang);
+  document.getElementById('totalSudahBayar').textContent = formatUang(totalSudahBayar);
+  document.getElementById('totalSisaHutang').textContent = formatUang(totalSisa);
+  
+  if(daftarHutang.length === 0){
+    el.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">Belum ada piutang</p>';
+    return;
+  }
+  
+  el.innerHTML = daftarHutang.map((h, i) => {
+    const persen = h.total > 0 ? Math.round((h.dibayar / h.total) * 100) : 0;
+    return `
+    <div class="kotak-hutang" style="border-left:4px solid ${h.lunas?'#4caf50':'#ff9800'};">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div style="font-weight:bold; font-size:15px;">${h.namaPelanggan}</div>
+          <div style="font-size:12px; color:#666;">Meja: ${h.meja} | ${new Date(h.tanggal).toLocaleString('id-ID')}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:bold; font-size:15px;">${formatUang(h.total)}</div>
+          <div class="${h.lunas?'status-lunas':'status-belum'}">${h.lunas?'✅ LUNAS':'⏳ BELUM LUNAS'}</div>
+        </div>
+      </div>
+      
+      <div class="progress-bayar">
+        <div class="progress-bar" style="width:${persen}%;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:5px;">
+        <span>Sudah dibayar: ${formatUang(h.dibayar)} (${persen}%)</span>
+        <span style="font-weight:bold; color:${h.sisa>0?'#e65100':'#2e7d32'};">Sisa: ${formatUang(h.sisa)}</span>
+      </div>
+      
+      ${h.cicilan.length > 0 ? `
+        <div style="margin-top:8px; font-size:12px;">
+          <strong>Riwayat Cicilan:</strong>
+          ${h.cicilan.map(c => `
+            <div class="cicilan-item">${new Date(c.tanggal).toLocaleString('id-ID')} — ${formatUang(c.jumlah)}</div>
+          `).join('')}
+        </div>
+      ` : ''}
+      
+      ${!h.lunas ? `
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+          <input type="number" id="bayarCicilan-${h.id}" placeholder="Jumlah bayar" style="flex:1; min-width:120px;">
+          <button class="btn-kuning" style="flex:1; padding:8px 4px; font-size:13px;" onclick="bayarCicilan(${h.id})">💰 BAYAR</button>
+          <button class="btn-hijau" style="flex:1; padding:8px 4px; font-size:13px;" onclick="tandaiLunas(${h.id})">✅ TANDAI LUNAS</button>
+        </div>
+      ` : ''}
+    </div>
+    `;
+  }).join('');
+}
+
+function bayarCicilan(idHutang){
+  const idx = daftarHutang.findIndex(h => h.id === idHutang);
+  if(idx === -1) return;
+  
+  const input = document.getElementById(`bayarCicilan-${idHutang}`);
+  const jumlah = parseInt(input.value) || 0;
+  
+  if(jumlah <= 0){ alert('Masukkan jumlah pembayaran!'); return; }
+  if(jumlah > daftarHutang[idx].sisa){ alert('Jumlah melebihi sisa hutang!'); return; }
+  
+  daftarHutang[idx].dibayar += jumlah;
+  daftarHutang[idx].sisa -= jumlah;
+  daftarHutang[idx].cicilan.push({
+    tanggal: new Date().toISOString(),
+    jumlah: jumlah
+  });
+  
+  if(daftarHutang[idx].sisa <= 0){
+    daftarHutang[idx].lunas = true;
+    const untung = daftarHutang[idx].items.reduce((sum, k) => sum + ((k.hargaJual - k.hargaModal) * k.jumlah), 0);
+    totalKeuntunganTerakumulasi += untung;
+    alert('✅ Hutang sudah LUNAS!');
+  }else{
+    alert('✅ Pembayaran dicatat!\nSisa hutang: ' + formatUang(daftarHutang[idx].sisa));
+  }
+  
+  simpanSemua();
+  tampilDaftarHutang();
+  tampilLaporan();
+}
+
+function tandaiLunas(idHutang){
+  const idx = daftarHutang.findIndex(h => h.id === idHutang);
+  if(idx === -1) return;
+  
+  if(!confirm('Yakin tandai hutang ini sudah lunas?')) return;
+  
+  const sisa = daftarHutang[idx].sisa;
+  daftarHutang[idx].dibayar += sisa;
+  daftarHutang[idx].sisa = 0;
+  daftarHutang[idx].lunas = true;
+  daftarHutang[idx].cicilan.push({
+    tanggal: new Date().toISOString(),
+    jumlah: sisa
+  });
+  
+  const untung = daftarHutang[idx].items.reduce((sum, k) => sum + ((k.hargaJual - k.hargaModal) * k.jumlah), 0);
+  totalKeuntunganTerakumulasi += untung;
+  
+  simpanSemua();
+  alert('✅ Hutang ditandai LUNAS!');
+  tampilDaftarHutang();
+  tampilLaporan();
+}
+
+// ==========================================
+// HALAMAN KARYAWAN & PIN KASIR
+// ==========================================
+function tampilDaftarPinKasir(){
+  const el = document.getElementById('tabelPinKasirBody');
+  if(daftarPinKasir.length === 0){
+    el.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada karyawan</td></tr>';
+    return;
+  }
+  
+  el.innerHTML = daftarPinKasir.map((p, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${p.nama}</td>
+      <td>${p.nomorHP}</td>
+      <td>${p.pin}</td>
+      <td><button class="btn-kecil btn-merah" onclick="hapusPinKasir('${p.pin}')">Hapus</button></td>
+    </tr>
+  `).join('');
+}
+
+function buatPinKasir(){
+  const nama = document.getElementById('namaKasirBaru').value.trim();
+  const hp = document.getElementById('nomorHPKaryawan').value.trim();
+  const pin = document.getElementById('pinKasirBaru').value.trim();
+  
+  if(!nama || !hp || !pin || pin.length !== 4){
+    alert('Lengkapi semua data! PIN harus 4 angka.');
+    return;
+  }
+  
+  if(daftarPinKasir.some(d => d.pin === pin)){
+    alert('PIN sudah digunakan! Gunakan PIN lain.');
+    return;
+  }
+  
+  daftarPinKasir.push({
+    nama: nama,
+    nomorHP: hp,
+    pin: pin
+  });
+  
+  simpanSemua();
+  document.getElementById('namaKasirBaru').value = '';
+  document.getElementById('nomorHPKaryawan').value = '';
+  document.getElementById('pinKasirBaru').value = '';
+  tampilDaftarPinKasir();
+  alert('✅ Karyawan berhasil didaftarkan!');
+}
+
+function hapusPinKasir(pin){
+  if(!confirm('Yakin ingin menghapus karyawan ini?')) return;
+  daftarPinKasir = daftarPinKasir.filter(d => d.pin !== pin);
+  simpanSemua();
+  tampilDaftarPinKasir();
+}
+
+function tampilRiwayatMasuk(){
+  const el = document.getElementById('tabelRiwayatMasukBody');
+  if(riwayatMasukKaryawan.length === 0){
+    el.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada riwayat</td></tr>';
+    return;
+  }
+  
+  el.innerHTML = riwayatMasukKaryawan.map((r, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${r.nama}</td>
+      <td>${r.nomorHP}</td>
+      <td>${r.pin}</td>
+      <td>${r.jamMasuk}</td>
+    </tr>
+  `).join('');
+}
+
+// ==========================================
+// HALAMAN PENGATURAN
+// ==========================================
+function simpanNamaToko(){
+  const nm = document.getElementById('inputNamaToko').value.trim();
+  if(!nm){ alert('Masukkan nama toko!'); return; }
+  namaToko = nm;
+  document.title = namaToko;
+  document.querySelectorAll('.nama-toko').forEach(el => el.textContent = namaToko);
+  simpanSemua();
+  alert('✅ Nama toko berhasil disimpan!');
+}
+
+// ==========================================
+// HALAMAN DAFTAR KODE AKSES (ADMIN)
+// ==========================================
+async function tampilDaftarKodeFirebase(){
+  const el = document.getElementById('tabelKodeFirebaseBody');
+  const cari = document.getElementById('cariKodeFirebase').value.toLowerCase();
+  
+  try{
+    const snapshot = await db.collection('kode_akses').get();
+    let no = 1;
+    el.innerHTML = '';
+    
+    if(snapshot.empty){
+      el.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#666;">Belum ada kode akses</td></tr>';
+      return;
+    }
+    
+    snapshot.forEach(doc => {
+      const kode = doc.id;
+      const d = doc.data();
+      
+      if(cari && !kode.toLowerCase().includes(cari) && !(d.nomorWA||'').includes(cari)) return;
+      
+      let status = '';
+      if(d.tipe === 'penuh'){
+        status = '<span class="tersedia">✅ SELAMANYA</span>';
+      }else if(d.demoSelesai){
+        status = '<span class="terpakai">⏰ HABIS</span>';
+      }else if(d.terpakai){
+        status = '<span style="background:#e3f2fd; color:#1565c0; font-weight:bold; padding:2px 6px; border-radius:4px;">🔄 DIGUNAKAN</span>';
+      }else{
+        status = '<span class="tersedia">🆓 BELUM DIPAKAI</span>';
+      }
+      
+      const mulai = d.waktuMasukPertama ? new Date(d.waktuMasukPertama).toLocaleString('id-ID') : '-';
+      const akhir = d.demoBerakhirPada ? new Date(d.demoBerakhirPada).toLocaleString('id-ID') : (d.tipe === 'penuh' ? '♾️ Selamanya' : '-');
+      
+      el.innerHTML += `
+        <tr>
+          <td>${no++}</td>
+          <td style="font-weight:bold; font-family:monospace;">${kode}</td>
+          <td>${d.tipe === 'demo' ? '⏰ Demo' : '♾️ Penuh'}</td>
+          <td>${status}</td>
+          <td>${d.nomorWA || '-'}</td>
+          <td style="font-size:11px;">${mulai}</td>
+          <td style="font-size:11px;">${akhir}</td>
+        </tr>
+      `;
+    });
+  }catch(error){
+    el.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Gagal memuat data: ' + error.message + '</td></tr>';
+  }
+}
+
+function filterKodeFirebase(){
+  tampilDaftarKodeFirebase();
+}
+
+// ==========================================
+// INISIALISASI AWAL
+// ==========================================
+muatData();
+
 </script>
 
 </body>
