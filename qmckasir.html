@@ -1,909 +1,1323 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QMC TEKNOLOGI</title>
-    <style>
-        *{box-sizing:border-box;font-family:Arial,sans-serif;}
-        body{background:#0f172a;color:#fff;padding:20px;max-width:700px;margin:0 auto;min-height:100vh;}
-        h1{text-align:center;color:#ffd700;font-size:22px;}
-        h2{color:#00d4ff;font-size:17px;margin:15px 0 8px;}
-        h3{font-size:15px;margin:8px 0;color:#facc15;}
-        .tagline{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:25px;}
-        .box{background:#1e293b;border-radius:10px;padding:18px;margin:12px 0;}
-        label{display:block;margin:10px 0 5px;font-weight:bold;font-size:14px;}
-        input,select{width:100%;padding:10px;border-radius:6px;border:none;background:#334155;color:#fff;font-size:15px;}
-        button{padding:10px 18px;border-radius:6px;border:none;font-weight:bold;cursor:pointer;}
-        .btn-masuk{background:#ffd700;color:#000;width:100%;font-size:16px;margin-top:8px;}
-        .btn-tambah{background:#10b981;color:#fff;width:100%;font-size:16px;margin-top:8px;}
-        .btn-keluar{background:#ef4444;color:#fff;float:right;}
-        .btn-reset{background:#6366f1;color:#fff;font-size:13px;padding:6px 12px;}
-        .btn-kode{background:#f59e0b;color:#000;font-size:13px;padding:6px 12px;margin:5px;}
-        .btn-setuju{background:#22c55e;color:#fff;font-size:13px;padding:6px 12px;}
-        .btn-tolak{background:#ef4444;color:#fff;font-size:13px;padding:6px 12px;}
-        .btn-topup{background:#3b82f6;color:#fff;width:100%;font-size:15px;margin-top:8px;}
-        .btn-daftar-langsung{background:#10b981;color:#fff;width:100%;font-size:15px;margin-top:8px;}
-        .btn-pindah{background:#8b5cf6;color:#fff;font-size:12px;padding:4px 8px;margin-top:4px;}
-        .hidden{display:none !important;}
-        .pesan-error{color:#f87171;margin-top:8px;}
-        .pesan-sukses{color:#22c55e;margin-top:8px;line-height:1.5;}
-        .info-box{background:rgba(255,215,0,0.08);border:1px solid #ffd700;padding:12px;border-radius:8px;margin-bottom:20px;font-size:14px;}
-        .info-rekening{background:rgba(59,130,246,0.1);border:1px solid #3b82f6;padding:14px;border-radius:8px;margin:12px 0;font-size:14px;line-height:1.8;}
-        .peringatan-saldo{background:rgba(239,68,68,0.15);border:1px solid #ef4444;padding:12px;border-radius:6px;margin:10px 0;font-size:14px;color:#fca5a5;}
-        .peringatan-kode{background:rgba(245,158,11,0.1);border:1px solid #f59e0b;padding:10px;border-radius:6px;margin:8px 0;font-size:13px;color:#fcd34d;}
-        .kode-disembunyikan{color:#64748b;font-size:11px;font-style:italic;}
-        .admin-badge{background:linear-gradient(135deg,#ffd700,#f59e0b);color:#000;padding:6px 16px;border-radius:20px;font-weight:bold;display:inline-block;margin-bottom:15px;}
-        .member-badge{background:linear-gradient(135deg,#22c55e,#16a34a);color:#000;padding:6px 16px;border-radius:20px;font-weight:bold;display:inline-block;margin-bottom:15px;}
-        .dompet-utama{background:linear-gradient(135deg,#1d4ed8,#0f2e9e);border-radius:10px;padding:18px;margin-bottom:15px;text-align:center;border:2px solid #ffd700;}
-        .dompet-bonus{background:linear-gradient(135deg,#065f46,#047857);border-radius:10px;padding:18px;margin-bottom:15px;text-align:center;}
-        .saldo-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0;}
-        .saldo-col{background:rgba(0,0,0,0.2);border-radius:8px;padding:10px 15px;min-width:140px;}
-        .saldo-label{font-size:13px;opacity:0.8;margin-bottom:4px;}
-        .saldo-nilai{font-size:20px;font-weight:bold;}
-        .total-utama{font-size:26px;font-weight:bold;color:#ffd700;margin:12px 0;}
-        .riwayat-item{padding:12px;background:rgba(0,0,0,0.15);border-radius:6px;margin:8px 0;font-size:14px;line-height:1.6;text-align:left;}
-        .permintaan-topup-item{padding:12px;background:rgba(16,185,129,0.1);border:1px solid #10b981;border-radius:6px;margin:8px 0;font-size:14px;line-height:1.6;}
-        .tanggal-riwayat{font-size:12px;opacity:0.7;margin-top:6px;display:block;}
-        .level-label{color:#facc15;font-size:14px;font-weight:bold;margin:18px 0 8px;}
-        .tree-row{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:8px 0;}
-        .member-card{background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:8px;padding:10px 12px;min-width:120px;text-align:center;}
-        .member-card.owner{background:linear-gradient(135deg,#b45309,#f59e0b);}
-        .member-card.me{border:2px solid #22c55e;}
-        .member-name{font-weight:bold;font-size:14px;margin-bottom:4px;}
-        .member-info{font-size:11px;opacity:0.9;line-height:1.4;}
-        .empty-slot{background:rgba(60,60,60,0.3);border-radius:8px;padding:10px 12px;min-width:120px;color:#888;font-size:13px;text-align:center;}
-        .text-right{text-align:right;margin-top:10px;}
-        hr{border:none;border-top:1px solid #333;margin:15px 0;}
-        .kode-terpakai{background:rgba(239,68,68,0.2);padding:8px;border-radius:6px;margin-top:10px;font-size:12px;max-height:100px;overflow-y:auto;}
-        .kode-tersedia{background:rgba(34,197,94,0.1);padding:8px;border-radius:6px;margin-top:10px;font-size:12px;max-height:150px;overflow-y:auto;}
-        .tab-wrap{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap;}
-        .tab-btn{flex:1;padding:8px;background:#334155;border:none;border-radius:6px;color:#fff;font-size:13px;min-width:100px;}
-        .tab-btn.active{background:#3b82f6;}
-        .link-wa{color:#25d366;text-decoration:none;font-weight:bold;}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKO SAYA</title>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<style>
+*{margin:0; padding:0; font-family:Arial; box-sizing:border-box;}
+body{background:linear-gradient(135deg,#2d5a27,#4a8c43); min-height:100vh; padding:10px; padding-bottom:60px;}
+.sembunyi{display:none !important;}
+
+.kotak-login{background:#fff; padding:25px; border-radius:15px; max-width:340px; width:100%; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); margin:40px auto 0 auto;}
+.kotak-login h2{color:#2d5a27; margin-bottom:15px; font-size:19px;}
+.kotak-login input{width:100%; padding:12px; font-size:16px; border:2px solid #ddd; border-radius:8px; margin-bottom:12px; text-align:center;}
+.kotak-login input:focus{border-color:#2d5a27; outline:none;}
+.kotak-login button{width:100%; padding:12px; font-size:15px; font-weight:bold; border:none; border-radius:8px; background:#2d5a27; color:#fff; cursor:pointer; margin:5px 0;}
+.tombol-pisah{background:#f0f0f0; color:#333; border:2px solid #ddd;}
+.pesan-salah{color:#e74c3c; margin-top:10px; font-size:14px;}
+.pesan-berhasil{color:#2e7d32; margin-top:10px; font-size:14px;}
+.info-demo{background:#fff3cd; border:1px solid #ffc107; color:#856404; padding:10px; border-radius:6px; margin-bottom:15px; font-size:13px;}
+.info-penuh{background:#e8f5e9; border:1px solid #4caf50; color:#2e7d32; padding:10px; border-radius:6px; margin-bottom:15px; font-size:13px;}
+.link-admin{margin-top:15px; font-size:12px; color:#888;}
+.link-admin a{color:#2d5a27; text-decoration:none;}
+
+.menu{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+.menu button{flex:1; min-width:70px; padding:12px 4px; font-size:13px; width:auto;}
+.konten{background:#fff; border-radius:12px; padding:15px; margin-bottom:12px;}
+h2,h3,h4{color:#2d5a27; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid #eee; font-size:17px;}
+table{width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;}
+th,td{padding:6px 4px; text-align:center; border-bottom:1px solid #eee; vertical-align:middle;}
+th{background:#f5f5f5; color:#2d5a27; font-weight:bold;}
+
+.grid-barang{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;}
+.item-barang{background:#e8f5e9; border:1px solid #c8e6c9; border-radius:8px; padding:12px 8px; width:calc(50% - 4px); text-align:center; cursor:pointer; transition:all 0.2s;}
+.item-barang.dipilih{background:#c8e6c9; border:2px solid #2d5a27; font-weight:bold;}
+
+.baris{display:flex; justify-content:space-between; padding:5px 0; font-size:14px;}
+.total{font-size:18px; font-weight:bold; color:#e74c3c; padding-top:8px; border-top:1px dashed #ccc; margin-top:8px;}
+.dua-kolom{display:flex; gap:8px; margin:6px 0; flex-wrap:wrap;}
+.dua-kolom input{flex:1; min-width:130px;}
+.tiga-kolom{display:flex; gap:6px; margin:6px 0; flex-wrap:wrap;}
+.tiga-kolom input{flex:1; min-width:90px;}
+.struk{border:2px dashed #333; padding:15px; max-width:300px; margin:12px auto; background:#fff;}
+.struk .garis{border-bottom:1px dashed #999; margin:6px 0;}
+.kotak-rekap{background:#e3f2fd; padding:12px; border-radius:8px; margin-bottom:12px;}
+.kotak-hutang{background:#fff3e0; padding:12px; border-radius:8px; margin-bottom:12px;}
+.kotak-edit-harga{background:#f3e5f5; padding:12px; border-radius:8px; margin-top:8px; margin-bottom:12px;}
+.kotak-karyawan{background:#e8f4f8; padding:12px; border-radius:8px; margin-bottom:15px; border-left:4px solid #1976d2;}
+.nama-toko{text-align:center; color:#fff; font-size:22px; font-weight:bold; margin:10px 0; text-shadow:1px 1px 3px rgba(0,0,0,0.3);}
+.nama-kasir{text-align:right; color:#fff; font-size:13px; margin-bottom:8px; background:rgba(0,0,0,0.2); display:inline-block; padding:4px 10px; border-radius:20px;}
+.input-cari{width:100%; padding:8px 12px; font-size:14px; border:2px solid #81c784; border-radius:8px; margin-bottom:12px; background:#f1f8e9;}
+.input-cari:focus{border-color:#2d5a27; outline:none;}
+.kaki-halaman{position:fixed; bottom:0; left:0; right:0; text-align:center; padding:8px; color:rgba(255,255,255,0.8); font-size:11px; background:rgba(0,0,0,0.25);}
+.status-lunas{color:#2e7d32; font-weight:bold;}
+.status-belum{color:#e65100; font-weight:bold; font-size:16px;}
+.cicilan-item{padding:5px 8px; background:#e8f5e9; border-radius:4px; margin-top:3px; font-size:12px;}
+.terpakai{background:#ffebee; color:#c62828; font-weight:bold;}
+.tersedia{background:#e8f5e9; color:#2e7d32; font-weight:bold;}
+.btn-kecil{padding:4px 8px; font-size:12px; width:auto;}
+.btn-keluar{background:#e74c3c; color:#fff; padding:10px; font-size:16px; font-weight:bold; border-radius:8px; border:none; cursor:pointer; width:100%; margin:10px 0;}
+
+input{width:100%; padding:10px; font-size:15px; border:2px solid #ddd; border-radius:6px; margin:6px 0;}
+input:focus{border-color:#2d5a27; outline:none;}
+button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-radius:6px; cursor:pointer; width:100%;}
+.btn-hijau{background:#2d5a27; color:#fff; margin-top:5px;}
+.btn-hijau:hover{background:#1f3f1c;}
+.btn-biru{background:#1976d2; color:#fff;}
+.btn-kuning{background:#ffb300; color:#fff;}
+.btn-merah{background:#e74c3c; color:#fff;}
+.btn-abu{background:#757575; color:#fff;}
+</style>
 </head>
 <body>
 
-<div id="halaman-login">
-    <h1>QMC TEKNOLOGI</h1>
-    <p class="tagline">Bersama Membangun Masa Depan — Satu Dalam Genggaman</p>
-    <div class="box">
-        <label>Masukkan Kode Akses:</label>
-        <input type="text" id="input-kode" placeholder="Masukkan kode akses anda" style="text-transform:uppercase;">
-        <button class="btn-masuk" onclick="cekLogin()">🔑 MASUK KE SISTEM</button>
-        <div id="pesan-login" class="pesan-error"></div>
+<!-- HALAMAN LOGIN -->
+<div id="halamanLogin">
+  <h1 class="nama-toko">TOKO SAYA</h1>
+  <div class="kotak-login">
+    <div id="infoVersi" class="info-demo">⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan</div>
+    <h2>🔑 AKSES APLIKASI</h2>
+    
+    <!-- PILIHAN UTAMA -->
+    <div id="pilihanUtama">
+      <button onclick="tampilMintaKode()">📤 MINTA KODE AKSES</button>
+      <button class="tombol-pisah" onclick="tampilMasukKode()">🔑 SUDAH PUNYA KODE — MASUK</button>
+      <p class="link-admin"><a href="#" onclick="tampilLoginAdmin(); return false;">Masuk sebagai Admin</a></p>
     </div>
+    
+    <!-- FORMAT MINTA KODE -->
+    <div id="formMintaKode" class="sembunyi">
+      <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
+      <p style="font-size:14px; color:#66; margin-bottom:10px;">Masukkan nomor WhatsApp Anda, kode akses akan dibuatkan.</p>
+      <input type="tel" id="nomorWAPeminta" placeholder="Contoh: 08123456789" autocomplete="off">
+      <button onclick="buatDanKirimKode()">✅ BUAT KODE</button>
+      <p id="pesanMinta" class="pesan-salah sembunyi"></p>
+    </div>
+    
+    <!-- FORMAT MASUK DENGAN KODE -->
+    <div id="formMasukKode" class="sembunyi">
+      <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
+      <input type="text" id="kodeAkses" placeholder="Masukkan Kode Akses" autocomplete="off">
+      <button onclick="cekKode()">✅ MASUK</button>
+      <p id="pesanSalah" class="pesan-salah sembunyi"></p>
+    </div>
+    
+    <!-- LOGIN ADMIN -->
+    <div id="formLoginAdmin" class="sembunyi">
+      <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
+      <input type="password" id="kodeAdmin" placeholder="Kode Admin" autocomplete="off">
+      <button onclick="cekLoginAdmin()">✅ MASUK ADMIN</button>
+      <p id="pesanAdmin" class="pesan-salah sembunyi"></p>
+    </div>
+  </div>
 </div>
 
-<div id="halaman-admin" class="hidden">
-    <h1>🌐 DIAGRAM JARINGAN ANDA</h1>
-    <span class="admin-badge">👑 OWNER</span>
+<!-- HALAMAN UTAMA -->
+<div id="halamanUtama" class="sembunyi">
+  <h1 class="nama-toko">TOKO SAYA <span id="labelVersi" style="font-size:12px; font-weight:normal;">— VERSI DEMO</span></h1>
+  <div style="text-align:right; margin-bottom:10px;">
+    <span id="tampilNamaKasir" class="nama-kasir"></span>
+  </div>
+  <button class="btn-keluar" onclick="keluarAplikasi()">🚪 KELUAR</button>
+  
+  <!-- MENU -->
+  <div class="menu">
+    <button onclick="buka('kasir')" id="menuKasir">💳 KASIR</button>
+    <button onclick="buka('barang')" id="menuBarang" class="sembunyi">📦 BARANG</button>
+    <button onclick="buka('laporan')" id="menuLaporan" class="sembunyi">📊 LAPORAN</button>
+    <button onclick="buka('hutang')" id="menuHutang" class="sembunyi">💰 HUTANG</button>
+    <button onclick="buka('pengaturan')" id="menuPengaturan" class="sembunyi">⚙️ NAMA USAHA</button>
+    <button onclick="buka('kelolapin')" id="menuKelolaPin" class="sembunyi">🔑 PIN KASIR</button>
+    <button onclick="buka('daftarkode')" id="menuDaftarKode" class="sembunyi">📋 KODE AKSES</button>
+  </div>
+
+  <!-- KASIR -->
+  <div id="pgKasir" class="konten">
+    <h3>📝 RINCIAN PESANAN</h3>
+    <div class="tiga-kolom">
+      <input type="text" id="nomorMeja" placeholder="No. Meja">
+      <input type="text" id="namaPelanggan" placeholder="Nama Pembeli">
+    </div>
+    <input type="text" id="cariBarangKasir" placeholder="🔍 Cari barang..." oninput="filterBarangKasir()">
+    <div id="daftarKasir" class="grid-barang"></div>
     
-    <div class="dompet-utama">
-        <h3 style="margin-top:0;">💳 DOMPET UTAMA</h3>
-        <div class="total-utama" id="saldo-utama-admin">Rp 0</div>
-        <div style="margin-top:10px;">
-            <input type="number" id="input-modal-awal" placeholder="Masukkan saldo manual" style="width:60%;margin-right:5px;">
-            <button class="btn-tambah" style="width:auto;padding:8px 12px;font-size:14px;" onclick="tambahSaldoManual()">➕ TAMBAHKAN</button>
+    <div class="kotak-rekap">
+      <h4>🛒 KERANJANG</h4>
+      <div id="keranjangIsi">
+        <p style="text-align:center; color:#666;">Belum ada barang</p>
+      </div>
+      <div class="baris total">
+        <span>TOTAL</span>
+        <span id="lblTotal">Rp 0</span>
+      </div>
+      <div class="dua-kolom" style="margin-top:10px;">
+        <div>
+          <label style="font-size:13px;">Uang Bayar:</label>
+          <input type="number" id="uangBayar" placeholder="0" oninput="hitungKembalian()">
         </div>
+        <div>
+          <label style="font-size:13px;">Kembali:</label>
+          <input type="text" id="kembalian" placeholder="0" readonly style="background:#f5f5f5;">
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn-hijau" style="flex:1;" onclick="bayarLunas()">✅ BAYAR</button>
+        <button class="btn-kuning" style="flex:1;" onclick="catatHutang()">📝 HUTANG</button>
+        <button class="btn-merah" style="width:auto;" onclick="kosongkanKeranjang()">🗑️</button>
+      </div>
     </div>
     
-    <div class="dompet-bonus">
-        <h3 style="margin-top:0;">🎁 DOMPET BONUS</h3>
-        <div class="saldo-row">
-            <div class="saldo-col">
-                <div class="saldo-label">💰 Bonus Sponsor</div>
-                <div class="saldo-nilai" style="color:#4ade80;" id="uang-sponsor">Rp 0</div>
-                <button class="btn-pindah" onclick="pindahKeUtama('sponsor')">➡️ Pindah ke Utama</button>
-            </div>
-            <div class="saldo-col">
-                <div class="saldo-label">🎁 Bonus Jaringan</div>
-                <div class="saldo-nilai" style="color:#22d3ee;" id="uang-jaringan">Rp 0</div>
-                <button class="btn-pindah" onclick="pindahKeUtama('jaringan')">➡️ Pindah ke Utama</button>
-            </div>
-        </div>
+    <!-- STRUK -->
+    <div id="areaStruk" class="sembunyi">
+      <div class="struk" id="isiStruk"></div>
+      <button class="btn-abu" onclick="tutupStruk()">TUTUP</button>
+    </div>
+  </div>
+
+  <!-- BARANG -->
+  <div id="pgBarang" class="konten sembunyi">
+    <h3>📦 DAFTAR BARANG</h3>
+    <input type="text" id="cariBarangTabel" placeholder="🔍 Cari barang..." oninput="filterBarangTabel()">
+    
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Stok</th>
+          <th>Modal</th>
+          <th>Jual</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelDaftarBody"></tbody>
+    </table>
+    
+    <div class="kotak-rekap" style="margin-top:15px;">
+      <h4>➕ TAMBAH BARANG</h4>
+      <input type="text" id="namaBrg" placeholder="Nama Barang">
+      <input type="number" id="stokBrg" placeholder="Stok">
+      <input type="number" id="modalBrg" placeholder="Harga Modal">
+      <input type="number" id="jualBrg" placeholder="Harga Jual">
+      <button class="btn-hijau" onclick="simpanBarang()">✅ SIMPAN</button>
     </div>
     
-    <div class="tab-wrap">
-        <button class="tab-btn active" onclick="bukaTab('topup')">💳 TOP UP SALDO</button>
-        <button class="tab-btn" onclick="bukaTab('daftar')">➕ DAFTAR LANGSUNG</button>
-        <button class="tab-btn" onclick="bukaTab('jaringan')">📋 JARINGAN</button>
+    <!-- FORM UBAH HARGA -->
+    <div id="formUbahHarga" class="kotak-edit-harga sembunyi">
+      <h4>✏️ UBAH HARGA</h4>
+      <p>Barang: <strong id="namaBarangUbah"></strong></p>
+      <input type="hidden" id="idBarangUbah">
+      <input type="number" id="modalBaru" placeholder="Harga Modal Baru">
+      <input type="number" id="jualBaru" placeholder="Harga Jual Baru">
+      <div style="display:flex; gap:8px;">
+        <button class="btn-hijau" style="flex:1;" onclick="simpanPerubahanHarga()">💾 SIMPAN</button>
+        <button class="btn-abu" style="flex:1;" onclick="batalUbahHarga()">❌ BATAL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAPORAN -->
+  <div id="pgLaporan" class="konten sembunyi">
+    <h3>📊 LAPORAN</h3>
+    <div class="kotak-rekap">
+      <div class="baris">
+        <span>Total Penjualan:</span>
+        <span id="totalJual">Rp 0</span>
+      </div>
+      <div class="baris">
+        <span>Total Untung:</span>
+        <span id="totalUntung">Rp 0</span>
+      </div>
+      <div class="baris">
+        <span>Total Hutang:</span>
+        <span id="totalLapHutang">Rp 0</span>
+      </div>
+      <div class="baris">
+        <span>Jumlah Transaksi:</span>
+        <span id="jumlahTransaksi">0</span>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; margin:12px 0;">
+      <button class="btn-biru" style="flex:1;" onclick="cadangkanData()">💾 CADANGKAN DATA</button>
+      <label class="btn-hijau" style="flex:1; text-align:center; display:block; padding:10px; box-sizing:border-box; border-radius:6px; cursor:pointer;">
+        📥 PULIHKAN DATA
+        <input type="file" accept=".json" onchange="pulihkanData(event)" style="display:none;">
+      </label>
     </div>
     
-    <div id="tab-topup" class="box">
-        <h2>💳 PERMINTAAN ISI SALDO ANGGOTA</h2>
-        <div id="daftar-permintaan-topup" style="font-size:14px;opacity:0.7;">Belum ada permintaan.</div>
+    <h4>📋 RIWAYAT</h4>
+    <div style="margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+      <label style="font-size:13px;"><input type="checkbox" id="pilihSemuaRiwayat" onchange="togglePilihSemua()"> Pilih Semua</label>
+      <button class="btn-merah btn-kecil" style="margin-left:auto; width:auto;" onclick="hapusTerpilihRiwayat()">🗑️ Hapus Terpilih</button>
     </div>
-    
-    <div id="tab-daftar" class="box hidden">
-        <h2>➕ TAMBAH ANGGOTA BARU (LANGSUNG)</h2>
-        <hr>
-        <label style="margin-top:15px;">Nama Anggota Baru:</label>
-        <input type="text" id="nama-baru-admin" placeholder="Masukkan nama...">
-        
-        <label style="margin-top:15px;">Nomor HP Anggota Baru:</label>
-        <input type="tel" id="hp-baru-admin" placeholder="Contoh: 08123456789">
-        
-        <label style="margin-top:15px;">Kode Akses:</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-            <input type="text" id="kode-akses-baru" placeholder="Contoh: 1B3K" style="flex:1;text-transform:uppercase;" readonly>
-            <button class="btn-kode" onclick="ambilKodeAkses()">🎟️ AMBIL KODE</button>
-        </div>
-        
-        <button class="btn-tambah" onclick="daftarkanAnggotaAdmin()">✅ DAFTARKAN</button>
-        <div id="pesan-aksi-admin" class="pesan-sukses"></div>
-        
-        <div class="kode-tersedia">
-            <strong>✅ Kode Tersedia:</strong>
-            <span id="jumlah-tersedia">200</span> kode tersisa
-        </div>
-        <div class="kode-terpakai">
-            <strong>❌ Kode Sudah Terpakai:</strong>
-            <span id="jumlah-terpakai">0</span> kode
-            <div id="daftar-terpakai" style="margin-top:5px;"></div>
-        </div>
+    <div id="daftarRiwayat">
+      <p style="text-align:center; color:#666;">Belum ada transaksi</p>
     </div>
-    
-    <div id="tab-jaringan" class="box hidden">
-        <h2>📋 DIAGRAM JARINGAN LENGKAP</h2>
-        <div id="tampilan-diagram-admin"></div>
-        
-        <h2 style="margin-top:25px;">📝 RIWAYAT TRANSAKSI</h2>
-        <div id="daftar-riwayat" style="font-size:14px;opacity:0.7;">Belum ada riwayat.</div>
-        
-        <div class="text-right" style="margin-top:15px;">
-            <button class="btn-reset" onclick="hapusSemuaData()">🗑️ Hapus Semua Data</button>
-        </div>
+  </div>
+
+  <!-- HUTANG -->
+  <div id="pgHutang" class="konten sembunyi">
+    <h3>💰 DAFTAR HUTANG</h3>
+    <div class="kotak-hutang">
+      <div class="baris">
+        <span>Total Piutang:</span>
+        <span id="totalHutang">Rp 0</span>
+      </div>
     </div>
+    <div id="daftarHutang">
+      <p style="text-align:center; color:#666;">Belum ada data hutang</p>
+    </div>
+  </div>
+
+  <!-- PENGATURAN NAMA USAHA -->
+  <div id="pgPengaturan" class="konten sembunyi">
+    <h3>⚙️ NAMA USAHA</h3>
+    <input type="text" id="inputNamaToko" placeholder="Masukkan Nama Usaha">
+    <button class="btn-hijau" onclick="simpanNamaToko()">💾 SIMPAN NAMA</button>
+  </div>
+
+  <!-- KELOLA PIN KASIR -->
+  <div id="pgKelolapin" class="konten sembunyi">
+    <h3>🔑 BUAT PIN KASIR</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:10px;">Buat PIN untuk karyawan/kasir.</p>
+    <input type="text" id="namaKasirBaru" placeholder="Nama Kasir">
+    <input type="text" id="pinKasirBaru" placeholder="PIN (4-6 angka)" maxlength="6">
+    <button class="btn-hijau" onclick="buatPinKasir()">✅ BUAT PIN</button>
     
-    <button class="btn-keluar" onclick="keluarSistem()">🚪 KELUAR</button>
+    <h4 style="margin-top:20px;">📋 DAFTAR PIN KASIR</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Kasir</th>
+          <th>PIN</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelPinKasirBody">
+        <tr><td colspan="4" style="text-align:center; color:#666;">Belum ada PIN kasir</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DAFTAR KODE AKSES — ADMIN SAJA -->
+  <div id="pgDaftarkode" class="konten sembunyi">
+    <h3>📋 DAFTAR KODE AKSES</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:10px;">Kode 4 karakter = Demo 72 jam | Kode 6 karakter = Versi Penuh Selamanya</p>
+    <input type="text" id="cariKodeFirebase" placeholder="🔍 Cari kode atau nomor HP..." oninput="filterKodeFirebase()">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Kode Akses</th>
+          <th>Tipe</th>
+          <th>Status</th>
+          <th>Nomor HP</th>
+          <th>Mulai Demo</th>
+          <th>Berakhir</th>
+        </tr>
+      </thead>
+      <tbody id="tabelKodeFirebaseBody">
+        <tr><td colspan="7" style="text-align:center; color:#666;">Memuat data...</td></tr>
+      </tbody>
+    </table>
+    
+    <div class="kotak-rekap" style="margin-top:15px;">
+      <h4>➕ BUAT KODE BARU</h4>
+      <input type="text" id="nomorWAKodeBaru" placeholder="Nomor WhatsApp Pengguna">
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn-kuning" style="flex:1;" onclick="buatKodeDemoBaru()">⏰ BUAT KODE DEMO</button>
+        <button class="btn-hijau" style="flex:1;" onclick="buatKodePenuhBaru()">♾️ BUAT KODE PENUH</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<div id="halaman-anggota" class="hidden">
-    <h1>🌐 JARINGAN SAYA</h1>
-    <span class="member-badge" id="nama-saya-tampil">👤 ANGGOTA</span>
-    
-    <div class="dompet-utama">
-        <h3 style="margin-top:0;">💳 DOMPET UTAMA</h3>
-        <div class="total-utama" id="saldo-utama-saya">Rp 0</div>
-    </div>
-    
-    <div class="dompet-bonus">
-        <h3 style="margin-top:0;">🎁 DOMPET BONUS</h3>
-        <div class="saldo-row">
-            <div class="saldo-col">
-                <div class="saldo-label">💰 Bonus Sponsor</div>
-                <div class="saldo-nilai" style="color:#4ade80;" id="uang-sponsor-saya">Rp 0</div>
-                <button class="btn-pindah" onclick="pindahKeUtamaAnggota('sponsor')">➡️ Pindah ke Utama</button>
-            </div>
-            <div class="saldo-col">
-                <div class="saldo-label">🎁 Bonus Jaringan</div>
-                <div class="saldo-nilai" style="color:#22d3ee;" id="uang-jaringan-saya">Rp 0</div>
-                <button class="btn-pindah" onclick="pindahKeUtamaAnggota('jaringan')">➡️ Pindah ke Utama</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="box">
-        <h2>💳 ISI SALDO DOMPET UTAMA</h2>
-        <button class="btn-topup" onclick="bukaFormTopUp()">💰 PERMINTAAN ISI SALDO</button>
-        
-        <div id="form-topup-anggota" class="hidden" style="margin-top:15px;">
-            <div class="info-rekening">
-                <strong>🏦 Silakan Transfer Ke Rekening QMC Teknologi:</strong><br><br>
-                Sea Bank: <strong>9011 9546 5653</strong><br>
-                a/n: <strong>M Amin</strong><br><br>
-                Setelah transfer, silakan konfirmasi ke WA Admin:<br>
-                <a href="https://wa.me/6281385067500" target="_blank" class="link-wa">📱 0813 8506 7500</a>
-            </div>
-            
-            <label style="margin-top:15px;">Masukkan Jumlah Isi Saldo (Rp):</label>
-            <input type="number" id="jumlah-topup-saya" placeholder="Contoh: 500000" min="10000">
-            
-            <button class="btn-tambah" onclick="kirimPermintaanTopUp()" style="margin-top:10px;">📤 KIRIM PERMINTAAN KE ADMIN</button>
-            <div id="pesan-topup-saya" class="pesan-sukses"></div>
-        </div>
-    </div>
-    
-    <div class="box">
-        <h2>➕ DAFTARKAN MEMBER BARU</h2>
-        <hr>
-        <div id="info-saldo-anggota"></div>
-        
-        <label>Pilih Slot Kosong di Bawah Anda:</label>
-        <select id="pilih-slot-saya">
-            <option value="">— Pilih Slot —</option>
-        </select>
-        
-        <label style="margin-top:15px;">Nama Member Baru:</label>
-        <input type="text" id="nama-baru-saya" placeholder="Masukkan nama...">
-        
-        <label style="margin-top:15px;">Nomor HP Member Baru:</label>
-        <input type="tel" id="hp-baru-saya" placeholder="Contoh: 08123456789">
-        
-        <button class="btn-daftar-langsung" onclick="daftarkanMemberLangsung()">✅ DAFTARKAN SEKARANG</button>
-        <div id="pesan-aksi-saya" class="pesan-sukses"></div>
-    </div>
-    
-    <div class="box">
-        <h2>📋 JARINGAN DI BAWAH SAYA</h2>
-        <div id="tampilan-diagram-saya"></div>
-    </div>
-    
-    <button class="btn-keluar" onclick="keluarSistem()">🚪 KELUAR</button>
-</div>
+<div class="kaki-halaman" id="footerVersi">⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan</div>
 
 <script>
-const KODE_OWNER = 'qwerty';
-const BIAYA_DAFTAR_MEMBER = 250000;
-const BONUS_SPONSOR = 50000;
-const BONUS_JARINGAN = 10000;
-const MAKSIMAL_LEVEL = 7;
-const NO_REKENING = '9011 9546 5653';
-const AN_REKENING = 'M Amin';
-const BANK_REKENING = 'Sea Bank';
-const WA_ADMIN = '6281385067500';
-
-function buatDaftarKode() {
-    const angka = '123456789';
-    const huruf = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-    const daftar = new Set();
-    while(daftar.size < 200) {
-        const a1 = angka[Math.floor(Math.random() * angka.length)];
-        const h1 = huruf[Math.floor(Math.random() * huruf.length)];
-        const a2 = angka[Math.floor(Math.random() * angka.length)];
-        const h2 = huruf[Math.floor(Math.random() * huruf.length)];
-        daftar.add(a1 + h1 + a2 + h2);
-    }
-    return Array.from(daftar);
-}
-
-let daftarKodeAksesTersedia = [];
-let daftarKodeAksesTerpakai = [];
-let dataJaringan = { 
-    nama: '👑 OWNER', 
-    kodeAkses: null, 
-    saldoUtama: 0,
-    sponsor: 0, 
-    jaringan: 0, 
-    anak: [null, null, null, null, null] 
+// === KONFIGURASI FIREBASE ===
+const firebaseConfig = {
+  apiKey: "AIzaSyC9t8H-REPLt8HxY2ZpVhXzL0bYdQeRfK8M",
+  authDomain: "willyatmaja4-crypto.firebaseapp.com",
+  projectId: "willyatmaja4-crypto",
+  storageBucket: "willyatmaja4-crypto.appspot.com",
+  messagingSenderId: "1023456789012",
+  appId: "1:1023456789012:web:abc123def456ghi789jkl01"
 };
-let daftarRiwayat = [];
-let daftarPermintaanTopUp = [];
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// === KONSTAN ===
+const KODE_ADMIN = "qwerty";
+const BATAS_DEMO_JAM = 72;
+
+// === DATA LOKAL ===
 let penggunaSaatIni = null;
-let kodeSementara = null;
+let daftarPinKasir = [];
+let daftarBarang = [];
+let keranjang = [];
+let riwayat = [];
+let daftarHutang = [];
+let namaToko = "KHUSUS DEMO";
 
-function formatUang(angka) {
-    return 'Rp ' + Number(angka).toLocaleString('id-ID');
-}
-
-function simpanData() {
-    const paket = {
-        jaringan: dataJaringan,
-        riwayat: daftarRiwayat,
-        kodeTersedia: daftarKodeAksesTersedia,
-        kodeTerpakai: daftarKodeAksesTerpakai,
-        permintaanTopUp: daftarPermintaanTopUp
-    };
-    localStorage.setItem('dataJaringanMLM', JSON.stringify(paket));
-}
-
-function muatData() {
-    try {
-        const ada = localStorage.getItem('dataJaringanMLM');
-        if (ada) {
-            const d = JSON.parse(ada);
-            if (d.jaringan && d.jaringan.nama) {
-                if (!d.jaringan.saldoUtama) d.jaringan.saldoUtama = 0;
-                dataJaringan = d.jaringan;
-            }
-            if (Array.isArray(d.riwayat)) daftarRiwayat = d.riwayat;
-            if (Array.isArray(d.permintaanTopUp)) daftarPermintaanTopUp = d.permintaanTopUp;
-            if (Array.isArray(d.kodeTersedia) && d.kodeTersedia.length > 0) {
-                daftarKodeAksesTersedia = d.kodeTersedia;
-            } else {
-                daftarKodeAksesTersedia = buatDaftarKode();
-            }
-            if (Array.isArray(d.kodeTerpakai)) daftarKodeAksesTerpakai = d.kodeTerpakai;
-        } else {
-            daftarKodeAksesTersedia = buatDaftarKode();
-            daftarKodeAksesTerpakai = [];
-            daftarPermintaanTopUp = [];
-        }
-    } catch (e) {
-        daftarKodeAksesTersedia = buatDaftarKode();
-        daftarKodeAksesTerpakai = [];
-        daftarPermintaanTopUp = [];
+// === FUNGSI BUAT KODE FORMAT ===
+function buatKodeFormat(panjang){
+  const angka = '0123456789';
+  const huruf = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let kode = '';
+  for(let i=0; i<panjang; i++){
+    if(i % 2 === 0){
+      kode += angka.charAt(Math.floor(Math.random() * angka.length));
+    }else{
+      kode += huruf.charAt(Math.floor(Math.random() * huruf.length));
     }
-    perbaruiTampilanKode();
+  }
+  return kode;
 }
 
-function perbaruiTampilanKode() {
-    const elTersedia = document.getElementById('jumlah-tersedia');
-    const elTerpakai = document.getElementById('jumlah-terpakai');
-    const elDaftarTerpakai = document.getElementById('daftar-terpakai');
-    if (elTersedia) elTersedia.textContent = daftarKodeAksesTersedia.length;
-    if (elTerpakai) elTerpakai.textContent = daftarKodeAksesTerpakai.length;
-    if (elDaftarTerpakai) elDaftarTerpakai.textContent = daftarKodeAksesTerpakai.join(', ');
+function buatKodeDemo(){
+  return buatKodeFormat(4);
 }
 
-function ambilKodeAkses() {
-    if (daftarKodeAksesTersedia.length === 0) {
-        alert('❌ Maaf, semua kode akses sudah terpakai!');
-        return;
-    }
-    kodeSementara = daftarKodeAksesTersedia[daftarKodeAksesTersedia.length - 1];
-    document.getElementById('kode-akses-baru').value = kodeSementara;
+function buatKodePenuh(){
+  return buatKodeFormat(6);
 }
 
-function tandaiKodeTerpakai(kode) {
-    daftarKodeAksesTerpakai.push(kode.toUpperCase());
-    perbaruiTampilanKode();
-    simpanData();
+function tentukanTipeKode(kode){
+  if(kode.length === 4) return 'demo';
+  if(kode.length === 6) return 'penuh';
+  return 'lainnya';
 }
 
-function bukaTab(namaTab) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('tab-topup').classList.add('hidden');
-    document.getElementById('tab-daftar').classList.add('hidden');
-    document.getElementById('tab-jaringan').classList.add('hidden');
-    document.getElementById('tab-' + namaTab).classList.remove('hidden');
-    if (namaTab === 'topup') perbaruiTampilanPermintaanTopUp();
-    if (namaTab === 'jaringan') perbaruiTampilanAdmin();
+// === FUNGSI NAVIGASI HALAMAN LOGIN ===
+function tampilMintaKode(){
+  document.getElementById('pilihanUtama').classList.add('sembunyi');
+  document.getElementById('formMintaKode').classList.remove('sembunyi');
+  sembunyikanPesan();
 }
 
-function tambahSaldoManual() {
-    const jumlah = parseInt(document.getElementById('input-modal-awal').value);
-    if (!jumlah || jumlah <= 0) {
-        alert('❌ Masukkan jumlah yang benar!');
-        return;
-    }
-    dataJaringan.saldoUtama += jumlah;
+function tampilMasukKode(){
+  document.getElementById('pilihanUtama').classList.add('sembunyi');
+  document.getElementById('formMasukKode').classList.remove('sembunyi');
+  sembunyikanPesan();
+}
+
+function tampilLoginAdmin(){
+  document.getElementById('pilihanUtama').classList.add('sembunyi');
+  document.getElementById('formLoginAdmin').classList.remove('sembunyi');
+  sembunyikanPesan();
+}
+
+function kembaliKePilihan(){
+  document.getElementById('formMintaKode').classList.add('sembunyi');
+  document.getElementById('formMasukKode').classList.add('sembunyi');
+  document.getElementById('formLoginAdmin').classList.add('sembunyi');
+  document.getElementById('pilihanUtama').classList.remove('sembunyi');
+  sembunyikanPesan();
+}
+
+function sembunyikanPesan(){
+  ['pesanMinta','pesanSalah','pesanAdmin'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.classList.add('sembunyi'); el.textContent = ''; }
+  });
+}
+
+function tampilPesan(elId, teks, isError=true){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.classList.remove('sembunyi');
+  el.textContent = teks;
+  el.style.color = isError ? '#e74c3c' : '#2e7d32';
+}
+
+// === BUAT KODE DEMO DARI FORM MINTA ===
+async function buatDanKirimKode(){
+  const nomorWA = document.getElementById('nomorWAPeminta').value.trim();
+  const elPesan = document.getElementById('pesanMinta');
+  
+  if(!nomorWA || nomorWA.length < 10){
+    tampilPesan('pesanMinta', '❌ Masukkan nomor WhatsApp yang benar!');
+    return;
+  }
+  
+  try{
+    let kodeAkses;
+    let kodeAda = true;
+    let percobaan = 0;
     
-    daftarRiwayat.unshift({
-        teks: `💳 Penambahan Modal Manual: +${formatUang(jumlah)}`,
-        rincian: ['Ditambahkan oleh Owner'],
-        waktu: new Date().toLocaleString('id-ID')
+    while(kodeAda && percobaan < 10){
+      kodeAkses = buatKodeDemo();
+      const cek = await db.collection('kode_akses').doc(kodeAkses).get();
+      kodeAda = cek.exists;
+      percobaan++;
+    }
+    
+    if(kodeAda){
+      tampilPesan('pesanMinta', '⚠️ Silakan coba lagi sebentar.', true);
+      return;
+    }
+    
+    await db.collection('kode_akses').doc(kodeAkses).set({
+      nomorWA: nomorWA,
+      tipe: 'demo',
+      terpakai: false,
+      dibuatPada: new Date().toISOString(),
+      waktuMasukPertama: null,
+      demoBerakhirPada: null,
+      demoSelesai: false
     });
     
-    document.getElementById('input-modal-awal').value = '';
-    simpanData();
-    perbaruiTampilanAdmin();
-    alert(`✅ Berhasil! Saldo utama bertambah: ${formatUang(jumlah)}`);
+    tampilPesan('pesanMinta', '✅ Kode Demo Anda: ' + kodeAkses + '\\n\\nMasa berlaku 72 jam sejak pertama digunakan.', false);
+    document.getElementById('nomorWAPeminta').value = '';
+    
+  }catch(error){
+    console.error('Error:', error);
+    tampilPesan('pesanMinta', '❌ Gagal membuat kode. Cek koneksi Firebase Anda.', true);
+  }
 }
 
-function pindahKeUtama(jenis) {
-    if (jenis === 'sponsor') {
-        if (dataJaringan.sponsor <= 0) { alert('❌ Tidak ada bonus sponsor untuk dipindahkan!'); return; }
-        dataJaringan.saldoUtama += dataJaringan.sponsor;
-        daftarRiwayat.unshift({
-            teks: '💰 Pindah Bonus Sponsor ke Dompet Utama',
-            rincian: ['+' + formatUang(dataJaringan.sponsor)],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        dataJaringan.sponsor = 0;
-    } else {
-        if (dataJaringan.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
-        dataJaringan.saldoUtama += dataJaringan.jaringan;
-        daftarRiwayat.unshift({
-            teks: '🎁 Pindah Bonus Jaringan ke Dompet Utama',
-            rincian: ['+' + formatUang(dataJaringan.jaringan)],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        dataJaringan.jaringan = 0;
+// === ADMIN BUAT KODE DEMO ===
+async function buatKodeDemoBaru(){
+  const nomorWA = document.getElementById('nomorWAKodeBaru').value.trim() || '-';
+  
+  try{
+    let kodeAkses;
+    let kodeAda = true;
+    let percobaan = 0;
+    while(kodeAda && percobaan < 10){
+      kodeAkses = buatKodeDemo();
+      const cek = await db.collection('kode_akses').doc(kodeAkses).get();
+      kodeAda = cek.exists;
+      percobaan++;
     }
-    simpanData();
-    perbaruiTampilanAdmin();
-    alert('✅ Berhasil dipindahkan ke Dompet Utama!');
-}
-
-function bukaFormTopUp() {
-    document.getElementById('form-topup-anggota').classList.toggle('hidden');
-}
-
-function kirimPermintaanTopUp() {
-    const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
-    if (!nodeSaya) return;
+    if(kodeAda){ alert('⚠️ Coba lagi sebentar.'); return; }
     
-    const jumlah = parseInt(document.getElementById('jumlah-topup-saya').value);
-    const pesan = document.getElementById('pesan-topup-saya');
-    pesan.innerHTML = '';
-    
-    if (!jumlah || jumlah < 10000) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan jumlah yang benar! Minimal Rp 10.000</span>';
-        return;
-    }
-    
-    daftarPermintaanTopUp.unshift({
-        id: Date.now(),
-        pemohonKode: nodeSaya.kodeAkses,
-        pemohonNama: nodeSaya.nama,
-        jumlah: jumlah,
-        waktu: new Date().toLocaleString('id-ID'),
-        status: 'PENDING'
+    await db.collection('kode_akses').doc(kodeAkses).set({
+      nomorWA: nomorWA,
+      tipe: 'demo',
+      terpakai: false,
+      dibuatPada: new Date().toISOString(),
+      waktuMasukPertama: null,
+      demoBerakhirPada: null,
+      demoSelesai: false
     });
     
-    simpanData();
-    document.getElementById('jumlah-topup-saya').value = '';
-    pesan.innerHTML = `<span style="color:#4ade80;">✅ Permintaan terkirim ke Admin!\nSilakan transfer ke Sea Bank: 9011 9546 5653 a/n M Amin, lalu konfirmasi ke WA Admin: 0813 8506 7500</span>`;
+    alert('✅ KODE DEMO DIBUAT:\\n' + kodeAkses + '\\n\\nMasa berlaku: 72 jam sejak pertama masuk.');
+    document.getElementById('nomorWAKodeBaru').value = '';
+    tampilDaftarKodeFirebase();
+    
+  }catch(error){
+    alert('❌ Gagal membuat kode: ' + error.message);
+  }
 }
 
-function perbaruiTampilanPermintaanTopUp() {
-    const kotak = document.getElementById('daftar-permintaan-topup');
-    if (daftarPermintaanTopUp.length === 0) {
-        kotak.innerHTML = 'Belum ada permintaan top up saldo.';
-        return;
+// === ADMIN BUAT KODE PENUH ===
+async function buatKodePenuhBaru(){
+  const nomorWA = document.getElementById('nomorWAKodeBaru').value.trim() || '-';
+  
+  try{
+    let kodeAkses;
+    let kodeAda = true;
+    let percobaan = 0;
+    while(kodeAda && percobaan < 10){
+      kodeAkses = buatKodePenuh();
+      const cek = await db.collection('kode_akses').doc(kodeAkses).get();
+      kodeAda = cek.exists;
+      percobaan++;
     }
-    kotak.innerHTML = '';
-    daftarPermintaanTopUp.forEach((p, idx) => {
-        if (p.status !== 'PENDING') return;
-        kotak.innerHTML += `
-            <div class="permintaan-topup-item">
-                <strong>${p.pemohonNama}</strong> [${p.pemohonKode}] meminta isi saldo:<br>
-                💰 Jumlah: <strong style="color:#4ade80;font-size:16px;">${formatUang(p.jumlah)}</strong><br>
-                <span class="tanggal-riwayat">${p.waktu}</span>
-                <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-                    <button class="btn-setuju" onclick="prosesTopUp(${idx}, true)">✅ KONFIRMASI & MASUKKAN</button>
-                    <button class="btn-tolak" onclick="prosesTopUp(${idx}, false)">❌ TOLAK</button>
-                </div>
-            </div>`;
-    });
-    if (kotak.innerHTML === '') kotak.innerHTML = 'Tidak ada permintaan top up baru.';
-}
-
-function prosesTopUp(indeks, disetujui) {
-    const p = daftarPermintaanTopUp[indeks];
-    const nodeAnggota = cariNodeBerdasarkanKode(dataJaringan, p.pemohonKode);
+    if(kodeAda){ alert('⚠️ Coba lagi sebentar.'); return; }
     
-    if (!nodeAnggota) {
-        alert('❌ Anggota tidak ditemukan!');
-        return;
-    }
-    
-    if (disetujui) {
-        if ((dataJaringan.saldoUtama || 0) < p.jumlah) {
-            alert(`❌ Saldo Admin tidak cukup!\nSaldo Admin: ${formatUang(dataJaringan.saldoUtama || 0)}\nDiperlukan: ${formatUang(p.jumlah)}`);
-            return;
-        }
-        
-        dataJaringan.saldoUtama -= p.jumlah;
-        
-        if (!nodeAnggota.saldoUtama) nodeAnggota.saldoUtama = 0;
-        nodeAnggota.saldoUtama += p.jumlah;
-        p.status = 'DISETUJUI';
-        
-        daftarRiwayat.unshift({
-            teks: `💳 Top Up Saldo: ${p.pemohonNama} +${formatUang(p.jumlah)}`,
-            rincian: [
-                `Dari saldo Admin: -${formatUang(p.jumlah)}`,
-                `Ditambahkan ke: ${p.pemohonNama}`
-            ],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        
-        alert(`✅ Berhasil!\nSaldo Admin berkurang: ${formatUang(p.jumlah)}\nSaldo ${p.pemohonNama} bertambah: ${formatUang(p.jumlah)}`);
-    } else {
-        p.status = 'DITOLAK';
-        alert('❌ Permintaan ditolak.');
-    }
-    
-    simpanData();
-    perbaruiTampilanPermintaanTopUp();
-    perbaruiTampilanAdmin();
-}
-
-function cariUpline(dariNode, targetNode, induk = null) {
-    if (!dariNode) return null;
-    if (dariNode === targetNode) return induk;
-    if (dariNode.anak) {
-        for (let i = 0; i < 5; i++) {
-            if (dariNode.anak[i]) {
-                const hasil = cariUpline(dariNode.anak[i], targetNode, dariNode);
-                if (hasil) return hasil;
-            }
-        }
-    }
-    return null;
-}
-
-function berikanBonusSponsorDanJaringan(pendaftarNode, nodeAnggotaBaru, rincian) {
-    // Bonus Sponsor langsung masuk ke pendaftar
-    pendaftarNode.sponsor += BONUS_SPONSOR;
-    rincian.push(`💰 Bonus Sponsor: ${pendaftarNode.nama} +${formatUang(BONUS_SPONSOR)}`);
-    
-    // Bonus Jaringan ke upline sampai level 7
-    berikanBonusJaringanKeUpline(pendaftarNode, rincian, 1);
-}
-
-function berikanBonusJaringanKeUpline(dariNode, rincian, levelSaatIni) {
-    if (!dariNode || levelSaatIni > MAKSIMAL_LEVEL) return;
-    const upline = cariUpline(dataJaringan, dariNode);
-    if (upline) {
-        upline.jaringan += BONUS_JARINGAN;
-        rincian.push(`🎁 Bonus Jaringan Level ${levelSaatIni}: ${upline.nama} +${formatUang(BONUS_JARINGAN)}`);
-        berikanBonusJaringanKeUpline(upline, rincian, levelSaatIni + 1);
-    }
-}
-
-function cariNodeBerdasarkanKode(node, kodeYangDicari) {
-    if (!node) return null;
-    if (node.kodeAkses === kodeYangDicari) return node;
-    if (node.anak) {
-        for (let i = 0; i < 5; i++) {
-            if (node.anak[i]) {
-                const hasil = cariNodeBerdasarkanKode(node.anak[i], kodeYangDicari);
-                if (hasil) return hasil;
-            }
-        }
-    }
-    return null;
-}
-
-function gambarTingkat(node, level, isAdmin = false, kodeSaya = null) {
-    if (!node || !node.nama || !node.anak) return '';
-    let html = '';
-    html += `<div class="level-label">⬇️ LEVEL ${level} — ${node.nama}</div>`;
-    html += `<div class="tree-row">`;
-    for (let i = 0; i < 5; i++) {
-        const anggota = node.anak[i];
-        if (anggota && anggota.nama) {
-            const kelasSaya = kodeSaya && anggota.kodeAkses === kodeSaya ? 'me' : '';
-            const tampilkanKode = isAdmin || (kodeSaya && anggota.kodeAkses === kodeSaya);
-            const tampilKode = tampilkanKode 
-                ? `🔑 ${anggota.kodeAkses}` 
-                : `<span class="kode-disembunyikan">🔑 Rahasia</span>`;
-            
-            html += `
-                <div class="member-card ${level === 0 ? 'owner' : ''} ${kelasSaya}">
-                    <div class="member-name">${anggota.nama}</div>
-                    <div class="member-info">
-                        ${tampilKode}<br>
-                        💳 Utama: ${formatUang(anggota.saldoUtama || 0)}<br>
-                        💰 Sponsor: ${formatUang(anggota.sponsor)}<br>
-                        🎁 Jaringan: ${formatUang(anggota.jaringan)}
-                    </div>
-                </div>`;
-        } else {
-            html += `<div class="empty-slot">SLOT ${i+1}<br><em>Kosong</em></div>`;
-        }
-    }
-    html += `</div>`;
-    for (let i = 0; i < 5; i++) {
-        if (node.anak[i] && node.anak[i].nama) {
-            const adaAnak = node.anak[i].anak.some(a => a !== null);
-            if (adaAnak) {
-                html += `<div style="text-align:center;margin:5px 0;">⬇</div>`;
-                html += gambarTingkat(node.anak[i], level + 1, isAdmin, kodeSaya);
-            }
-        }
-    }
-    return html;
-}
-
-function perbaruiTampilanAdmin() {
-    document.getElementById('saldo-utama-admin').textContent = formatUang(dataJaringan.saldoUtama || 0);
-    document.getElementById('uang-sponsor').textContent = formatUang(dataJaringan.sponsor);
-    document.getElementById('uang-jaringan').textContent = formatUang(dataJaringan.jaringan);
-    
-    const kotakRiwayat = document.getElementById('daftar-riwayat');
-    if (daftarRiwayat.length === 0) {
-        kotakRiwayat.innerHTML = 'Belum ada riwayat.';
-    } else {
-        kotakRiwayat.innerHTML = '';
-        daftarRiwayat.forEach(item => {
-            const rincian = Array.isArray(item.rincian) ? item.rincian.join('<br>') : item.rincian;
-            kotakRiwayat.innerHTML += `
-                <div class="riwayat-item">
-                    ✅ ${item.teks}<br>
-                    ${rincian}
-                    <span class="tanggal-riwayat">${item.waktu}</span>
-                </div>`;
-        });
-    }
-    
-    document.getElementById('tampilan-diagram-admin').innerHTML = gambarTingkat(dataJaringan, 0, true);
-    perbaruiTampilanKode();
-}
-
-function daftarkanAnggotaAdmin() {
-    const namaBaru = document.getElementById('nama-baru-admin').value.trim();
-    const hpBaru = document.getElementById('hp-baru-admin').value.trim();
-    const kodeAkses = document.getElementById('kode-akses-baru').value.trim();
-    const kotakPesan = document.getElementById('pesan-aksi-admin');
-    kotakPesan.innerHTML = '';
-    
-    if (!namaBaru) {
-        kotakPesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan nama anggota baru!</span>';
-        return;
-    }
-    if (!hpBaru) {
-        kotakPesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan nomor HP anggota baru!</span>';
-        return;
-    }
-    if (!kodeAkses) {
-        kotakPesan.innerHTML = '<span style="color:#f87171;">❌ Ambil kode akses terlebih dahulu!</span>';
-        return;
-    }
-    
-    let posisiSlot = -1;
-    for (let i = 0; i < 5; i++) {
-        if (!dataJaringan.anak[i]) {
-            posisiSlot = i;
-            break;
-        }
-    }
-    
-    if (posisiSlot === -1) {
-        kotakPesan.innerHTML = '<span style="color:#f87171;">❌ Semua slot di bawah Owner sudah penuh!</span>';
-        return;
-    }
-    
-    const anggotaBaru = {
-        nama: namaBaru.toUpperCase(),
-        kodeAkses: kodeAkses.toUpperCase(),
-        saldoUtama: 0,
-        sponsor: 0,
-        jaringan: 0,
-        anak: [null, null, null, null, null]
-    };
-    
-    dataJaringan.anak[posisiSlot] = anggotaBaru;
-    
-    daftarKodeAksesTersedia = daftarKodeAksesTersedia.filter(k => k !== kodeAkses.toUpperCase());
-    tandaiKodeTerpakai(kodeAkses.toUpperCase());
-    
-    // Owner juga dapat bonus saat mendaftarkan member
-    const rincianBonus = [];
-    dataJaringan.sponsor += BONUS_SPONSOR;
-    rincianBonus.push(`💰 Bonus Sponsor: OWNER +${formatUang(BONUS_SPONSOR)}`);
-    rincianBonus.push(`🎁 Tidak ada upliine di atas Owner`);
-    
-    const nomorWA = hpBaru.replace(/\D/g,'').replace(/^0/, '62');
-    const pesanWA = encodeURIComponent(
-        `Halo ${namaBaru.toUpperCase()}! 🎉\n` +
-        `Selamat anda telah terdaftar di QMC TEKNOLOGI.\n\n` +
-        `Kode akses anda: ${kodeAkses.toUpperCase()}\n\n` +
-        `⚠️ PENTING: JANGAN BERITAHUKAN KODE AKSES INI KEPADA SIAPAPUN!\n` +
-        `Simpan dengan baik dan rahasia. Terima kasih telah bergabung!`
-    );
-    const linkWA = `https://wa.me/${nomorWA}?text=${pesanWA}`;
-    
-    daftarRiwayat.unshift({
-        teks: `${namaBaru.toUpperCase()} [${kodeAkses.toUpperCase()}] didaftarkan oleh Owner`,
-        rincian: [
-            ...rincianBonus,
-            `📱 Kode dikirim ke: ${hpBaru}`
-        ],
-        waktu: new Date().toLocaleString('id-ID')
+    await db.collection('kode_akses').doc(kodeAkses).set({
+      nomorWA: nomorWA,
+      tipe: 'penuh',
+      terpakai: false,
+      dibuatPada: new Date().toISOString()
     });
     
-    simpanData();
+    alert('✅ KODE PENUH DIBUAT:\\n' + kodeAkses + '\\n\\nTanpa batas waktu — selamanya berlaku!');
+    document.getElementById('nomorWAKodeBaru').value = '';
+    tampilDaftarKodeFirebase();
     
-    document.getElementById('nama-baru-admin').value = '';
-    document.getElementById('hp-baru-admin').value = '';
-    document.getElementById('kode-akses-baru').value = '';
-    
-    perbaruiTampilanAdmin();
-    
-    kotakPesan.innerHTML = `
-        <span style="color:#4ade80;">
-            ✅ Berhasil! ${namaBaru.toUpperCase()} telah terdaftar!<br>
-            ${rincianBonus.join('<br>')}<br><br>
-            <a href="${linkWA}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:bold;">📱 Klik di sini untuk kirim kode via WhatsApp</a>
-            <div class="peringatan-kode" style="margin-top:10px;">
-                ⚠️ Ingatkan anggota: JANGAN BERITAHUKAN kode akses kepada siapapun!
-            </div>
-        </span>`;
+  }catch(error){
+    alert('❌ Gagal membuat kode: ' + error.message);
+  }
 }
 
-function daftarkanMemberLangsung() {
-    const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
-    if (!nodeSaya) return;
+// === CEK KODE SAAT LOGIN ===
+async function cekKode(){
+  const input = document.getElementById('kodeAkses').value.trim().toUpperCase();
+  
+  if(!input){
+    tampilPesan('pesanSalah', '❌ Masukkan kode akses!');
+    return;
+  }
+  
+  const tipeKode = tentukanTipeKode(input);
+  
+  try{
+    const doc = await db.collection('kode_akses').doc(input).get();
     
-    const saldoSaya = nodeSaya.saldoUtama || 0;
-    const slot = document.getElementById('pilih-slot-saya').value;
-    const nama = document.getElementById('nama-baru-saya').value.trim();
-    const hp = document.getElementById('hp-baru-saya').value.trim();
-    const pesan = document.getElementById('pesan-aksi-saya');
-    pesan.innerHTML = '';
-    
-    if (saldoSaya < BIAYA_DAFTAR_MEMBER) {
-        pesan.innerHTML = `<span style="color:#f87171;">❌ Saldo utama tidak mencukupi! Diperlukan ${formatUang(BIAYA_DAFTAR_MEMBER)}. Saldo anda: ${formatUang(saldoSaya)}</span>`;
-        return;
-    }
-    if (slot === '') {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Pilih slot terlebih dahulu!</span>';
-        return;
-    }
-    if (!nama) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan nama member baru!</span>';
-        return;
-    }
-    if (!hp) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan nomor HP member baru!</span>';
-        return;
-    }
-    if (daftarKodeAksesTersedia.length === 0) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Semua kode akses sudah terpakai! Hubungi Admin.</span>';
-        return;
+    if(!doc.exists){
+      tampilPesan('pesanSalah', '❌ Kode akses tidak ditemukan!');
+      return;
     }
     
-    const kodeBaru = daftarKodeAksesTersedia[daftarKodeAksesTersedia.length - 1];
+    const data = doc.data();
     
-    nodeSaya.saldoUtama -= BIAYA_DAFTAR_MEMBER;
+    // === KODE PENUH (6 karakter) ===
+    if(tipeKode === 'penuh'){
+      penggunaSaatIni = { tipe:'penuh', kode:input, nama:'PENGGUNA PENUH' };
+      alert('✅ Selamat datang! Versi Penuh — tanpa batas waktu.');
+      masukBerhasil('penuh');
+      return;
+    }
     
-    const anggotaBaru = {
-        nama: nama.toUpperCase(),
-        kodeAkses: kodeBaru.toUpperCase(),
-        saldoUtama: 0,
-        sponsor: 0,
-        jaringan: 0,
-        anak: [null, null, null, null, null]
-    };
+    // === KODE DEMO (4 karakter) ===
+    if(data.demoSelesai){
+      tampilPesan('pesanSalah', '⏰ Masa demo sudah habis. Hubungi admin untuk kode penuh.');
+      return;
+    }
     
-    nodeSaya.anak[parseInt(slot)] = anggotaBaru;
+    const sekarang = new Date();
     
-    const rincianBonus = [];
-    berikanBonusSponsorDanJaringan(nodeSaya, anggotaBaru, rincianBonus);
-    
-    daftarKodeAksesTersedia.pop();
-    tandaiKodeTerpakai(kodeBaru.toUpperCase());
-    
-    const nomorWA = hp.replace(/\D/g,'').replace(/^0/, '62');
-    const pesanWA = encodeURIComponent(
-        `Halo ${nama.toUpperCase()}! 🎉\n` +
-        `Selamat anda telah terdaftar di QMC TEKNOLOGI.\n\n` +
-        `Kode akses anda: ${kodeBaru.toUpperCase()}\n\n` +
-        `⚠️ PENTING: JANGAN BERITAHUKAN KODE AKSES INI KEPADA SIAPAPUN!\n` +
-        `Simpan dengan baik dan rahasia. Terima kasih telah bergabung!`
-    );
-    const linkWA = `https://wa.me/${nomorWA}?text=${pesanWA}`;
-    
-    daftarRiwayat.unshift({
-        teks: `${nama.toUpperCase()} [${kodeBaru.toUpperCase()}] didaftarkan oleh ${nodeSaya.nama}`,
-        rincian: [
-            `💳 Potong Dompet Utama ${nodeSaya.nama}: ${formatUang(BIAYA_DAFTAR_MEMBER)}`,
-            ...rincianBonus,
-            `📱 Kode dikirim ke: ${hp}`
-        ],
-        waktu: new Date().toLocaleString('id-ID')
-    });
-    
-    simpanData();
-    
-    document.getElementById('nama-baru-saya').value = '';
-    document.getElementById('hp-baru-saya').value = '';
-    document.getElementById('pilih-slot-saya').value = '';
-    
-    muatHalamanAnggota(nodeSaya);
-    
-    pesan.innerHTML = `
-        <span style="color:#4ade80;">
-            ✅ Berhasil! ${nama.toUpperCase()} telah terdaftar!<br>
-            💳 Dompet Utama dipotong: ${formatUang(BIAYA_DAFTAR_MEMBER)}<br>
-            ${rincianBonus.join('<br>')}<br><br>
-            <a href="${linkWA}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:bold;">📱 Klik di sini untuk kirim kode via WhatsApp</a>
-            <div class="peringatan-kode" style="margin-top:8px;">
-                ⚠️ Ingatkan member: JANGAN BERITAHUKAN kode akses kepada siapapun!
-            </div>
-        </span>`;
-}
-
-function pindahKeUtamaAnggota(jenis) {
-    const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
-    if (!nodeSaya) return;
-    
-    if (jenis === 'sponsor') {
-        if (nodeSaya.sponsor <= 0) { alert('❌ Tidak ada bonus sponsor untuk dipindahkan!'); return; }
-        nodeSaya.saldoUtama += nodeSaya.sponsor;
-        daftarRiwayat.unshift({
-            teks: `💰 ${nodeSaya.nama}: Pindah Bonus Sponsor ke Dompet Utama`,
-            rincian: ['+' + formatUang(nodeSaya.sponsor)],
-            waktu: new Date().toLocaleString('id-ID')
+    if(!data.waktuMasukPertama){
+      // Pertama kali masuk — catat waktu mulai demo
+      const mulai = sekarang.toISOString();
+      const akhir = new Date(sekarang.getTime() + (BATAS_DEMO_JAM * 60 * 60 * 1000)).toISOString();
+      
+      await db.collection('kode_akses').doc(input).update({
+        terpakai: true,
+        waktuMasukPertama: mulai,
+        demoBerakhirPada: akhir
+      });
+      
+      penggunaSaatIni = { tipe:'demo', kode:input, nama:'PENGGUNA DEMO' };
+      alert('✅ Selamat datang! Demo berlaku 72 jam sejak saat ini.');
+      masukBerhasil('demo');
+      
+    }else{
+      // Cek apakah waktu demo sudah habis
+      const batas = new Date(data.demoBerakhirPada);
+      
+      if(sekarang > batas){
+        // Tandai demo selesai
+        await db.collection('kode_akses').doc(input).update({
+          demoSelesai: true
         });
-        nodeSaya.sponsor = 0;
-    } else {
-                if (nodeSaya.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
-        nodeSaya.saldoUtama += nodeSaya.jaringan;
-        daftarRiwayat.unshift({
-            teks: `🎁 ${nodeSaya.nama}: Pindah Bonus Jaringan ke Dompet Utama`,
-            rincian: ['+' + formatUang(nodeSaya.jaringan)],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        nodeSaya.jaringan = 0;
-    }
-    simpanData();
-    muatHalamanAnggota(nodeSaya);
-    alert('✅ Berhasil dipindahkan ke Dompet Utama!');
-}
-
-function cekLogin() {
-    const kode = document.getElementById('input-kode').value.trim().toUpperCase();
-    const pesan = document.getElementById('pesan-login');
-    pesan.innerHTML = '';
-    
-    if (!kode) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan kode akses!</span>';
+        tampilPesan('pesanSalah', '⏰ Masa demo 72 jam telah habis.\\n\\nHubungi admin untuk kode versi penuh.');
         return;
+      }
+      
+      const sisaJam = Math.ceil((batas - sekarang) / (1000 * 60 * 60));
+      alert('✅ Masuk berhasil. Sisa demo: ' + sisaJam + ' jam lagi.');
+      penggunaSaatIni = { tipe:'demo', kode:input, nama:'PENGGUNA DEMO' };
+      masukBerhasil('demo');
     }
     
-    if (kode === KODE_OWNER.toUpperCase()) {
-        penggunaSaatIni = KODE_OWNER;
-        document.getElementById('halaman-login').classList.add('hidden');
-        document.getElementById('halaman-admin').classList.remove('hidden');
-        perbaruiTampilanAdmin();
-        return;
-    }
-    
-    const nodeDitemukan = cariNodeBerdasarkanKode(dataJaringan, kode);
-    if (nodeDitemukan) {
-        penggunaSaatIni = kode;
-        document.getElementById('halaman-login').classList.add('hidden');
-        document.getElementById('halaman-anggota').classList.remove('hidden');
-        muatHalamanAnggota(nodeDitemukan);
-    } else {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Kode akses tidak ditemukan!</span>';
-    }
+  }catch(error){
+    console.error('Error:', error);
+    tampilPesan('pesanSalah', '❌ Gagal terhubung ke server. Coba lagi nanti.');
+  }
 }
 
-function muatHalamanAnggota(nodeSaya) {
-    document.getElementById('nama-saya-tampil').textContent = '👤 ' + nodeSaya.nama;
-    document.getElementById('saldo-utama-saya').textContent = formatUang(nodeSaya.saldoUtama || 0);
-    document.getElementById('uang-sponsor-saya').textContent = formatUang(nodeSaya.sponsor);
-    document.getElementById('uang-jaringan-saya').textContent = formatUang(nodeSaya.jaringan);
-    
-    const saldoSaya = nodeSaya.saldoUtama || 0;
-    const infoSaldo = document.getElementById('info-saldo-anggota');
-    if (infoSaldo) {
-        if (saldoSaya < BIAYA_DAFTAR_MEMBER) {
-            infoSaldo.innerHTML = `<div style="color:#fbbf24; font-size:13px; margin-bottom:10px;">⚠️ Saldo utama anda: ${formatUang(saldoSaya)}. Diperlukan ${formatUang(BIAYA_DAFTAR_MEMBER)} untuk mendaftarkan member baru.</div>`;
-        } else {
-            infoSaldo.innerHTML = `<div style="color:#4ade80; font-size:13px; margin-bottom:10px;">✅ Saldo anda mencukupi untuk mendaftarkan member baru!</div>`;
-        }
-    }
-    
-    const pilihSlot = document.getElementById('pilih-slot-saya');
-    if (pilihSlot) {
-        pilihSlot.innerHTML = '<option value="">— Pilih Slot —</option>';
-        for (let i = 0; i < 5; i++) {
-            if (!nodeSaya.anak[i]) {
-                pilihSlot.innerHTML += `<option value="${i}">Slot ${i + 1}</option>`;
-            }
-        }
-    }
-    
-    const diagramSaya = document.getElementById('tampilan-diagram-saya');
-    if (diagramSaya) {
-        diagramSaya.innerHTML = gambarTingkat(nodeSaya, 0, false, nodeSaya.kodeAkses);
-    }
+// === LOGIN ADMIN ===
+function cekLoginAdmin(){
+  const input = document.getElementById('kodeAdmin').value.trim();
+  
+  if(input === KODE_ADMIN){
+    penggunaSaatIni = { tipe:'admin', nama:'ADMIN', kode:input };
+    masukBerhasil('admin');
+  }else{
+    tampilPesan('pesanAdmin', '❌ Kode admin salah!');
+  }
 }
 
-function hapusSemuaData() {
-    if (confirm('⚠️ Hati-hati! Semua data akan dihapus dan tidak bisa dikembalikan! Lanjutkan?')) {
-        localStorage.clear();
-        location.reload();
+// === MASUK BERHASIL ===
+function masukBerhasil(tipe){
+  document.getElementById('halamanLogin').classList.add('sembunyi');
+  document.getElementById('halamanUtama').classList.remove('sembunyi');
+  
+  const elNamaKasir = document.getElementById('tampilNamaKasir');
+  const elInfoVersi = document.getElementById('infoVersi');
+  const elFooter = document.getElementById('footerVersi');
+  const elLabelVersi = document.getElementById('labelVersi');
+  
+  if(elNamaKasir) elNamaKasir.textContent = penggunaSaatIni.nama;
+  
+  // Ubah tampilan sesuai tipe
+  if(tipe === 'penuh'){
+    if(elInfoVersi){
+      elInfoVersi.className = 'info-penuh';
+      elInfoVersi.innerHTML = '♾️ VERSI PENUH — Tanpa batas waktu';
     }
+    if(elFooter) elFooter.textContent = '♾️ VERSI PENUH — Selamanya berlaku';
+    if(elLabelVersi) elLabelVersi.textContent = '— VERSI PENUH';
+  }else if(tipe === 'demo'){
+    if(elInfoVersi){
+      elInfoVersi.className = 'info-demo';
+      elInfoVersi.innerHTML = '⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan';
+    }
+    if(elFooter) elFooter.textContent = '⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan';
+    if(elLabelVersi) elLabelVersi.textContent = '— VERSI DEMO';
+  }else{
+    if(elInfoVersi) elInfoVersi.classList.add('sembunyi');
+    if(elFooter) elFooter.classList.add('sembunyi');
+    if(elLabelVersi) elLabelVersi.textContent = '— ADMIN';
+  }
+  
+  sembunyikanSemuaMenu();
+  
+  if(penggunaSaatIni.tipe === 'admin'){
+    document.getElementById('menuDaftarKode').classList.remove('sembunyi');
+    document.getElementById('menuBarang').classList.remove('sembunyi');
+    document.getElementById('menuLaporan').classList.remove('sembunyi');
+    document.getElementById('menuPengaturan').classList.remove('sembunyi');
+    document.getElementById('menuKelolaPin').classList.remove('sembunyi');
+    buka('daftarkode');
+    tampilDaftarKodeFirebase();
+  }else{
+    buka('kasir');
+  }
+  
+  document.getElementById('kodeAkses').value = '';
+  document.getElementById('kodeAdmin').value = '';
 }
 
-function keluarSistem() {
+function sembunyikanSemuaMenu(){
+  ['menuDaftarKode','menuBarang','menuLaporan','menuHutang','menuPengaturan','menuKelolaPin'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.classList.add('sembunyi');
+  });
+}
+
+function keluarAplikasi(){
+  if(confirm('Yakin ingin keluar?')){
+    document.getElementById('halamanUtama').classList.add('sembunyi');
+    document.getElementById('halamanLogin').classList.remove('sembunyi');
     penggunaSaatIni = null;
-    kodeSementara = null;
-    document.getElementById('halaman-admin').classList.add('hidden');
-    document.getElementById('halaman-anggota').classList.add('hidden');
-    document.getElementById('halaman-login').classList.remove('hidden');
-    document.getElementById('input-kode').value = '';
-    document.getElementById('pesan-login').innerHTML = '';
+    kembaliKePilihan();
+  }
 }
 
-document.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && !document.getElementById('halaman-login').classList.contains('hidden')) {
-        cekLogin();
+// === TAMPIL DAFTAR KODE DI FIREBASE — ADMIN SAJA ===
+async function tampilDaftarKodeFirebase(){
+  const tbody = document.getElementById('tabelKodeFirebaseBody');
+  if(!tbody) return;
+  
+  try{
+    const snapshot = await db.collection('kode_akses').orderBy('dibuatPada','desc').get();
+    
+    if(snapshot.empty){
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#666;">Belum ada kode akses yang dibuat</td></tr>';
+      return;
     }
-});
+    
+    tbody.innerHTML = '';
+    let nomor = 1;
+    snapshot.forEach(doc => {
+      const kode = doc.id;
+      const d = doc.data();
+      
+      let tipeText = d.tipe === 'penuh' ? '♾️ PENUH' : '⏰ DEMO';
+      let statusText, statusClass;
+      
+      if(d.tipe === 'penuh'){
+        statusText = '✅ AKTIF SELAMANYA';
+        statusClass = 'tersedia';
+      }else{
+        if(d.demoSelesai){ statusText = '⏰ HABIS'; statusClass = ''; }
+        else if(d.terpakai){ statusText = '✅ TERPAKAI'; statusClass = 'terpakai'; }
+        else { statusText = '🟢 TERSEDIA'; statusClass = 'tersedia'; }
+      }
+      
+      let mulaiTxt = d.waktuMasukPertama ? new Date(d.waktuMasukPertama).toLocaleString('id-ID') : '-';
+      let akhirTxt = d.demoBerakhirPada ? new Date(d.demoBerakhirPada).toLocaleString('id-ID') : 'Selamanya';
+      
+      tbody.innerHTML += '<tr class="' + statusClass + '">'
+        + '<td>' + (nomor++) + '</td>'
+        + '<td><strong>' + kode + '</strong></td>'
+        + '<td>' + tipeText + '</td>'
+        + '<td>' + statusText + '</td>'
+        + '<td>' + (d.nomorWA || '-') + '</td>'
+        + '<td style="font-size:11px;">' + mulaiTxt + '</td>'
+        + '<td style="font-size:11px;">' + akhirTxt + '</td>'
+        + '</tr>';
+    });
+    
+  }catch(error){
+    console.error('Error:', error);
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Gagal memuat data: ' + error.message + '</td></tr>';
+  }
+}
 
-muatData();
+function filterKodeFirebase(){
+  const kata = document.getElementById('cariKodeFirebase').value.toUpperCase().trim();
+  document.querySelectorAll('#tabelKodeFirebaseBody tr').forEach(tr => {
+    const kode = tr.cells[1]?.textContent || '';
+    const hp = tr.cells[4]?.textContent || '';
+    tr.style.display = (kata === '' || kode.includes(kata) || hp.includes(kata)) ? '' : 'none';
+  });
+}
+
+// === FUNGSI DASAR ===
+function amanAngka(nilai){
+  return isNaN(Number(nilai)) ? 0 : Number(nilai);
+}
+function formatRupiah(angka){
+  return 'Rp ' + amanAngka(angka).toLocaleString('id-ID');
+}
+function waktuSekarang(){
+  return new Date().toLocaleString('id-ID');
+}
+
+// === SIMPAN & MUAT DATA LOKAL ===
+function simpanData(key, nilai){
+  localStorage.setItem(key, JSON.stringify(nilai));
+}
+function ambilData(key){
+  const val = localStorage.getItem(key);
+  try{ return val ? JSON.parse(val) : null; } catch(e){ return null; }
+}
+function simpanSemua(){
+  simpanData('daftarPinKasir', daftarPinKasir);
+  simpanData('daftarBarang', daftarBarang);
+  simpanData('riwayat', riwayat);
+  simpanData('daftarHutang', daftarHutang);
+  simpanData('namaToko', namaToko);
+}
+function muatSemua(){
+  try{
+    const dp = ambilData('daftarPinKasir');
+    const b = ambilData('daftarBarang');
+    const r = ambilData('riwayat');
+    const h = ambilData('daftarHutang');
+    const n = ambilData('namaToko');
+    if(dp) daftarPinKasir = dp;
+    if(b) daftarBarang = b;
+    if(r) riwayat = r;
+    if(h) daftarHutang = h;
+    if(n) namaToko = n;
+  }catch(e){ console.log('Data dimuat'); }
+}
+
+// === BUKA HALAMAN ===
+function buka(nama){
+  ['Kasir','Barang','Laporan','Hutang','Pengaturan','Kelolapin','Daftarkode'].forEach(pg => {
+    const el = document.getElementById('pg'+pg); if(el) el.classList.add('sembunyi');
+  });
+  const halaman = document.getElementById('pg'+nama.charAt(0).toUpperCase()+nama.slice(1));
+  if(halaman) halaman.classList.remove('sembunyi');
+  
+  if(nama==='barang'){ tampilTabel(); const el = document.getElementById('cariBarangTabel'); if(el) el.value=''; }
+  if(nama==='kasir'){ tampilKasir(); const el = document.getElementById('cariBarangKasir'); if(el) el.value=''; }
+  if(nama==='laporan'){ tampilLaporan(); }
+  if(nama==='hutang'){ tampilHutang(); }
+  if(nama==='pengaturan'){ const el = document.getElementById('inputNamaToko'); if(el) el.value = namaToko; }
+  if(nama==='kelolapin'){ tampilTabelPinKasir(); }
+  if(nama==='daftarkode'){ tampilDaftarKodeFirebase(); }
+}
+
+// === NAMA USAHA ===
+function simpanNamaToko(){
+  const n = document.getElementById('inputNamaToko').value.trim();
+  if(!n){ alert('Isi nama usaha dulu!'); return; }
+  namaToko = n;
+  simpanSemua();
+  alert('✅ Nama usaha disimpan!');
+}
+
+// === KELOLA PIN KASIR ===
+function buatPinKasir(){
+  const nama = document.getElementById('namaKasirBaru').value.trim();
+  const pin = document.getElementById('pinKasirBaru').value.trim();
+  if(!nama || !pin){ alert('Isi nama dan PIN!'); return; }
+  if(pin.length < 4 || pin.length > 6){ alert('PIN harus 4-6 angka!'); return; }
+  if(isNaN(pin)){ alert('PIN hanya boleh angka!'); return; }
+  const duplikat = daftarPinKasir.some(d => d.pin === pin);
+  if(duplikat){ alert('PIN sudah dipakai! Gunakan PIN lain.'); return; }
+  daftarPinKasir.push({ nama:nama, pin:pin });
+  simpanSemua();
+  document.getElementById('namaKasirBaru').value = '';
+  document.getElementById('pinKasirBaru').value = '';
+  alert('✅ PIN Kasir berhasil dibuat!\\n\\nNama: ' + nama + '\\nPIN: ' + pin);
+  tampilTabelPinKasir();
+}
+
+function tampilTabelPinKasir(){
+  const tbody = document.getElementById('tabelPinKasirBody');
+  if(!tbody) return;
+  if(daftarPinKasir.length === 0){ tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada PIN kasir</td></tr>'; return; }
+  tbody.innerHTML = '';
+  daftarPinKasir.forEach((d, i) => {
+    tbody.innerHTML += '<tr>'
+      + '<td>' + (i+1) + '</td>'
+      + '<td>' + d.nama + '</td>'
+      + '<td>' + d.pin + '</td>'
+      + '<td><button class="btn-merah btn-kecil" onclick="hapusPinKasir(' + i + ')">Hapus</button></td>'
+      + '</tr>';
+  });
+}
+
+function hapusPinKasir(index){
+  if(!confirm('Hapus PIN kasir ini?')) return;
+  daftarPinKasir.splice(index, 1);
+  simpanSemua();
+  tampilTabelPinKasir();
+}
+
+// === BARANG ===
+function simpanBarang(){
+  const nama = document.getElementById('namaBrg').value.trim();
+  const stok = amanAngka(document.getElementById('stokBrg').value);
+  const modal = amanAngka(document.getElementById('modalBrg').value);
+  const jual = amanAngka(document.getElementById('jualBrg').value);
+  
+  if(!nama){ alert('Nama barang tidak boleh kosong!'); return; }
+  if(daftarBarang.some(b => b.nama === nama)){ alert('Barang sudah ada!'); return; }
+  
+  daftarBarang.push({
+    id: Date.now(),
+    nama: nama,
+    stok: stok,
+    modal: modal,
+    jual: jual
+  });
+  
+  simpanSemua();
+  document.getElementById('namaBrg').value = '';
+  document.getElementById('stokBrg').value = '';
+  document.getElementById('modalBrg').value = '';
+  document.getElementById('jualBrg').value = '';
+  alert('✅ Barang ditambahkan!');
+  tampilTabel();
+}
+
+function tampilTabel(){
+  const tbody = document.getElementById('tabelDaftarBody');
+  if(!tbody) return;
+  if(daftarBarang.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666;">Belum ada barang</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  daftarBarang.forEach((b, i) => {
+    tbody.innerHTML += '<tr>'
+      + '<td>' + (i+1) + '</td>'
+      + '<td>' + b.nama + '</td>'
+      + '<td>' + b.stok + '</td>'
+      + '<td>' + formatRupiah(b.modal) + '</td>'
+      + '<td>' + formatRupiah(b.jual) + '</td>'
+      + '<td><button class="btn-kecil" style="background:#ff9800; color:#fff; margin:2px;" onclick="bukaFormUbah(' + i + ')">Ubah</button>'
+      + '<button class="btn-merah btn-kecil" style="margin:2px;" onclick="hapusBarang(' + i + ')">Hapus</button></td>'
+      + '</tr>';
+  });
+}
+
+function filterBarangTabel(){
+  const kata = document.getElementById('cariBarangTabel').value.toLowerCase().trim();
+  document.querySelectorAll('#tabelDaftarBody tr').forEach(tr => {
+    const nama = tr.cells[1]?.textContent.toLowerCase() || '';
+    tr.style.display = nama.includes(kata) ? '' : 'none';
+  });
+}
+
+function bukaFormUbah(index){
+  document.getElementById('formUbahHarga').classList.remove('sembunyi');
+  document.getElementById('namaBarangUbah').textContent = daftarBarang[index].nama;
+  document.getElementById('idBarangUbah').value = index;
+  document.getElementById('modalBaru').value = daftarBarang[index].modal;
+  document.getElementById('jualBaru').value = daftarBarang[index].jual;
+}
+
+function batalUbahHarga(){
+  document.getElementById('formUbahHarga').classList.add('sembunyi');
+}
+
+function simpanPerubahanHarga(){
+  const idx = parseInt(document.getElementById('idBarangUbah').value);
+  const modalBaru = amanAngka(document.getElementById('modalBaru').value);
+  const jualBaru = amanAngka(document.getElementById('jualBaru').value);
+  
+  daftarBarang[idx].modal = modalBaru;
+  daftarBarang[idx].jual = jualBaru;
+  simpanSemua();
+  alert('✅ Harga diperbarui!');
+  batalUbahHarga();
+  tampilTabel();
+  tampilKasir();
+}
+
+function hapusBarang(index){
+  if(!confirm('Yakin hapus barang ini?')) return;
+  daftarBarang.splice(index, 1);
+  simpanSemua();
+  tampilTabel();
+  tampilKasir();
+}
+
+// === KASIR ===
+function tampilKasir(){
+  const el = document.getElementById('daftarKasir');
+  if(!el) return;
+  if(daftarBarang.length === 0){
+    el.innerHTML = '<p style="width:100%; text-align:center; color:#666;">Belum ada barang</p>';
+    return;
+  }
+  el.innerHTML = '';
+  daftarBarang.forEach((b, i) => {
+    const dipilih = keranjang.some(k => k.id === b.id);
+    el.innerHTML += '<div class="item-barang ' + (dipilih ? 'dipilih' : '') + '" onclick="tambahKeKeranjang(' + i + ')">'
+      + '<div><strong>' + b.nama + '</strong></div>'
+      + '<div style="font-size:12px; color:#666;">Stok: ' + b.stok + '</div>'
+      + '<div style="color:#2d5a27; font-weight:bold;">' + formatRupiah(b.jual) + '</div>'
+      + '</div>';
+  });
+  renderKeranjang();
+}
+
+function filterBarangKasir(){
+  const kata = document.getElementById('cariBarangKasir').value.toLowerCase().trim();
+  const el = document.getElementById('daftarKasir');
+  if(!el) return;
+  if(daftarBarang.length === 0){ tampilKasir(); return; }
+  el.innerHTML = '';
+  daftarBarang.filter(b => b.nama.toLowerCase().includes(kata)).forEach((b, i) => {
+    const idxAsli = daftarBarang.indexOf(b);
+    const dipilih = keranjang.some(k => k.id === b.id);
+    el.innerHTML += '<div class="item-barang ' + (dipilih ? 'dipilih' : '') + '" onclick="tambahKeKeranjang(' + idxAsli + ')">'
+      + '<div><strong>' + b.nama + '</strong></div>'
+      + '<div style="font-size:12px; color:#666;">Stok: ' + b.stok + '</div>'
+      + '<div style="color:#2d5a27; font-weight:bold;">' + formatRupiah(b.jual) + '</div>'
+      + '</div>';
+  });
+}
+
+function tambahKeKeranjang(index){
+  const brg = daftarBarang[index];
+  if(brg.stok <= 0){ alert('Stok habis!'); return; }
+  
+  const ada = keranjang.find(k => k.id === brg.id);
+  if(ada){
+    if(ada.qty >= brg.stok){ alert('Stok tidak cukup!'); return; }
+    ada.qty++;
+  }else{
+    keranjang.push({
+      id: brg.id,
+      nama: brg.nama,
+      harga: brg.jual,
+      modal: brg.modal,
+      qty: 1,
+      stokIndex: index
+    });
+  }
+  tampilKasir();
+}
+
+function renderKeranjang(){
+  const el = document.getElementById('keranjangIsi');
+  if(!el) return;
+  if(keranjang.length === 0){
+    el.innerHTML = '<p style="text-align:center; color:#666;">Belum ada barang</p>';
+    document.getElementById('lblTotal').textContent = formatRupiah(0);
+    return;
+  }
+  el.innerHTML = '';
+  let total = 0;
+  keranjang.forEach((item, i) => {
+    const subtotal = item.harga * item.qty;
+    total += subtotal;
+    el.innerHTML += '<div class="baris">'
+      + '<span>' + item.nama + ' × ' + item.qty + '</span>'
+      + '<span>' + formatRupiah(subtotal) + '</span>'
+      + '<span style="min-width:60px; text-align:right;">'
+      + '<button class="btn-kecil" style="width:24px; padding:2px; font-size:12px; background:#ddd; color:#333;" onclick="ubahQty(' + i + ',-1)">−</button> '
+      + '<button class="btn-kecil" style="width:24px; padding:2px; font-size:12px; background:#ddd; color:#333;" onclick="ubahQty(' + i + ',1)">+</button>'
+      + '</span></div>';
+  });
+  document.getElementById('lblTotal').textContent = formatRupiah(total);
+  hitungKembalian();
+}
+
+function ubahQty(index, delta){
+  const item = keranjang[index];
+  const brg = daftarBarang.find(b => b.id === item.id);
+  
+  item.qty += delta;
+  if(item.qty <= 0){
+    keranjang.splice(index, 1);
+  }else if(brg && item.qty > brg.stok){
+    item.qty = brg.stok;
+    alert('Stok terbatas!');
+  }
+  tampilKasir();
+}
+
+function hitungKembalian(){
+  const total = keranjang.reduce((sum, i) => sum + i.harga * i.qty, 0);
+  const bayar = amanAngka(document.getElementById('uangBayar').value);
+  document.getElementById('kembalian').value = formatRupiah(bayar - total);
+}
+
+function kosongkanKeranjang(){
+  keranjang = [];
+  document.getElementById('uangBayar').value = '';
+  document.getElementById('kembalian').value = '';
+  document.getElementById('nomorMeja').value = '';
+  document.getElementById('namaPelanggan').value = '';
+  tampilKasir();
+}
+
+function bayarLunas(){
+  if(keranjang.length === 0){ alert('Keranjang kosong!'); return; }
+  const total = keranjang.reduce((sum, i) => sum + i.harga * i.qty, 0);
+  const bayar = amanAngka(document.getElementById('uangBayar').value);
+  if(bayar < total){ alert('Uang kurang!'); return; }
+  
+  kurangiStok();
+  
+  const transaksi = simpanTransaksi('lunas');
+  cetakStruk(transaksi);
+  kosongkanKeranjang();
+}
+
+function catatHutang(){
+  if(keranjang.length === 0){ alert('Keranjang kosong!'); return; }
+  const namaPembeli = document.getElementById('namaPelanggan').value.trim();
+  if(!namaPembeli){ alert('Masukkan nama pembeli!'); return; }
+  
+  kurangiStok();
+  
+  const transaksi = simpanTransaksi('hutang', namaPembeli);
+  daftarHutang.push({
+    id: transaksi.id,
+    nama: namaPembeli,
+    total: transaksi.total,
+    waktu: transaksi.waktu,
+    lunas: false
+  });
+  simpanSemua();
+  
+  cetakStruk(transaksi);
+  kosongkanKeranjang();
+}
+
+function kurangiStok(){
+  keranjang.forEach(item => {
+    const idx = daftarBarang.findIndex(b => b.id === item.id);
+    if(idx !== -1){
+      daftarBarang[idx].stok -= item.qty;
+    }
+  });
+  simpanSemua();
+}
+
+function simpanTransaksi(status, namaPembeli=''){
+  const total = keranjang.reduce((sum, i) => sum + i.harga * i.qty, 0);
+  const modal = keranjang.reduce((sum, i) => sum + i.modal * i.qty, 0);
+  const untung = total - modal;
+  const id = Date.now();
+  const waktu = waktuSekarang();
+  
+  const transaksi = {
+    id: id,
+    waktu: waktu,
+    namaPelanggan: namaPembeli,
+    items: keranjang.map(i => ({nama:i.nama, qty:i.qty, harga:i.harga, modal:i.modal})),
+    total: total,
+    modal: modal,
+    untung: untung,
+    status: status,
+    terpilih: false
+  };
+  
+  riwayat.unshift(transaksi);
+  simpanSemua();
+  return transaksi;
+}
+
+function cetakStruk(t){
+  const area = document.getElementById('areaStruk');
+  const isi = document.getElementById('isiStruk');
+  if(!area || !isi) return;
+  
+  let html = '<div style="text-align:center;"><h3 style="border:none; margin:0; padding:0;">' + namaToko + '</h3>'
+    + '<p style="font-size:12px; color:#66; margin:4px 0;">' + t.waktu + '</p>'
+    + '<p style="margin:4px 0;">No: ' + t.id + '</p>'
+    + '<div class="garis"></div>';
+  
+  t.items.forEach(i => {
+    html += '<div class="baris" style="font-size:13px;">'
+      + '<span>' + i.nama + ' × ' + i.qty + '</span>'
+      + '<span>' + formatRupiah(i.harga * i.qty) + '</span>'
+      + '</div>';
+  });
+  
+  html += '<div class="garis"></div>'
+    + '<div class="baris total" style="border:none;">'
+    + '<span>TOTAL</span>'
+    + '<span>' + formatRupiah(t.total) + '</span>'
+    + '</div>'
+    + '<p style="text-align:center; margin-top:10px; font-weight:bold;">' + (t.status==='lunas'?'✅ LUNAS':'📝 BELUM BAYAR') + '</p>'
+    + '<p style="text-align:center; font-size:11px; color:#888; margin-top:15px;">Terima Kasih</p>'
+    + '</div>';
+  
+  isi.innerHTML = html;
+  area.classList.remove('sembunyi');
+}
+
+function tutupStruk(){
+  document.getElementById('areaStruk').classList.add('sembunyi');
+}
+
+// === LAPORAN ===
+function tampilLaporan(){
+  let totalJual = 0, totalUntung = 0, totalHutang = 0;
+  riwayat.forEach(t => {
+    totalJual += t.total;
+    totalUntung += t.untung;
+  });
+  daftarHutang.filter(h => !h.lunas).forEach(h => totalHutang += h.total);
+  
+  document.getElementById('totalJual').textContent = formatRupiah(totalJual);
+  document.getElementById('totalUntung').textContent = formatRupiah(totalUntung);
+  document.getElementById('totalLapHutang').textContent = formatRupiah(totalHutang);
+  document.getElementById('jumlahTransaksi').textContent = riwayat.length;
+  
+  const el = document.getElementById('daftarRiwayat');
+  if(riwayat.length === 0){
+    el.innerHTML = '<p style="text-align:center; color:#666;">Belum ada transaksi</p>';
+    return;
+  }
+  el.innerHTML = '';
+  riwayat.forEach((t, i) => {
+    el.innerHTML += '<div style="background:#f9f9f9; padding:8px; border-radius:6px; margin-bottom:6px;">'
+      + '<label style="display:flex; align-items:center; gap:8px; cursor:pointer;">'
+      + '<input type="checkbox" id="cek-' + i + '" onchange="tandaiTerpilih(' + i + ')">'
+      + '<span style="font-size:13px;">#' + t.id + ' — ' + t.waktu + '</span>'
+      + '<span style="margin-left:auto; font-weight:bold; color:' + (t.status==='lunas'?'#2e7d32':'#e65100') + ';">' + formatRupiah(t.total) + '</span>'
+      + '</label></div>';
+  });
+}
+
+function tandaiTerpilih(index){
+  riwayat[index].terpilih = document.getElementById('cek-'+index).checked;
+}
+
+function togglePilihSemua(){
+  const cek = document.getElementById('pilihSemuaRiwayat').checked;
+  riwayat.forEach((_, i) => {
+    const el = document.getElementById('cek-'+i);
+    if(el) el.checked = cek;
+    riwayat[i].terpilih = cek;
+  });
+}
+
+function hapusTerpilihRiwayat(){
+  const terpilih = riwayat.filter(t => t.terpilih);
+  if(terpilih.length === 0){ alert('Pilih dulu yang mau dihapus!'); return; }
+  if(!confirm('Yakin hapus ' + terpilih.length + ' transaksi terpilih?')) return;
+  riwayat = riwayat.filter(t => !t.terpilih);
+  simpanSemua();
+  tampilLaporan();
+}
+
+function cadangkanData(){
+  const data = {
+    versi: '1.0',
+    namaToko: namaToko,
+    daftarPinKasir: daftarPinKasir,
+    daftarBarang: daftarBarang,
+    riwayat: riwayat,
+    daftarHutang: daftarHutang,
+    dicadangkanPada: waktuSekarang()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cadangan-toko-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  alert('✅ Data dicadangkan!');
+}
+
+function pulihkanData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!confirm('⚠️ Data saat ini akan diganti dengan data cadangan! Lanjutkan?')) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const d = JSON.parse(ev.target.result);
+      namaToko = d.namaToko || 'TOKO SAYA';
+      daftarPinKasir = d.daftarPinKasir || [];
+      daftarBarang = d.daftarBarang || [];
+      riwayat = d.riwayat || [];
+      daftarHutang = d.daftarHutang || [];
+      simpanSemua();
+      alert('✅ Data berhasil dipulihkan!');
+      buka('kasir');
+    }catch(err){
+      alert('❌ File tidak valid!');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// === HUTANG ===
+function tampilHutang(){
+  const totalBelumLunas = daftarHutang.filter(h => !h.lunas).reduce((s,h) => s + h.total, 0);
+  document.getElementById('totalHutang').textContent = formatRupiah(totalBelumLunas);
+  
+  const el = document.getElementById('daftarHutang');
+  const belumLunas = daftarHutang.filter(h => !h.lunas);
+  
+  if(belumLunas.length === 0){
+    el.innerHTML = '<p style="text-align:center; color:#666;">Belum ada piutang</p>';
+    return;
+  }
+  
+  el.innerHTML = '';
+  belumLunas.forEach((h, i) => {
+    el.innerHTML += '<div style="background:#fff; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #ff9800;">'
+      + '<div class="baris"><strong>' + h.nama + '</strong><span class="status-belum">BELUM LUNAS</span></div>'
+      + '<div class="baris"><span>Waktu:</span><span style="font-size:12px;">' + h.waktu + '</span></div>'
+      + '<div class="baris"><span>Total:</span><span style="font-weight:bold; color:#e65100;">' + formatRupiah(h.total) + '</span></div>'
+      + '<button class="btn-hijau" style="margin-top:8px;" onclick="tandaiLunas(' + i + ')">✅ TANDAI LUNAS</button>'
+      + '</div>';
+  });
+}
+
+function tandaiLunas(index){
+  if(!confirm('Tandai hutang ini sudah lunas?')) return;
+  daftarHutang.filter(h => !h.lunas)[index].lunas = true;
+  simpanSemua();
+  tampilHutang();
+}
+
+// === INISIALISASI AWAL ===
+window.onload = function(){
+  muatSemua();
+  if(daftarBarang.length === 0){
+    daftarBarang = [
+      {id:1, nama:'Telur', stok:100, modal:18000, jual:20000},
+      {id:2, nama:'Beras 5kg', stok:50, modal:65000, jual:72000},
+      {id:3, nama:'Minyak 1L', stok:80, modal:14000, jual:16500},
+      {id:4, nama:'Gula 1kg', stok:120, modal:12500, jual:14000}
+    ];
+    simpanSemua();
+  }
+};
+
 </script>
 </body>
 </html>
