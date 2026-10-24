@@ -6,750 +6,902 @@
 <title>TOKO FAREL</title>
 <style>
 *{margin:0; padding:0; font-family:Arial; box-sizing:border-box;}
-body{background:linear-gradient(135deg,#2d5a27,#4a8c43); min-height:100vh; padding:15px; padding-bottom:60px;}
+body{background:linear-gradient(135deg,#2d5a27,#4a8c43); min-height:100vh; padding:10px; padding-bottom:60px;}
 .sembunyi{display:none !important;}
-.tengah{display:flex; align-items:center; justify-content:center; min-height:100vh;}
-.kotak-login{background:#fff; padding:30px; border-radius:15px; max-width:340px; width:100%; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-.kotak-login h2{color:#2d5a27; margin-bottom:25px;}
-.kotak-login input{width:100%; padding:14px; font-size:18px; border:2px solid #ddd; border-radius:8px; margin-bottom:15px; text-align:center; letter-spacing:3px; text-transform:uppercase;}
+
+.kotak-login{background:#fff; padding:25px; border-radius:15px; max-width:340px; width:100%; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); margin:80px auto 0 auto;}
+.kotak-login h2{color:#2d5a27; margin-bottom:20px; font-size:20px;}
+.kotak-login input{width:100%; padding:12px; font-size:16px; border:2px solid #ddd; border-radius:8px; margin-bottom:12px; text-align:center; letter-spacing:2px; text-transform:uppercase; font-weight:bold;}
 .kotak-login input:focus{border-color:#2d5a27; outline:none;}
-.kotak-login button{width:100%; padding:14px; font-size:16px; font-weight:bold; border:none; border-radius:8px; background:#2d5a27; color:#fff; cursor:pointer;}
-.kotak-login button:hover{background:#1f3f1c;}
-.pesan-salah{color:#e74c3c; margin-top:12px; font-size:14px;}
+.kotak-login button{width:100%; padding:12px; font-size:16px; font-weight:bold; border:none; border-radius:8px; background:#2d5a27; color:#fff; cursor:pointer;}
+.pesan-salah{color:#e74c3c; margin-top:10px; font-size:14px;}
 
-.menu{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;}
-.menu button{flex:1; min-width:80px; padding:14px 5px; font-size:15px; width:auto;}
-.konten{background:#fff; border-radius:12px; padding:20px; margin-bottom:15px;}
-h2,h3{color:#2d5a27; margin-bottom:15px; padding-bottom:8px; border-bottom:1px solid #eee;}
-table{width:100%; border-collapse:collapse; margin-top:15px;}
-th,td{padding:10px 6px; text-align:center; border-bottom:1px solid #eee; font-size:14px; vertical-align:middle;}
+.menu{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+.menu button{flex:1; min-width:70px; padding:12px 4px; font-size:13px; width:auto;}
+.konten{background:#fff; border-radius:12px; padding:15px; margin-bottom:12px;}
+h2,h3,h4{color:#2d5a27; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid #eee; font-size:17px;}
+table{width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;}
+th,td{padding:6px 4px; text-align:center; border-bottom:1px solid #eee; vertical-align:middle;}
 th{background:#f5f5f5; color:#2d5a27; font-weight:bold;}
-.grid-barang{display:flex; flex-wrap:wrap; gap:10px; margin:15px 0;}
 
-.item-barang{background:#e8f5e9; border:1px solid #c8e6c9; border-radius:8px; padding:10px 8px; width:calc(50% - 5px); text-align:center; cursor:pointer;}
+.grid-barang{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;}
+.item-barang{background:#e8f5e9; border:1px solid #c8e6c9; border-radius:8px; padding:12px 8px; width:calc(50% - 4px); text-align:center; cursor:pointer; transition:all 0.2s;}
 .item-barang.dipilih{background:#c8e6c9; border:2px solid #2d5a27; font-weight:bold;}
+.item-barang.hilang{display:none !important;}
 
-.baris{display:flex; justify-content:space-between; padding:6px 0; font-size:15px;}
-.baris-tengah{display:flex; justify-content:center; align-items:center; gap:15px; padding:6px 0; font-size:15px; flex-wrap:wrap;}
-.total{font-size:19px; font-weight:bold; color:#e74c3c; padding-top:10px; border-top:1px dashed #ccc; margin-top:10px;}
-.dua-kolom{display:flex; gap:10px; margin:8px 0; flex-wrap:wrap;}
-.dua-kolom input{flex:1; min-width:140px;}
-.tiga-kolom{display:flex; gap:8px; margin:8px 0; flex-wrap:wrap;}
-.tiga-kolom input{flex:1; min-width:100px;}
-.struk{border:2px dashed #333; padding:20px; max-width:300px; margin:15px auto; background:#fff;}
-.struk .garis{border-bottom:1px dashed #999; margin:8px 0;}
-.kotak-rekap{background:#e3f2fd; padding:15px; border-radius:8px; margin-bottom:15px;}
-.kotak-hutang{background:#fff3e0; padding:15px; border-radius:8px; margin-bottom:15px;}
-.kotak-edit-harga{background:#f3e5f5; padding:15px; border-radius:8px; margin-top:10px; margin-bottom:15px;}
-.keuntungan{color:#2e7d32; font-weight:bold; font-size:18px;}
-.penjualan{color:#c62828; font-weight:bold; font-size:18px;}
-.hutang{color:#e65100; font-weight:bold; font-size:18px;}
-.riwayat-item, .hutang-item{padding:12px; background:#f9f9f9; border-radius:8px; margin-bottom:10px;}
-.pilih-semua{display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px; padding:12px; background:#f0f4c3; border-radius:8px;}
-.nama-toko{text-align:center; color:#fff; font-size:22px; font-weight:bold; margin-bottom:15px; text-shadow:1px 1px 3px rgba(0,0,0,0.3);}
-.input-kecil{width:70px; padding:4px; text-align:center; font-size:14px;}
-.input-meja{max-width:120px; padding:8px 10px; font-size:15px; text-align:center;}
-.kaki-halaman{position:fixed; bottom:0; left:0; right:0; text-align:center; padding:10px; color:rgba(255,255,255,0.7); font-size:12px; background:rgba(0,0,0,0.15);}
+.baris{display:flex; justify-content:space-between; padding:5px 0; font-size:14px;}
+.total{font-size:18px; font-weight:bold; color:#e74c3c; padding-top:8px; border-top:1px dashed #ccc; margin-top:8px;}
+.dua-kolom{display:flex; gap:8px; margin:6px 0; flex-wrap:wrap;}
+.dua-kolom input{flex:1; min-width:130px;}
+.tiga-kolom{display:flex; gap:6px; margin:6px 0; flex-wrap:wrap;}
+.tiga-kolom input{flex:1; min-width:90px;}
+.struk{border:2px dashed #333; padding:15px; max-width:300px; margin:12px auto; background:#fff;}
+.struk .garis{border-bottom:1px dashed #999; margin:6px 0;}
+.kotak-rekap{background:#e3f2fd; padding:12px; border-radius:8px; margin-bottom:12px;}
+.kotak-hutang{background:#fff3e0; padding:12px; border-radius:8px; margin-bottom:12px;}
+.kotak-edit-harga{background:#f3e5f5; padding:12px; border-radius:8px; margin-top:8px; margin-bottom:12px;}
+.kotak-karyawan{background:#e8f4f8; padding:12px; border-radius:8px; margin-bottom:15px; border-left:4px solid #1976d2;}
+.kotak-kelola-kode{background:#fffde7; padding:12px; border-radius:8px; margin-bottom:15px; border-left:4px solid #fbc02d;}
+.kotak-pencipta{background:#e8f5e9; padding:15px; border-radius:8px; margin-bottom:15px; border-left:4px solid #2d5a27;}
+.kotak-log{background:#f1f8e9; padding:10px; border-radius:8px; margin-top:10px; border-left:4px solid #4caf50;}
+.keuntungan{color:#2e7d32; font-weight:bold; font-size:17px;}
+.penjualan{color:#c62828; font-weight:bold; font-size:17px;}
+.hutang{color:#e65100; font-weight:bold; font-size:17px;}
+.riwayat-item, .hutang-item{padding:10px; background:#f9f9f9; border-radius:8px; margin-bottom:8px;}
+.log-item{padding:6px 8px; background:#f1f1f1; border-radius:4px; margin-bottom:4px; font-size:12px;}
+.nama-toko{text-align:center; color:#fff; font-size:22px; font-weight:bold; margin:10px 0; text-shadow:1px 1px 3px rgba(0,0,0,0.3);}
+.nama-kasir{text-align:right; color:#fff; font-size:13px; margin-bottom:8px; background:rgba(0,0,0,0.2); display:inline-block; padding:4px 10px; border-radius:20px;}
+.input-kecil{width:90px; padding:5px; font-size:13px;}
+.input-meja{max-width:110px; padding:6px 8px; font-size:14px; text-align:center;}
+.input-cari{width:100%; padding:8px 12px; font-size:14px; border:2px solid #81c784; border-radius:8px; margin-bottom:12px; background:#f1f8e9;}
+.input-cari:focus{border-color:#2d5a27; outline:none; background:#fff;}
+.kaki-halaman{position:fixed; bottom:0; left:0; right:0; text-align:center; padding:8px; color:rgba(255,255,255,0.7); font-size:11px; background:rgba(0,0,0,0.15);}
 .status-lunas{color:#2e7d32; font-weight:bold;}
-.status-belum{color:#e65100; font-weight:bold; font-size:18px;}
-.cicilan-item{padding:6px 10px; background:#e8f5e9; border-radius:4px; margin-top:4px; font-size:13px;}
-.ubah-harga-btn{padding:4px 8px; font-size:12px; width:auto;}
-.checkbox-item{width:20px; height:20px; cursor:pointer;}
-.baris-atas{display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;}
-.btn-hapus-lunas{padding:4px 10px; font-size:12px; width:auto;}
-.input-file{display:none;}
-.label-file{display:inline-block; width:100%; cursor:pointer;}
-.keranjang-jumlah{display:flex; align-items:center; justify-content:space-between; padding:6px 0;}
-.keranjang-kontrol{display:flex; align-items:center; gap:5px;}
-.keranjang-kontrol button{width:28px; height:28px; padding:0; font-size:14px; border-radius:50%; background:#2d5a27; color:#fff;}
-.keranjang-kontrol span{min-width:20px; text-align:center; font-weight:bold;}
-.btn-keluar{position:absolute; top:15px; right:15px; background:#e74c3c; color:#fff; padding:8px 15px; font-size:14px; border-radius:6px; border:none; cursor:pointer;}
-.btn-wa{background:#25d366; color:#fff; padding:6px 10px; font-size:13px; border-radius:4px; border:none; cursor:pointer; width:auto;}
-.btn-wa:hover{background:#1da851;}
-.kode-terpakai{background:#ffebee; color:#c62828;}
-.kode-tersedia{background:#e8f5e9; color:#2e7d32;}
-.kotak-admin{background:#fef3c7; border:2px solid #f59e0b;}
-.kotak-peringatan{background:#fffde7; border:1px solid #fbc02d; padding:12px; border-radius:8px; margin:10px 0; font-size:14px; color:#f57f17;}
+.status-belum{color:#e65100; font-weight:bold; font-size:16px;}
+.cicilan-item{padding:5px 8px; background:#e8f5e9; border-radius:4px; margin-top:3px; font-size:12px;}
+.terpakai{background:#ffebee; color:#c62828; font-weight:bold;}
+.tersedia{background:#e8f5e9; color:#2e7d32; font-weight:bold;}
+.btn-kecil{padding:4px 8px; font-size:12px; width:auto;}
+.btn-keluar{background:#e74c3c; color:#fff; padding:10px; font-size:16px; font-weight:bold; border-radius:8px; border:none; cursor:pointer; width:100%; margin:10px 0;}
+.status-aktif{color:#2e7d32; font-weight:bold;}
+.status-nonaktif{color:#757575;}
 
-input{width:100%; padding:14px; font-size:16px; border:2px solid #ddd; border-radius:8px; margin:8px 0;}
+input{width:100%; padding:10px; font-size:15px; border:2px solid #ddd; border-radius:6px; margin:6px 0;}
 input:focus{border-color:#2d5a27; outline:none;}
-button{padding:12px 14px; font-size:16px; font-weight:bold; border:none; border-radius:6px; cursor:pointer; width:100%;}
-.btn-hijau{background:#2d5a27; color:#fff; margin-top:10px;}
+button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-radius:6px; cursor:pointer; width:100%;}
+.btn-hijau{background:#2d5a27; color:#fff; margin-top:5px;}
 .btn-hijau:hover{background:#1f3f1c;}
 .btn-biru{background:#1976d2; color:#fff;}
 .btn-kuning{background:#ffb300; color:#fff;}
 .btn-merah{background:#e74c3c; color:#fff;}
-.btn-ungu{background:#7b1fa2; color:#fff;}
 .btn-abu{background:#757575; color:#fff;}
 </style>
 </head>
 <body>
 
+<!-- HALAMAN LOGIN -->
 <div id="halamanLogin" class="tengah">
-<div class="kotak-login">
-<h2>🔑 MASUK APLIKASI</h2>
-<input type="text" id="kodeAkses" placeholder="Masukkan Kode Akses" maxlength="6" autocomplete="off">
-<button onclick="cekKode()">MASUK</button>
-<p id="pesanSalah" class="pesan-salah sembunyi">❌ Kode akses salah!</p>
-</div>
+  <div class="kotak-login">
+    <h2>🔑 MASUK APLIKASI</h2>
+    <input type="text" id="kodeAkses" placeholder="Masukkan Kode Akses">
+    <button onclick="cekKode()">MASUK</button>
+    <p id="pesanSalah" class="pesan-salah sembunyi">❌ Kode akses tidak terdaftar!</p>
+  </div>
 </div>
 
+<!-- HALAMAN UTAMA -->
 <div id="halamanUtama" class="sembunyi">
-<button class="btn-keluar" onclick="keluarAplikasi()">🚪 KELUAR</button>
-<div class="nama-toko" id="tampilNamaToko">TOKO FAREL</div>
-<div class="menu">
-<button class="btn-hijau" onclick="buka('kasir')">💳 KASIR</button>
-<button class="btn-kuning" onclick="buka('barang')">📦 BARANG</button>
-<button class="btn-biru" onclick="buka('laporan')">📊 LAPORAN</button>
-<button class="btn-merah" onclick="buka('hutang')">💰 HUTANG</button>
-<button class="btn-abu" onclick="buka('pengaturan')">⚙️ NAMA TOKO</button>
-<button class="btn-wa" style="display:none;" id="btnMenuAdmin" onclick="buka('admin')">🔐 ADMIN</button>
-</div>
+  <h1 class="nama-toko" id="tampilNamaToko">TOKO FAREL</h1>
+  <button class="btn-keluar" onclick="keluarAplikasi()">🚪 KELUAR</button>
+  <p class="nama-kasir" style="text-align:right; margin-bottom:10px;">👤 <span id="tampilNamaKasir"></span></p>
 
-<div id="pgKasir" class="konten">
-<div class="baris-tengah" style="background:#f0f4c3; padding:10px; border-radius:8px; margin-bottom:15px;">
-  <label style="font-weight:bold;">🪑 Nomor Meja / Pesanan:</label>
-  <input type="text" id="nomorMeja" class="input-meja" placeholder="Meja 1" maxlength="20">
-</div>
-<h3>🛒 PILIH BARANG</h3>
-<div class="grid-barang" id="daftarKasir">
-<p style="width:100%; text-align:center; color:#888; padding:20px;">Tambah barang dulu di menu BARANG</p>
-</div>
-<h3>📝 RINCIAN PESANAN</h3>
-<div id="keranjangIsi"><p style="color:#888;">Belum ada barang</p></div>
-<div class="baris total">
-<strong>TOTAL:</strong>
-<strong id="lblTotal">Rp 0</strong>
-</div>
-<div class="dua-kolom">
-<input type="number" id="uangBayar" placeholder="Uang Bayar" oninput="hitungKembalian()">
-<input type="text" id="kembalian" placeholder="Kembalian" readonly style="background:#f5f5f5;">
-</div>
-<input type="text" id="namaPelanggan" placeholder="Nama Pelanggan (jika hutang)">
-<div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
-<button class="btn-hijau" style="flex:1; min-width:100px;" onclick="bayarLunas()">✅ BAYAR LUNAS</button>
-<button class="btn-kuning" style="flex:1; min-width:100px;" onclick="catatHutang()">📝 CATAT HUTANG</button>
-<button class="btn-merah" style="flex:1; min-width:100px;" onclick="kosongkan()">🗑️ KOSONG</button>
-</div>
-<div id="areaStruk" class="sembunyi">
-<div class="struk" id="isiStruk"></div>
-<p style="text-align:center;"><button class="btn-biru" onclick="tutupStruk()">TUTUP</button></p>
-</div>
-</div>
+  <!-- MENU -->
+  <div class="menu">
+    <button class="aktif" onclick="buka('kasir')">💳 KASIR</button>
+    <button id="menuBarang" class="sembunyi" onclick="buka('barang')">📦 BARANG</button>
+    <button id="menuLaporan" class="sembunyi" onclick="buka('laporan')">📊 LAPORAN</button>
+    <button id="menuHutang" class="sembunyi" onclick="buka('hutang')">💰 HUTANG</button>
+    <button id="menuPengaturan" class="sembunyi" onclick="buka('pengaturan')">⚙️ TOKO</button>
+    <button id="menuKelolaPin" class="sembunyi" onclick="buka('kelolapin')">🔑 PIN KASIR</button>
+    <button id="menuKodePemilik" class="sembunyi" onclick="buka('kodepemilik')">📋 KODE PEMILIK</button>
+  </div>
 
-<div id="pgBarang" class="konten sembunyi">
-<h3>➕ TAMBAH BARANG BARU</h3>
-<input type="text" id="namaBrg" placeholder="Nama Barang">
-<div class="tiga-kolom">
-<input type="number" id="stokBrg" placeholder="Stok Awal">
-<input type="number" id="modalBrg" placeholder="Harga Modal">
-<input type="number" id="jualBrg" placeholder="Harga Jual">
-</div>
-<button class="btn-hijau" onclick="simpanBarang()">✅ SIMPAN BARANG</button>
-<h3 style="margin-top:30px;">📋 DAFTAR BARANG & STOK</h3>
-<table>
-<thead>
-<tr>
-<th>No</th>
-<th>Nama Barang</th>
-<th>Stok</th>
-<th>Tambah Stok</th>
-<th>Harga Modal</th>
-<th>Harga Jual</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="tabelDaftar">
-<tr><td colspan="7" style="text-align:center; color:#888; padding:20px;">Belum ada barang</td></tr>
-</tbody>
-</table>
-<div id="formUbahHarga" class="kotak-edit-harga sembunyi">
-<h4>✏️ UBAH HARGA BARANG</h4>
-<p id="namaBarangUbah" style="font-weight:bold; margin-bottom:10px;"></p>
-<div class="dua-kolom">
-<input type="number" id="modalBaru" placeholder="Harga Modal Baru">
-<input type="number" id="jualBaru" placeholder="Harga Jual Baru">
-</div>
-<div style="display:flex; gap:8px; margin-top:8px;">
-<button class="btn-hijau" style="flex:1;" onclick="simpanPerubahanHarga()">💾 SIMPAN</button>
-<button class="btn-abu" style="flex:1;" onclick="batalUbahHarga()">❌ BATAL</button>
-</div>
-<input type="hidden" id="idBarangUbah">
-</div>
-</div>
+  <!-- KASIR -->
+  <div id="pgKasir" class="konten">
+    <h3>📝 RINCIAN PESANAN</h3>
+    <input type="text" id="cariBarangKasir" class="input-cari" placeholder="🔍 Cari barang..." oninput="filterBarangKasir()">
+    <div id="daftarKasir" class="grid-barang"></div>
+    
+    <div class="kotak-rekap">
+      <h4>🛒 KERANJANG</h4>
+      <div id="keranjangIsi">Belum ada barang</div>
+      <div class="baris total">
+        <span>TOTAL:</span>
+        <span id="lblTotal">Rp 0</span>
+      </div>
+      <div class="dua-kolom">
+        <label>No. Meja:</label>
+        <input type="text" id="nomorMeja" placeholder="No Meja">
+      </div>
+      <div class="dua-kolom">
+        <label>Nama Pembeli:</label>
+        <input type="text" id="namaPelanggan" placeholder="Nama Pembeli">
+      </div>
+      <div class="dua-kolom">
+        <label>Uang Bayar:</label>
+        <input type="number" id="uangBayar" placeholder="Jumlah" oninput="hitungKembalian()">
+      </div>
+      <div class="dua-kolom">
+        <label>Kembali:</label>
+        <input type="text" id="kembalian" readonly placeholder="Kembalian">
+      </div>
+      <div class="tiga-kolom">
+        <button class="btn-hijau" onclick="bayarLunas()">✅ BAYAR</button>
+        <button class="btn-kuning" onclick="catatHutang()">📝 HUTANG</button>
+        <button class="btn-merah" onclick="kosongkan()">🗑️</button>
+      </div>
+    </div>
 
-<div id="pgHutang" class="konten sembunyi">
-<h3>💰 DAFTAR HUTANG</h3>
-<div class="kotak-hutang">
-<div class="baris"><span>Total Piutang:</span><span class="hutang" id="totalHutang">Rp 0</span></div>
-</div>
-<div id="daftarHutang">
-<p style="color:#888; text-align:center; padding:20px;">Belum ada data hutang</p>
-</div>
-</div>
+    <!-- STRUK -->
+    <div id="areaStruk" class="struk sembunyi">
+      <div id="isiStruk"></div>
+      <button onclick="tutupStruk()">TUTUP</button>
+    </div>
+  </div>
 
-<div id="pgLaporan" class="konten sembunyi">
-<h3>📊 LAPORAN PENJUALAN</h3>
-<div class="kotak-rekap">
-<h4>📈 REKAP</h4>
-<div class="baris"><span>Total Penjualan:</span><span class="penjualan" id="totalJual">Rp 0</span></div>
-<div class="baris"><span>Total Keuntungan:</span><span class="keuntungan" id="totalUntung">Rp 0</span></div>
-<div class="baris"><span>Total Hutang:</span><span class="hutang" id="totalLapHutang">Rp 0</span></div>
-<div class="baris"><span>Jumlah Transaksi:</span><span id="jumlahTransaksi">0</span></div>
-</div>
-<div style="display:flex; gap:8px; margin-bottom:15px; flex-wrap:wrap;">
-<button class="btn-biru" onclick="cadangkanData()">📤 CADANGKAN DATA</button>
-<label class="label-file"><button class="btn-ungu" onclick="document.getElementById('filePulihkan').click()">📥 PULIHKAN DATA</button><input type="file" id="filePulihkan" class="input-file" accept=".json" onchange="pulihkanData(event)"></label>
-<button class="btn-merah" onclick="hapusTerpilihRiwayat()">🗑️ Hapus Terpilih</button>
-<button class="btn-abu" onclick="window.print()">🖨️ Cetak Halaman</button>
-</div>
-<h3>📋 RIWAYAT TRANSAKSI</h3>
-<div class="pilih-semua">
-<input type="checkbox" id="pilihSemuaRiwayat" class="checkbox-item" onchange="togglePilihSemua()">
-<label for="pilihSemuaRiwayat"><strong>Pilih Semua</strong></label>
-</div>
-<div id="daftarRiwayat">
-<p style="color:#888; text-align:center; padding:20px;">Belum ada transaksi</p>
-</div>
-</div>
+  <!-- BARANG -->
+  <div id="pgBarang" class="konten sembunyi">
+    <h3>📦 DAFTAR BARANG</h3>
+    <h4>➕ TAMBAH BARANG</h4>
+    <input type="text" id="namaBrg" placeholder="Nama Barang">
+    <div class="tiga-kolom">
+      <input type="number" id="stokBrg" placeholder="Stok">
+      <input type="number" id="modalBrg" placeholder="Modal">
+      <input type="number" id="jualBrg" placeholder="Jual">
+    </div>
+    <button class="btn-hijau" onclick="simpanBarang()">✅ SIMPAN</button>
+    <br><br>
+    <input type="text" id="cariBarangTabel" class="input-cari" placeholder="🔍 Cari barang..." oninput="filterBarangTabel()">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Stok</th>
+          <th>Modal</th>
+          <th>Jual</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelDaftarBody"></tbody>
+    </table>
 
-<div id="pgPengaturan" class="konten sembunyi">
-<h3>⚙️ NAMA TOKO</h3>
-<label style="font-weight:bold; display:block; margin-bottom:8px;">Nama Toko:</label>
-<input type="text" id="inputNamaToko" placeholder="Contoh: Toko Berkat Sejahtera" maxlength="50">
-<button class="btn-hijau" onclick="simpanNamaToko()" style="margin-top:15px;">💾 SIMPAN NAMA TOKO</button>
-</div>
+    <!-- FORM UBAH HARGA -->
+    <div id="formUbahHarga" class="kotak-edit-harga sembunyi">
+      <h4>✏️ UBAH HARGA</h4>
+      <input type="hidden" id="idBarangUbah">
+      <p>Barang: <strong id="namaBarangUbah"></strong></p>
+      <div class="dua-kolom">
+        <input type="number" id="modalBaru" placeholder="Harga Modal Baru">
+        <input type="number" id="jualBaru" placeholder="Harga Jual Baru">
+      </div>
+      <div class="dua-kolom">
+        <button class="btn-hijau" onclick="simpanPerubahanHarga()">💾 SIMPAN</button>
+        <button class="btn-abu" onclick="batalUbahHarga()">❌ BATAL</button>
+      </div>
+    </div>
+  </div>
 
-<div id="pgAdmin" class="konten sembunyi kotak-admin">
-<h2>🔐 PUSAT ADMIN — KELOLA KODE AKSES</h2>
-<div class="kotak-peringatan">
-⚠️ <strong>INFORMASI PENTING:</strong><br>
-Kode akses bersifat rahasia. Setiap kode hanya boleh digunakan oleh satu orang. Jangan berikan kepada siapapun selain anggota yang berwenang.
-</div>
-<h3>📋 DAFTAR KODE AKSES — KIRIM VIA WHATSAPP</h3>
-<div style="margin-bottom:15px;">
-<div class="baris" style="background:#f5f5f5; padding:8px; font-weight:bold;">
-<span>Total Tersedia: <span id="jmlTersedia" style="color:#2e7d32;">0</span></span>
-<span>Total Terpakai: <span id="jmlTerpakai" style="color:#c62828;">0</span></span>
-</div>
-</div>
-<div style="overflow-x:auto;">
-<table id="tabelKodeAkses">
-<thead>
-<tr>
-<th>No</th>
-<th>Status</th>
-<th>Kode Akses</th>
-<th>Nomor WhatsApp</th>
-<th>Kirim</th>
-</tr>
-</thead>
-<tbody id="daftarKodeTabel">
-<tr><td colspan="5" style="text-align:center; padding:20px;">Memuat data...</td></tr>
-</tbody>
-</table>
-</div>
-</div>
+  <!-- LAPORAN -->
+  <div id="pgLaporan" class="konten sembunyi">
+    <h3>📊 LAPORAN</h3>
+    <div class="kotak-rekap">
+      <div class="baris penjualan">
+        <span>Total Penjualan:</span>
+        <span id="totalJual">Rp 0</span>
+      </div>
+      <div class="baris keuntungan">
+        <span>Total Untung:</span>
+        <span id="totalUntung">Rp 0</span>
+      </div>
+      <div class="baris hutang">
+        <span>Total Hutang:</span>
+        <span id="totalLapHutang">Rp 0</span>
+      </div>
+      <div class="baris">
+        <span>Jumlah Transaksi:</span>
+        <span id="jumlahTransaksi">0</span>
+      </div>
+    </div>
+    <button class="btn-biru" onclick="cadangkanData()">💾 CADANGKAN DATA</button>
+    <input type="file" id="filePulihkan" accept=".json" style="display:none" onchange="pulihkanData(event)">
+    <button class="btn-hijau" onclick="document.getElementById('filePulihkan').click()">📥 PULIHKAN DATA</button>
+    
+    <h4>📋 RIWAYAT</h4>
+    <label style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+      <input type="checkbox" id="pilihSemuaRiwayat" onchange="togglePilihSemua()"> Pilih Semua
+      <button class="btn-merah btn-kecil" style="margin-left:auto; width:auto;" onclick="hapusTerpilihRiwayat()">🗑️ Hapus Terpilih</button>
+    </label>
+    <div id="daftarRiwayat">Belum ada transaksi</div>
+  </div>
 
-<div class="kaki-halaman">© 2026 Dikembangkan oleh: Quantum Mind Code</div>
+  <!-- HUTANG -->
+  <div id="pgHutang" class="konten sembunyi">
+    <h3>💰 DAFTAR HUTANG</h3>
+    <div class="kotak-hutang">
+      <div class="baris hutang">
+        <span>Total Piutang:</span>
+        <span id="totalHutang">Rp 0</span>
+      </div>
+    </div>
+    <div id="daftarHutang">Belum ada data hutang</div>
+  </div>
+
+  <!-- PENGATURAN NAMA TOKO -->
+  <div id="pgPengaturan" class="konten sembunyi">
+    <h3>⚙️ NAMA TOKO</h3>
+    <input type="text" id="inputNamaToko" placeholder="Nama Toko">
+    <button class="btn-hijau" onclick="simpanNamaToko()">💾 SIMPAN NAMA</button>
+  </div>
+
+  <!-- KELOLA PIN KARYAWAN — HANYA PEMILIK USAHA -->
+  <div id="pgKelolapin" class="konten sembunyi">
+    <h3>🔑 BUAT PIN KASIR</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:10px;">Buat PIN untuk karyawan/kasir. Berikan PIN kepada kasir untuk masuk ke aplikasi.</p>
+    <div class="kotak-kelola-kode">
+      <input type="text" id="namaKasirBaru" placeholder="Nama Kasir">
+      <input type="text" id="pinKasirBaru" placeholder="PIN (4-6 angka)">
+      <button class="btn-hijau" onclick="buatPinKasir()">✅ BUAT PIN</button>
+    </div>
+    <h4>📋 DAFTAR PIN KASIR</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Kasir</th>
+          <th>PIN</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelPinKasirBody"></tbody>
+    </table>
+  </div>
+
+  <!-- KELOLA KODE PEMILIK USAHA — HANYA PENCIPTA APLIKASI -->
+  <div id="pgKodepemilik" class="konten sembunyi">
+    <div class="kotak-pencipta">
+      <h3>📋 DAFTAR 200 KODE AKSES PEMILIK USAHA</h3>
+      <p style="font-size:13px; color:#666; margin-bottom:10px;">Masukkan nomor HP pemilik usaha, lalu tekan KIRIM. Kode akan tercatat sebagai sudah dikirim.</p>
+    </div>
+    <input type="text" id="cariKodePemilik" class="input-cari" placeholder="🔍 Cari kode atau nomor HP..." oninput="filterKodePemilik()">
+    <div style="overflow-x:auto;">
+      <table id="tabelKodePemilik">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Kode Akses</th>
+            <th>Status</th>
+            <th>Nomor HP</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelKodePemilikBody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
-function amanAngka(nilai){
-  const num = Number(nilai);
-  return isNaN(num) ? 0 : num;
-}
-function formatRupiah(angka){
-  return 'Rp ' + amanAngka(angka).toLocaleString('id-ID');
-}
+// === KONFIGURASI ===
+const KODE_PENCIPTA = "QWERTY";
+let penggunaSaatIni = null;
 
-const kodeAdmin = 'QWERTY';
-const daftarKodeAkses = [
-'12AB34','56CD78','90EF12','34GH56','78IJ90','23KL45','67MN89','01OP23','45QR67','89ST01',
-'12UV34','56WX78','90YZ12','13AC24','57BD68','91CE23','35DF46','79EG80','25PR36','69QS80',
-'03RT14','47SU58','81TV92','15UW26','59VX70','93WY15','37XZ48','80AB82','27CD38','71CD82',
-'16CE28','60DF71','94EG06','28FH39','72GI83','17HJ29','61IK72','95JL07','29KM40','73LN84',
-'18MO30','62NP73','96OQ08','30PR41','74QS85','19RT31','63SU74','97TV09','31UW42','75VX86',
-'20WY32','64XZ75','98AB10','32CD43','76CE87','21DF33','66EG76','99FH11','33GI44','77HJ88'
-];
-
-let adalahAdmin = false;
-let kodeTerpakai = {};
-
-function muatKodeTerpakai(){
-  try{
-    const s = localStorage.getItem('kodeTerpakai');
-    if(s) kodeTerpakai = JSON.parse(s);
-  }catch(e){kodeTerpakai = {};}
-}
-function simpanKodeTerpakai(){
-  localStorage.setItem('kodeTerpakai', JSON.stringify(kodeTerpakai));
-}
-
-function cekKode(){
-  const input = document.getElementById('kodeAkses').value.toUpperCase().trim();
-  const pesanSalah = document.getElementById('pesanSalah');
-  if(input === kodeAdmin){
-    adalahAdmin = true;
-    document.getElementById('halamanLogin').classList.add('sembunyi');
-    document.getElementById('halamanUtama').classList.remove('sembunyi');
-    document.getElementById('btnMenuAdmin').style.display='block';
-    pesanSalah.classList.add('sembunyi');
-    muatData();
-    tampilKasir();
-    tampilDaftarKodeAkses();
-  }else if(daftarKodeAkses.includes(input)){
-    adalahAdmin = false;
-    document.getElementById('halamanLogin').classList.add('sembunyi');
-    document.getElementById('halamanUtama').classList.remove('sembunyi');
-    document.getElementById('btnMenuAdmin').style.display='none';
-    kodeTerpakai[input] = true;
-    simpanKodeTerpakai();
-    pesanSalah.classList.add('sembunyi');
-    muatData();
-    tampilKasir();
-  }else{
-    pesanSalah.classList.remove('sembunyi');
-    document.getElementById('kodeAkses').value='';
-    setTimeout(function(){pesanSalah.classList.add('sembunyi');},3000);
-  }
-}
-
-function keluarAplikasi(){
-  if(confirm('Yakin ingin keluar dari aplikasi?')){
-    document.getElementById('halamanUtama').classList.add('sembunyi');
-    document.getElementById('halamanLogin').classList.remove('sembunyi');
-    document.getElementById('kodeAkses').value='';
-    adalahAdmin = false;
-  }
-}
-
-document.getElementById('kodeAkses').addEventListener('keypress', function(e){
-  if(e.key === 'Enter') cekKode();
-});
-
-function tampilDaftarKodeAkses(){
-  muatKodeTerpakai();
-  const tbody = document.getElementById('daftarKodeTabel');
-  tbody.innerHTML = '';
-  let tersedia = 0, terpakai = 0;
-  daftarKodeAkses.forEach(function(kode, idx){
-    const terpakaiSekarang = kodeTerpakai[kode] === true;
-    if(terpakaiSekarang) terpakai++; else tersedia++;
-    tbody.innerHTML += '<tr>' +
-      '<td>' + (idx+1) + '</td>' +
-      '<td class="' + (terpakaiSekarang ? 'kode-terpakai' : 'kode-tersedia') + '">' + (terpakaiSekarang ? '❌ Terpakai' : '✅ Tersedia') + '</td>' +
-      '<td style="font-weight:bold; font-family:monospace; letter-spacing:2px;">' + kode + '</td>' +
-      '<td><input type="text" id="wa-' + idx + '" style="width:100%; padding:6px;" placeholder="08..."></td>' +
-      '<td><button class="btn-wa" onclick="kirimWA(\''+kode+'\', ' + idx + ')">📲 KIRIM</button></td>' +
-    '</tr>';
-  });
-  document.getElementById('jmlTersedia').textContent = tersedia;
-  document.getElementById('jmlTerpakai').textContent = terpakai;
-}
-
-function kirimWA(kode, idx){
-  const inputWA = document.getElementById('wa-'+idx);
-  let noWA = inputWA.value.trim();
-  if(!noWA){alert('Masukkan nomor WhatsApp terlebih dahulu!'); inputWA.focus(); return;}
-  noWA = noWA.replace(/\D/g,'');
-  if(noWA.startsWith('0')) noWA = '62' + noWA.slice(1);
-  const pesan = encodeURIComponent(
-    '🔑 KODE AKSES ANDA: *' + kode + '*%0A%0A⚠️ *Rahasia! Jangan bagikan kepada siapapun.*%0A%0AGunakan kode ini untuk masuk ke aplikasi TOKO FAREL. Semoga lancar dan berkah ya! 🙏'
-  );
-  window.open('https://wa.me/'+noWA+'?text='+pesan, '_blank');
-  kodeTerpakai[kode] = true;
-  simpanKodeTerpakai();
-  tampilDaftarKodeAkses();
-}
-
+let daftarKodePemilik = [];
+let daftarPinKasir = [];
 let daftarBarang = [];
 let keranjang = [];
 let riwayat = [];
 let daftarHutang = [];
 let namaToko = "TOKO FAREL";
 
-function muatData(){
-  muatKodeTerpakai();
-  try{
-    const s=localStorage.getItem('dataBarang');
-    const r=localStorage.getItem('riwayat');
-    const h=localStorage.getItem('daftarHutang');
-    const n=localStorage.getItem('namaToko');
-    if(s)daftarBarang=JSON.parse(s);
-    if(r)riwayat=JSON.parse(r);
-    if(h)daftarHutang=JSON.parse(h);
-    if(n){namaToko=n; document.getElementById('tampilNamaToko').textContent=namaToko;}
-  }catch(e){console.log('Data dimuat');}
+// === GENERATE 200 KODE OTOMATIS ===
+function buatDaftarKodePemilik(){
+  const huruf = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const angka = '0123456789';
+  const daftarTersimpan = ambilData('daftarKodePemilik');
+  if(daftarTersimpan && daftarTersimpan.length === 200){
+    daftarKodePemilik = daftarTersimpan;
+    return;
+  }
+  daftarKodePemilik = [];
+  for(let i=0; i<200; i++){
+    let kode = '';
+    kode += huruf[Math.floor(Math.random()*huruf.length)];
+    kode += angka[Math.floor(Math.random()*angka.length)];
+    kode += huruf[Math.floor(Math.random()*huruf.length)];
+    kode += angka[Math.floor(Math.random()*angka.length)];
+    while(daftarKodePemilik.some(d => d.kode === kode)){
+      kode = huruf[Math.floor(Math.random()*huruf.length)]
+        + angka[Math.floor(Math.random()*angka.length)]
+        + huruf[Math.floor(Math.random()*huruf.length)]
+        + angka[Math.floor(Math.random()*angka.length)];
+    }
+    daftarKodePemilik.push({
+      kode: kode,
+      terpakai: false,
+      nomorHP: '',
+      dikirimPada: ''
+    });
+  }
+  simpanData('daftarKodePemilik', daftarKodePemilik);
+}
+
+// === FUNGSI DASAR ===
+function amanAngka(nilai){
+  return isNaN(Number(nilai)) ? 0 : Number(nilai);
+}
+function formatRupiah(angka){
+  return 'Rp ' + amanAngka(angka).toLocaleString('id-ID');
+}
+function waktuSekarang(){
+  return new Date().toLocaleString('id-ID');
+}
+
+// === SIMPAN & MUAT DATA ===
+function simpanData(key, nilai){
+  localStorage.setItem(key, JSON.stringify(nilai));
+}
+function ambilData(key){
+  const val = localStorage.getItem(key);
+  try{ return val ? JSON.parse(val) : null; }
+  catch(e){ return null; }
 }
 function simpanSemua(){
-  localStorage.setItem('dataBarang',JSON.stringify(daftarBarang));
-  localStorage.setItem('riwayat',JSON.stringify(riwayat));
-  localStorage.setItem('daftarHutang',JSON.stringify(daftarHutang));
+  simpanData('daftarKodePemilik', daftarKodePemilik);
+  simpanData('daftarPinKasir', daftarPinKasir);
+  simpanData('daftarBarang', daftarBarang);
+  simpanData('riwayat', riwayat);
+  simpanData('daftarHutang', daftarHutang);
+  simpanData('namaToko', namaToko);
+}
+function muatSemua(){
+  try{
+    const dk = ambilData('daftarKodePemilik');
+    const dp = ambilData('daftarPinKasir');
+    const b = ambilData('daftarBarang');
+    const r = ambilData('riwayat');
+    const h = ambilData('daftarHutang');
+    const n = ambilData('namaToko');
+    
+    if(dk) daftarKodePemilik = dk;
+    if(dp) daftarPinKasir = dp;
+    if(b) daftarBarang = b;
+    if(r) riwayat = r;
+    if(h) daftarHutang = h;
+    if(n) { namaToko = n; document.getElementById('tampilNamaToko').textContent = namaToko; }
+  }catch(e){ console.log('Data dimuat'); }
 }
 
-function buka(nama){
-  document.getElementById('pgKasir').classList.add('sembunyi');
-  document.getElementById('pgBarang').classList.add('sembunyi');
-  document.getElementById('pgLaporan').classList.add('sembunyi');
-  document.getElementById('pgHutang').classList.add('sembunyi');
-  document.getElementById('pgPengaturan').classList.add('sembunyi');
-  document.getElementById('pgAdmin').classList.add('sembunyi');
-  document.getElementById('pg'+nama.charAt(0).toUpperCase()+nama.slice(1)).classList.remove('sembunyi');
-  if(nama==='barang')tampilTabel();
-  if(nama==='kasir')tampilKasir();
-  if(nama==='laporan'){document.getElementById('pilihSemuaRiwayat').checked=false; tampilLaporan();}
-  if(nama==='hutang')tampilHutang();
-  if(nama==='pengaturan')document.getElementById('inputNamaToko').value=namaToko;
-  if(nama==='admin')tampilDaftarKodeAkses();
+// === CEK KODE SAAT LOGIN ===
+function cekKode(){
+  const input = document.getElementById('kodeAkses').value.trim().toUpperCase();
+  const pesanSalah = document.getElementById('pesanSalah');
+  pesanSalah.classList.add('sembunyi');
+  
+  if(!input){ alert('Masukkan kode akses!'); return; }
+  
+  if(input === KODE_PENCIPTA){
+    penggunaSaatIni = { tipe:'pencipta', nama:'PENCIPTA APLIKASI', kode:input };
+    masukBerhasil();
+    return;
+  }
+  
+  const idxPemilik = daftarKodePemilik.findIndex(d => d.kode === input);
+  if(idxPemilik !== -1){
+    if(!daftarKodePemilik[idxPemilik].terpakai){
+      daftarKodePemilik[idxPemilik].terpakai = true;
+      daftarKodePemilik[idxPemilik].aktifPada = waktuSekarang();
+      simpanSemua();
+    }
+    penggunaSaatIni = { 
+      tipe:'pemilik', 
+      nama:'PEMILIK USAHA (' + (daftarKodePemilik[idxPemilik].nomorHP || 'Tidak ada HP') + ')', 
+      kode:input,
+      indexKode: idxPemilik
+    };
+    masukBerhasil();
+    return;
+  }
+  
+  const idxKasir = daftarPinKasir.findIndex(d => d.pin === input);
+  if(idxKasir !== -1){
+    penggunaSaatIni = { tipe:'kasir', nama:daftarPinKasir[idxKasir].nama, pin:input };
+    masukBerhasil();
+    return;
+  }
+  
+  pesanSalah.classList.remove('sembunyi');
+  document.getElementById('kodeAkses').value = '';
+  setTimeout(() => pesanSalah.classList.add('sembunyi'), 3000);
 }
 
-function simpanNamaToko(){
-  const n=document.getElementById('inputNamaToko').value.trim();
-  if(!n){alert('Silakan isi nama toko!'); return;}
-  namaToko=n;
-  localStorage.setItem('namaToko', namaToko);
-  document.getElementById('tampilNamaToko').textContent=namaToko;
-  alert('✅ Nama toko disimpan: '+namaToko);
+function masukBerhasil(){
+  document.getElementById('halamanLogin').classList.add('sembunyi');
+  document.getElementById('halamanUtama').classList.remove('sembunyi');
+  document.getElementById('tampilNamaKasir').textContent = penggunaSaatIni.nama;
+  
+  sembunyikanSemuaMenu();
+  
+  if(penggunaSaatIni.tipe === 'pencipta'){
+    document.getElementById('menuKodePemilik').classList.remove('sembunyi');
+    buka('kodepemilik');
+    tampilTabelKodePemilik();
+  }
+  else if(penggunaSaatIni.tipe === 'pemilik'){
+    document.getElementById('menuBarang').classList.remove('sembunyi');
+    document.getElementById('menuLaporan').classList.remove('sembunyi');
+    document.getElementById('menuHutang').classList.remove('sembunyi');
+    document.getElementById('menuPengaturan').classList.remove('sembunyi');
+    document.getElementById('menuKelolaPin').classList.remove('sembunyi');
+    buka('kasir');
+    tampilKasir();
+  }
+  else if(penggunaSaatIni.tipe === 'kasir'){
+    buka('kasir');
+    tampilKasir();
+  }
 }
 
-function simpanBarang(){
-  const n=document.getElementById('namaBrg').value.trim();
-  const s=parseInt(document.getElementById('stokBrg').value)||0;
-  const m=parseInt(document.getElementById('modalBrg').value)||0;
-  const j=parseInt(document.getElementById('jualBrg').value)||0;
-  if(!n || s<=0 || m<=0 || j<=0){alert('Lengkapi semua data barang!');return;}
-  daftarBarang.push({id:Date.now(),nama:n,stok:s,modal:m,jual:j});
+function sembunyikanSemuaMenu(){
+  document.getElementById('menuKodePemilik').classList.add('sembunyi');
+  document.getElementById('menuBarang').classList.add('sembunyi');
+  document.getElementById('menuLaporan').classList.add('sembunyi');
+  document.getElementById('menuHutang').classList.add('sembunyi');
+  document.getElementById('menuPengaturan').classList.add('sembunyi');
+  document.getElementById('menuKelolaPin').classList.add('sembunyi');
+}
+
+function keluarAplikasi(){
+  if(confirm('Yakin ingin keluar?')){
+    document.getElementById('halamanUtama').classList.add('sembunyi');
+    document.getElementById('halamanLogin').classList.remove('sembunyi');
+    document.getElementById('kodeAkses').value = '';
+    penggunaSaatIni = null;
+  }
+}
+
+// === KELOLA KODE PEMILIK USAHA — KHUSUS PENCIPTA ===
+function tampilTabelKodePemilik(){
+  const tbody = document.getElementById('tabelKodePemilikBody');
+  tbody.innerHTML = '';
+  daftarKodePemilik.forEach((d, i) => {
+    const statusClass = d.terpakai ? 'terpakai' : 'tersedia';
+    const statusText = d.terpakai ? '✅ TERKIRIM' : '🟢 TERSEDIA';
+    tbody.innerHTML += '<tr>'
+      + '<td>' + (i+1) + '</td>'
+      + '<td><strong>' + d.kode + '</strong></td>'
+      + '<td class="' + statusClass + '">' + statusText + '</td>'
+      + '<td id="hp-' + i + '">' + (d.nomorHP || '-') + '</td>'
+      + '<td style="white-space:nowrap;">';
+    
+    if(!d.terpakai){
+      tbody.innerHTML += '<input type="text" id="hpInput-' + i + '" placeholder="No HP" style="width:90px; padding:4px; font-size:12px;">'
+        + '<button class="btn-hijau btn-kecil" style="width:auto; margin-left:4px;" onclick="kirimKode(' + i + ')">📤 KIRIM</button>';
+    } else {
+      tbody.innerHTML += '<span style="font-size:11px;">' + (d.dikirimPada || '') + '</span>';
+    }
+    
+    tbody.innerHTML += '</td></tr>';
+  });
+}
+
+function kirimKode(index){
+  const hpInput = document.getElementById('hpInput-' + index);
+  const nomorHP = hpInput.value.trim();
+  if(!nomorHP){ alert('Masukkan nomor HP terlebih dahulu!'); return; }
+  if(!confirm('Kirim kode ' + daftarKodePemilik[index].kode + ' ke ' + nomorHP + '?')) return;
+  
+  daftarKodePemilik[index].terpakai = true;
+  daftarKodePemilik[index].nomorHP = nomorHP;
+  daftarKodePemilik[index].dikirimPada = waktuSekarang();
   simpanSemua();
-  document.getElementById('namaBrg').value=''; document.getElementById('stokBrg').value='';
-  document.getElementById('modalBrg').value=''; document.getElementById('jualBrg').value='';
-  tampilTabel(); tampilKasir();
+  
+  alert('✅ Kode berhasil dikirim!\n\nKode: ' + daftarKodePemilik[index].kode + '\nKepada: ' + nomorHP);
+  tampilTabelKodePemilik();
+}
+
+function filterKodePemilik(){
+  const kata = document.getElementById('cariKodePemilik').value.toUpperCase().trim();
+  document.querySelectorAll('#tabelKodePemilikBody tr').forEach(tr => {
+    const kode = tr.cells[1]?.textContent || '';
+    const hp = tr.cells[3]?.textContent || '';
+    tr.style.display = (kata === '' || kode.includes(kata) || hp.includes(kata)) ? '' : 'none';
+  });
+}
+
+// === KELOLA PIN KASIR — KHUSUS PEMILIK USAHA ===
+function buatPinKasir(){
+  const nama = document.getElementById('namaKasirBaru').value.trim();
+  const pin = document.getElementById('pinKasirBaru').value.trim();
+  
+  if(!nama || !pin){ alert('Isi nama dan PIN!'); return; }
+  if(pin.length < 4 || pin.length > 6){ alert('PIN harus 4-6 angka!'); return; }
+  if(isNaN(pin)){ alert('PIN hanya boleh angka!'); return; }
+  
+  const duplikat = daftarPinKasir.some(d => d.pin === pin);
+  if(duplikat){ alert('PIN sudah dipakai! Gunakan PIN lain.'); return; }
+  
+  daftarPinKasir.push({ nama:nama, pin:pin });
+  simpanSemua();
+  document.getElementById('namaKasirBaru').value = '';
+  document.getElementById('pinKasirBaru').value = '';
+  alert('✅ PIN Kasir berhasil dibuat!\n\nNama: ' + nama + '\nPIN: ' + pin);
+  tampilTabelPinKasir();
+}
+
+function tampilTabelPinKasir(){
+  const tbody = document.getElementById('tabelPinKasirBody');
+  if(daftarPinKasir.length === 0){
+    tbody.innerHTML = '<tr><td colspan="4">Belum ada PIN kasir</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  daftarPinKasir.forEach((d, i) => {
+    tbody.innerHTML += '<tr>'
+      + '<td>' + (i+1) + '</td>'
+      + '<td>' + d.nama + '</td>'
+      + '<td>' + d.pin + '</td>'
+      + '<td><button class="btn-merah btn-kecil" onclick="hapusPinKasir(' + i + ')">Hapus</button></td>'
+      + '</tr>';
+  });
+}
+
+function hapusPinKasir(index){
+  if(!confirm('Hapus PIN kasir ini? Kasir tidak bisa masuk lagi.')) return;
+  daftarPinKasir.splice(index, 1);
+  simpanSemua();
+  tampilTabelPinKasir();
+}
+
+// === BUKA HALAMAN ===
+function buka(nama){
+  ['Kasir','Barang','Laporan','Hutang','Pengaturan','Kelolapin','Kodepemilik'].forEach(pg => {
+    const el = document.getElementById('pg'+pg);
+    if(el) el.classList.add('sembunyi');
+  });
+  const halaman = document.getElementById('pg'+nama.charAt(0).toUpperCase()+nama.slice(1));
+  if(halaman) halaman.classList.remove('sembunyi');
+  
+  if(nama==='barang'){ tampilTabel(); document.getElementById('cariBarangTabel').value=''; }
+  if(nama==='kasir'){ tampilKasir(); document.getElementById('cariBarangKasir').value=''; }
+  if(nama==='laporan'){ tampilLaporan(); }
+  if(nama==='hutang'){ tampilHutang(); }
+  if(nama==='pengaturan'){ document.getElementById('inputNamaToko').value = namaToko; }
+  if(nama==='kelolapin'){ tampilTabelPinKasir(); }
+  if(nama==='kodepemilik'){ tampilTabelKodePemilik(); }
+}
+
+// === NAMA TOKO ===
+function simpanNamaToko(){
+  const n = document.getElementById('inputNamaToko').value.trim();
+  if(!n){ alert('Isi nama toko dulu!'); return; }
+  namaToko = n;
+  simpanSemua();
+  document.getElementById('tampilNamaToko').textContent = namaToko;
+  alert('✅ Nama toko disimpan!');
+}
+
+// === BARANG ===
+function simpanBarang(){
+  const n = document.getElementById('namaBrg').value.trim();
+  const s = parseInt(document.getElementById('stokBrg').value) || 0;
+  const m = parseInt(document.getElementById('modalBrg').value) || 0;
+  const j = parseInt(document.getElementById('jualBrg').value) || 0;
+  if(!n || s<=0 || m<=0 || j<=0){ alert('Lengkapi semua data barang!'); return; }
+  daftarBarang.push({ id:Date.now(), nama:n, stok:s, modal:m, jual:j });
+  simpanSemua();
+  document.getElementById('namaBrg').value='';
+  document.getElementById('stokBrg').value='';
+  document.getElementById('modalBrg').value='';
+  document.getElementById('jualBrg').value='';
+  tampilTabel();
+  tampilKasir();
   alert('✅ Barang tersimpan!');
 }
-function tambahStok(id){
-  const jumlah=parseInt(document.getElementById('tambah-stok-'+id).value)||0;
-  if(jumlah<=0){alert('Masukkan jumlah yang positif!');return;}
-  const idx=daftarBarang.findIndex(function(b){return b.id===id;});
-  if(idx!==-1){daftarBarang[idx].stok+=jumlah; simpanSemua(); tampilTabel(); tampilKasir();}
-}
+
 function ubahHarga(id){
-  const idx=daftarBarang.findIndex(function(b){return b.id===id;});
-  if(idx===-1)return;
-  document.getElementById('idBarangUbah').value=id;
-  document.getElementById('namaBarangUbah').textContent=daftarBarang[idx].nama;
-  document.getElementById('modalBaru').value=daftarBarang[idx].modal;
-  document.getElementById('jualBaru').value=daftarBarang[idx].jual;
+  const idx = daftarBarang.findIndex(b => b.id === id);
+  if(idx === -1) return;
+  document.getElementById('idBarangUbah').value = id;
+  document.getElementById('namaBarangUbah').textContent = daftarBarang[idx].nama;
+  document.getElementById('modalBaru').value = daftarBarang[idx].modal;
+  document.getElementById('jualBaru').value = daftarBarang[idx].jual;
   document.getElementById('formUbahHarga').classList.remove('sembunyi');
-  document.getElementById('formUbahHarga').scrollIntoView({behavior:'smooth'});
 }
+
 function simpanPerubahanHarga(){
-  const id=parseInt(document.getElementById('idBarangUbah').value);
-  const modalBaru=parseInt(document.getElementById('modalBaru').value)||0;
-  const jualBaru=parseInt(document.getElementById('jualBaru').value)||0;
-  if(modalBaru<=0 || jualBaru<=0){alert('Harga tidak boleh kosong atau nol!');return;}
-  if(jualBaru<=modalBaru){alert('Harga jual harus lebih besar dari harga modal!');return;}
-  const idx=daftarBarang.findIndex(function(b){return b.id===id;});
-  if(idx!==-1){
-    daftarBarang[idx].modal=modalBaru;
-    daftarBarang[idx].jual=jualBaru;
+  const id = parseInt(document.getElementById('idBarangUbah').value);
+  const modalBaru = parseInt(document.getElementById('modalBaru').value) || 0;
+  const jualBaru = parseInt(document.getElementById('jualBaru').value) || 0;
+  if(modalBaru <=0 || jualBaru <=0){ alert('Harga tidak boleh kosong!'); return; }
+  if(jualBaru <= modalBaru){ alert('Harga jual harus lebih besar dari modal!'); return; }
+  const idx = daftarBarang.findIndex(b => b.id === id);
+  if(idx !== -1){
+    daftarBarang[idx].modal = modalBaru;
+    daftarBarang[idx].jual = jualBaru;
     simpanSemua();
-    tampilTabel(); tampilKasir();
-    alert('✅ Harga diperbarui!\n'+daftarBarang[idx].nama+'\nModal: '+formatRupiah(modalBaru)+'\nJual: '+formatRupiah(jualBaru));
+    tampilTabel();
+    tampilKasir();
+    alert('✅ Harga diperbarui!');
   }
   document.getElementById('formUbahHarga').classList.add('sembunyi');
 }
+
 function batalUbahHarga(){
   document.getElementById('formUbahHarga').classList.add('sembunyi');
 }
+
 function hapusBarang(id){
-  if(confirm('Hapus barang ini?')){daftarBarang=daftarBarang.filter(function(b){return b.id!==id;}); keranjang=keranjang.filter(function(k){return k.id!==id;}); simpanSemua(); tampilTabel(); tampilKasir();}
-}
-function tampilTabel(){
-  const t=document.getElementById('tabelDaftar');t.innerHTML='';
-  if(daftarBarang.length===0){
-    t.innerHTML='<tr><td colspan="7" style="text-align:center; color:#888; padding:20px;">Belum ada barang</td></tr>';
-    document.getElementById('formUbahHarga').classList.add('sembunyi');
-    return;
-  }
-  daftarBarang.forEach(function(b,i){
-    t.innerHTML+='<tr><td>'+(i+1)+'</td><td style="text-align:left; font-weight:bold;">'+b.nama+'</td><td style="color:#2d5a27; font-weight:bold;">'+b.stok+'</td><td><input type="number" id="tambah-stok-'+b.id+'" class="input-kecil" placeholder="0" min="1"><button class="btn-hijau" style="padding:3px 6px; font-size:12px;" onclick="tambahStok('+b.id+')">+</button></td><td>'+formatRupiah(b.modal)+'</td><td>'+formatRupiah(b.jual)+'</td><td><button class="btn-kuning ubah-harga-btn" onclick="ubahHarga('+b.id+')">✏️ Ubah</button> <button class="btn-merah ubah-harga-btn" onclick="hapusBarang('+b.id+')">Hapus</button></td></tr>';
-  });
-  document.getElementById('formUbahHarga').classList.add('sembunyi');
+  if(!confirm('Hapus barang ini?')) return;
+  daftarBarang = daftarBarang.filter(b => b.id !== id);
+  keranjang = keranjang.filter(k => k.id !== id);
+  simpanSemua();
+  tampilTabel();
+  tampilKasir();
 }
 
-function tampilKasir(){
-  const e=document.getElementById('daftarKasir');e.innerHTML='';
-  if(daftarBarang.length===0){e.innerHTML='<p style="width:100%; text-align:center; color:#888; padding:20px;">Tambah barang dulu di menu BARANG</p>';return;}
-  daftarBarang.forEach(function(b){
-    const adaDiKeranjang = keranjang.some(function(k){return k.id === b.id;});
-    e.innerHTML += '<div class="item-barang ' + (adaDiKeranjang ? 'dipilih' : '') + '" data-id="' + b.id + '">' + 
-      '<div style="font-weight:bold;">' + b.nama + '</div>' +
-      '<div>' + formatRupiah(b.jual) + '</div>' +
-      '<div style="font-size:12px; color:#666;">Stok: ' + b.stok + '</div>' +
-    '</div>';
+function tampilTabel(){
+  const t = document.getElementById('tabelDaftarBody');
+  if(daftarBarang.length === 0){
+    t.innerHTML = '<tr><td colspan="6">Belum ada barang</td></tr>';
+    return;
+  }
+  t.innerHTML = '';
+  daftarBarang.forEach((b,i) => {
+    t.innerHTML += '<tr>'
+      + '<td>' + (i+1) + '</td>'
+      + '<td>' + b.nama + '</td>'
+      + '<td>' + b.stok + '</td>'
+      + '<td>' + formatRupiah(b.modal) + '</td>'
+      + '<td>' + formatRupiah(b.jual) + '</td>'
+      + '<td><button class="btn-kecil btn-kuning" onclick="ubahHarga(' + b.id + ')">Ubah</button> '
+      + '<button class="btn-kecil btn-merah" onclick="hapusBarang(' + b.id + ')">Hapus</button></td>'
+      + '</tr>';
   });
-  document.querySelectorAll('.item-barang').forEach(function(el){
-    el.onclick = function(){
-      const id = parseInt(this.getAttribute('data-id'));
-      pilih(id);
-    };
+}
+
+function filterBarangTabel(){
+  const kata = document.getElementById('cariBarangTabel').value.toLowerCase().trim();
+  document.querySelectorAll('#tabelDaftarBody tr').forEach(tr => {
+    const nama = tr.cells[1]?.textContent.toLowerCase() || '';
+    tr.style.display = (kata === '' || nama.includes(kata)) ? '' : 'none';
+  });
+}
+
+// === KASIR ===
+function tampilBarang(){ tampilKasir(); }
+function tampilKasir(){
+  const e = document.getElementById('daftarKasir');
+  if(daftarBarang.length === 0){
+    e.innerHTML = '<p style="text-align:center; color:#666; width:100%;">Tambah barang dulu di menu BARANG</p>';
+    document.getElementById('keranjangIsi').innerHTML = '<p>Belum ada barang</p>';
+    document.getElementById('lblTotal').textContent = 'Rp 0';
+    return;
+  }
+  e.innerHTML = '';
+  daftarBarang.forEach(b => {
+    e.innerHTML += '<div class="item-barang" data-id="' + b.id + '">'
+      + '<div><strong>' + b.nama + '</strong></div>'
+      + '<div>' + formatRupiah(b.jual) + '</div>'
+      + '<div style="font-size:12px; color:#666;">Stok: ' + b.stok + '</div>'
+      + '</div>';
+  });
+  document.querySelectorAll('.item-barang').forEach(el => {
+    el.onclick = () => pilih(parseInt(el.getAttribute('data-id')));
   });
   tampilKeranjang();
 }
 
+function filterBarangKasir(){
+  const kata = document.getElementById('cariBarangKasir').value.toLowerCase().trim();
+  document.querySelectorAll('.item-barang').forEach(el => {
+    const nama = el.querySelector('div:first-child').textContent.toLowerCase();
+    el.classList.toggle('hilang', !(kata === '' || nama.includes(kata)));
+  });
+}
+
 function pilih(id){
-  const b = daftarBarang.find(function(x){return x.id === id;});
-  if(!b){return;}
-  if(b.stok <= 0){alert('Stok habis!'); return;}
-  const d = keranjang.findIndex(function(k){return k.id === id;});
+  const b = daftarBarang.find(x => x.id === id);
+  if(!b || b.stok <= 0){ alert('Stok habis!'); return; }
+  const d = keranjang.findIndex(k => k.id === id);
   if(d >= 0){
     keranjang[d].jumlah += 1;
   }else{
-    keranjang.push({id: b.id, nama: b.nama, harga: b.jual, modal: b.modal, jumlah: 1});
+    keranjang.push({ id:b.id, nama:b.nama, harga:b.jual, modal:b.modal, jumlah:1 });
   }
-  tampilKasir();
+  tampilKeranjang();
 }
 
 function ubahJumlah(id, tambah){
-  const idx = keranjang.findIndex(function(k){return k.id === id;});
+  const idx = keranjang.findIndex(k => k.id === id);
   if(idx === -1) return;
-  const b = daftarBarang.find(function(x){return x.id === id;});
+  const b = daftarBarang.find(x => x.id === id);
   if(tambah > 0 && keranjang[idx].jumlah >= b.stok){
     alert('Stok tidak cukup! Tersisa: ' + b.stok);
     return;
   }
   keranjang[idx].jumlah += tambah;
-  if(keranjang[idx].jumlah <= 0){
-    keranjang.splice(idx, 1);
-  }
-  tampilKasir();
+  if(keranjang[idx].jumlah <= 0) keranjang.splice(idx, 1);
+  tampilKeranjang();
 }
 
 function tampilKeranjang(){
-  const e=document.getElementById('keranjangIsi');e.innerHTML='';
-  if(keranjang.length===0){e.innerHTML='<p style="color:#888;">Belum ada barang</p>'; document.getElementById('lblTotal').textContent='Rp 0'; document.getElementById('uangBayar').value=''; document.getElementById('kembalian').value=''; return;}
-  let total=0;
-  keranjang.forEach(function(i){
+  const e = document.getElementById('keranjangIsi');
+  if(keranjang.length === 0){
+    e.innerHTML = '<p>Belum ada barang</p>';
+    document.getElementById('lblTotal').textContent = 'Rp 0';
+    document.getElementById('uangBayar').value = '';
+    document.getElementById('kembalian').value = '';
+    return;
+  }
+  let total = 0;
+  e.innerHTML = '';
+  keranjang.forEach(i => {
     total += i.harga * i.jumlah;
-    e.innerHTML += '<div class="keranjang-jumlah">' +
-      '<span>' + i.nama + ' × ' + i.jumlah + '</span>' +
-      '<div class="keranjang-kontrol">' +
-        '<button onclick="ubahJumlah(' + i.id + ',-1)">−</button>' +
-        '<span>' + i.jumlah + '</span>' +
-        '<button onclick="ubahJumlah(' + i.id + ',1)">+</button>' +
-        '<span style="margin-left:8px; min-width:90px; text-align:right; font-weight:bold;">' + formatRupiah(i.harga * i.jumlah) + '</span>' +
-      '</div>' +
-    '</div>';
+    e.innerHTML += '<div class="baris">'
+      + '<span>' + i.nama + ' × ' + i.jumlah + '</span>'
+      + '<span><button class="btn-kecil" style="width:auto;" onclick="ubahJumlah(' + i.id + ',-1)">−</button> '
+      + '<button class="btn-kecil" style="width:auto;" onclick="ubahJumlah(' + i.id + ',1)">+</button> '
+      + formatRupiah(i.harga * i.jumlah) + '</span></div>';
   });
-  document.getElementById('lblTotal').textContent=formatRupiah(total);
+  document.getElementById('lblTotal').textContent = formatRupiah(total);
   hitungKembalian();
 }
+
 function hitungKembalian(){
-  const total=keranjang.reduce(function(s,i){return s+(i.harga*i.jumlah);},0);
-  const bayar=parseInt(document.getElementById('uangBayar').value)||0;
-  document.getElementById('kembalian').value=bayar>=total?formatRupiah(bayar-total):'Kurang '+formatRupiah(total-bayar);
-}
-function kosongkan(){
-  if(keranjang.length>0 && !confirm('Kosongkan keranjang dan nomor meja?'))return;
-  keranjang=[]; 
-  document.getElementById('nomorMeja').value='';
-  tampilKasir(); 
-  document.getElementById('uangBayar').value=''; 
-  document.getElementById('kembalian').value=''; 
-  document.getElementById('namaPelanggan').value=''; 
-  document.getElementById('areaStruk').classList.add('sembunyi');
+  const total = keranjang.reduce((s,i) => s+(i.harga*i.jumlah),0);
+  const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
+  document.getElementById('kembalian').value = bayar >= total ? formatRupiah(bayar-total) : 'Kurang ' + formatRupiah(total-bayar);
 }
 
-function simpanTransaksi(status, bayar, sisaHutang){
-  const total=keranjang.reduce(function(s,i){return s+(i.harga*i.jumlah);},0);
-  const untung=keranjang.reduce(function(s,i){return s+((i.harga-i.modal)*i.jumlah);},0);
-  const meja=document.getElementById('nomorMeja').value.trim()||'-';
-  const pelanggan=document.getElementById('namaPelanggan').value.trim()||'Umum';
-  const transaksi={
-    id:Date.now(),
-    waktu:new Date().toLocaleString('id-ID'),
-    meja:meja,
-    pelanggan:pelanggan,
-    items:keranjang.map(function(i){return {nama:i.nama,jumlah:i.jumlah,harga:i.harga};}),
-    total:total,
-    bayar:bayar,
-    sisaHutang:sisaHutang,
-    untung:untung,
-    status:status,
-    terpilih:false
-  };
-  riwayat.unshift(transaksi);
-  if(status==='hutang'){
-    daftarHutang.unshift({
-      id:Date.now(),
-      pelanggan:pelanggan,
-      meja:meja,
-      total:total,
-      dibayar:bayar,
-      sisa:sisaHutang,
-      waktu:transaksi.waktu,
-      lunas:false,
-      cicilan:[]
-    });
-  }
-  simpanSemua();
-  cetakStruk(transaksi);
-  keranjang=[];
-  document.getElementById('nomorMeja').value='';
-  document.getElementById('uangBayar').value='';
-  document.getElementById('kembalian').value='';
-  document.getElementById('namaPelanggan').value='';
+function kosongkan(){
+  if(keranjang.length > 0 && !confirm('Kosongkan keranjang?')) return;
+  keranjang = [];
+  document.getElementById('nomorMeja').value = '';
+  document.getElementById('uangBayar').value = '';
+  document.getElementById('kembalian').value = '';
+  document.getElementById('namaPelanggan').value = '';
+  document.getElementById('areaStruk').classList.add('sembunyi');
   tampilKasir();
 }
 
-function cetakStruk(t){
-  const e=document.getElementById('isiStruk');
-  e.innerHTML='<div style="text-align:center; font-weight:bold; font-size:18px;">'+namaToko+'</div>'+
-    '<div style="text-align:center; font-size:12px; margin:8px 0;">'+t.waktu+'</div>'+
-    '<div class="garis"></div>'+
-    '<div class="baris"><span>No. Meja:</span><span>'+t.meja+'</span></div>'+
-    '<div class="baris"><span>Pelanggan:</span><span>'+t.pelanggan+'</span></div>'+
-    '<div class="garis"></div>';
-  t.items.forEach(function(i){
-    e.innerHTML+='<div class="baris"><span>'+i.nama+' × '+i.jumlah+'</span><span>'+formatRupiah(i.harga*i.jumlah)+'</span></div>';
+function simpanTransaksi(status, bayar, sisaHutang){
+  const total = keranjang.reduce((s,i) => s+(i.harga*i.jumlah),0);
+  const untung = keranjang.reduce((s,i) => s+((i.harga-i.modal)*i.jumlah),0);
+  const meja = document.getElementById('nomorMeja').value.trim() || '-';
+  const pelanggan = document.getElementById('namaPelanggan').value.trim() || 'Umum';
+  const kasir = penggunaSaatIni ? penggunaSaatIni.nama : 'Anonim';
+  
+  const transaksi = {
+    id: Date.now(),
+    waktu: waktuSekarang(),
+    pelanggan: pelanggan,
+    meja: meja,
+    barang: keranjang.map(i => i.nama + ' × ' + i.jumlah).join(', '),
+    total: total,
+    bayar: bayar,
+    kembali: bayar - total,
+    untung: untung,
+    status: status,
+    sisaHutang: sisaHutang,
+    kasir: kasir
+  };
+  
+  riwayat.unshift(transaksi);
+  
+  keranjang.forEach(item => {
+    const idx = daftarBarang.findIndex(b => b.id === item.id);
+    if(idx !== -1) daftarBarang[idx].stok -= item.jumlah;
   });
-  e.innerHTML+='<div class="garis"></div>'+
-    '<div class="baris" style="font-weight:bold; font-size:16px;"><span>TOTAL:</span><span>'+formatRupiah(t.total)+'</span></div>'+
-    '<div class="baris"><span>Bayar:</span><span>'+formatRupiah(t.bayar)+'</span></div>';
-  if(t.sisaHutang>0)e.innerHTML+='<div class="baris" style="color:#e65100; font-weight:bold;"><span>Sisa Hutang:</span><span>'+formatRupiah(t.sisaHutang)+'</span></div>';
-  e.innerHTML+='<div class="garis"></div>'+
-    '<div style="text-align:center; margin-top:10px; font-size:12px;">Terima Kasih 🙏</div>';
+  
+  simpanSemua();
+  tampilStruk(transaksi);
+}
+
+function tampilStruk(t){
+  const el = document.getElementById('isiStruk');
+  el.innerHTML = '<h3 style="text-align:center; margin-bottom:10px;">' + namaToko + '</h3>'
+    + '<p style="text-align:center; font-size:12px;">' + t.waktu + '</p>'
+    + '<div class="garis"></div>'
+    + '<p>Meja: ' + t.meja + '</p>'
+    + '<p>Pelanggan: ' + t.pelanggan + '</p>'
+    + '<p>' + t.barang + '</p>'
+    + '<div class="garis"></div>'
+    + '<p class="total">TOTAL: ' + formatRupiah(t.total) + '</p>'
+    + '<p>Bayar: ' + formatRupiah(t.bayar) + '</p>'
+    + '<p>Kembali: ' + formatRupiah(t.kembali) + '</p>'
+    + '<p>Status: ' + t.status + '</p>'
+    + '<p style="text-align:center; margin-top:15px; font-size:12px;">Terima Kasih 🙏</p>';
   document.getElementById('areaStruk').classList.remove('sembunyi');
 }
-function tutupStruk(){document.getElementById('areaStruk').classList.add('sembunyi');}
 
+function tutupStruk(){
+  document.getElementById('areaStruk').classList.add('sembunyi');
+  kosongkan();
+}
+
+// === LANJUTAN FUNGSI BAYAR ===
 function bayarLunas(){
-  if(keranjang.length===0){alert('Pilih barang dulu!');return;}
-  const total=keranjang.reduce(function(s,i){return s+(i.harga*i.jumlah);},0);
-  const bayar=parseInt(document.getElementById('uangBayar').value)||0;
-  if(bayar<total){alert('Uang belum cukup! Gunakan CATAT HUTANG.');return;}
-  simpanTransaksi('lunas', bayar, 0);
+  if(keranjang.length === 0){ alert('Belum ada barang!'); return; }
+  const total = keranjang.reduce((s,i) => s+(i.harga*i.jumlah),0);
+  const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
+  if(bayar < total){ alert('Uang bayar kurang! Kurang: ' + formatRupiah(total - bayar)); return; }
+  simpanTransaksi('LUNAS', bayar, 0);
 }
 
 function catatHutang(){
-  if(keranjang.length===0){alert('Pilih barang dulu!');return;}
-  const nama=document.getElementById('namaPelanggan').value.trim();
-  if(!nama){alert('Isi nama pelanggan!');return;}
-  const total=keranjang.reduce(function(s,i){return s+(i.harga*i.jumlah);},0);
-  const bayar=parseInt(document.getElementById('uangBayar').value)||0;
-  if(bayar>=total){alert('Uang sudah cukup! Gunakan BAYAR LUNAS.');return;}
-  const sisa=total-bayar;
-  simpanTransaksi('hutang', bayar, sisa);
-  alert('✅ Hutang tercatat!\nTotal: '+formatRupiah(total)+'\nBayar: '+formatRupiah(bayar)+'\nSisa: '+formatRupiah(sisa));
-}
-
-function bayarCicilan(id){
-  const idx = daftarHutang.findIndex(function(h){return h.id === id;});
-  if(idx === -1) return;
-  const input = document.getElementById('bayar-cicilan-' + id);
-  const jumlah = parseInt(input.value) || 0;
-  if(jumlah <= 0){alert('Masukkan jumlah pembayaran!');return;}
-  if(jumlah > daftarHutang[idx].sisa){alert('Melebihi sisa hutang! Sisa: ' + formatRupiah(daftarHutang[idx].sisa));return;}
+  if(keranjang.length === 0){ alert('Belum ada barang!'); return; }
+  const total = keranjang.reduce((s,i) => s+(i.harga*i.jumlah),0);
+  const bayar = parseInt(document.getElementById('uangBayar').value) || 0;
+  if(bayar >= total){ alert('Sudah lunas, tekan tombol BAYAR saja!'); return; }
+  const sisa = total - bayar;
   
-  daftarHutang[idx].dibayar += jumlah;
-  daftarHutang[idx].sisa -= jumlah;
-  if(!daftarHutang[idx].cicilan) daftarHutang[idx].cicilan = [];
-  daftarHutang[idx].cicilan.push({jumlah: jumlah, waktu: new Date().toLocaleString('id-ID')});
+  const meja = document.getElementById('nomorMeja').value.trim() || '-';
+  const pelanggan = document.getElementById('namaPelanggan').value.trim();
+  if(!pelanggan){ alert('Masukkan nama pelanggan untuk mencatat hutang!'); return; }
   
-  if(daftarHutang[idx].sisa === 0){
-    daftarHutang[idx].lunas = true;
-    alert('✅ Hutang LUNAS! Terima Kasih 🙏');
-  }else{
-    alert('✅ Pembayaran dicatat!\nSisa hutang: ' + formatRupiah(daftarHutang[idx].sisa));
-  }
-  simpanSemua();
-  tampilHutang();
-}
-
-function tandaiLunas(id){
-  if(!confirm('Yakin tandai hutang ini sudah LUNAS?')) return;
-  const idx = daftarHutang.findIndex(function(h){return h.id === id;});
-  if(idx !== -1){
-    daftarHutang[idx].lunas = true;
-    daftarHutang[idx].sisa = 0;
-    simpanSemua();
-    tampilHutang();
-    alert('✅ Hutang ditandai LUNAS!');
-  }
-}
-
-function hapusHutang(id){
-  if(!confirm('⚠️ Yakin hapus data hutang ini?\nData tidak bisa dikembalikan!')) return;
-  daftarHutang = daftarHutang.filter(function(h){return h.id !== id;});
-  simpanSemua();
-  tampilHutang();
-}
-
-function tampilHutang(){
-  const e=document.getElementById('daftarHutang');
-  e.innerHTML='';
-  if(daftarHutang.length===0){
-    e.innerHTML='<p style="color:#888; text-align:center; padding:20px;">Belum ada data hutang</p>';
-    document.getElementById('totalHutang').textContent='Rp 0';
-    return;
-  }
-  let totalPiutang=0;
-  daftarHutang.forEach(function(h,i){
-    totalPiutang+=h.lunas?0:h.sisa;
-    e.innerHTML+='<div class="hutang-item">'+
-      '<div class="baris-atas">'+
-        '<div><strong>'+(i+1)+'. '+h.pelanggan+'</strong> (Meja: '+h.meja+')</div>'+
-        '<span style="font-size:13px; color:#666;">'+h.waktu.split(',')[0]+'</span>'+
-      '</div>'+
-      '<div class="baris"><span>Total:</span><span>'+formatRupiah(h.total)+'</span></div>'+
-      '<div class="baris"><span>Bayar:</span><span>'+formatRupiah(h.dibayar)+'</span></div>'+
-'<div class="baris"><span>Sisa Hutang:</span><span style="color:' + (h.lunas ? '#2e7d32' : '#e65100') + '; font-weight:bold;">' + formatRupiah(h.sisa) + '</span></div>'+
-'<div class="baris"><span>Status:</span><span class="' + (h.lunas ? 'status-lunas' : 'status-belum') + '">' + (h.lunas ? '✅ LUNAS' : '⏳ BELUM LUNAS') + '</span></div>';
-    if(h.cicilan && h.cicilan.length > 0){
-      e.innerHTML += '<div style="margin-top:8px; font-size:13px;"><strong>Riwayat Cicilan:</strong>';
-      h.cicilan.forEach(function(c){
-        e.innerHTML += '<div class="cicilan-item">💳 ' + formatRupiah(c.jumlah) + ' — ' + c.waktu + '</div>';
-      });
-      e.innerHTML += '</div>';
-    }
-    if(!h.lunas){
-      e.innerHTML += '<div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">'+
-        '<input type="number" id="bayar-cicilan-' + h.id + '" placeholder="Jumlah bayar" style="flex:1; min-width:120px; padding:8px;">'+
-        '<button class="btn-hijau" style="flex:1; min-width:100px; padding:8px;" onclick="bayarCicilan(' + h.id + ')">💳 BAYAR</button>'+
-        '<button class="btn-kuning btn-hapus-lunas" onclick="tandaiLunas(' + h.id + ')">✅ Tandai Lunas</button>'+
-      '</div>';
-    }
-    e.innerHTML += '<button class="btn-merah btn-hapus-lunas" style="margin-top:8px;" onclick="hapusHutang(' + h.id + ')">🗑️ Hapus</button></div>';
+  daftarHutang.unshift({
+    id: Date.now(),
+    nama: pelanggan,
+    meja: meja,
+    barang: keranjang.map(i => i.nama + ' × ' + i.jumlah).join(', '),
+    total: total,
+    dibayar: bayar,
+    sisa: sisa,
+    tanggal: waktuSekarang(),
+    lunas: false,
+    riwayatBayar: []
   });
-  document.getElementById('totalHutang').textContent = formatRupiah(totalPiutang);
+  
+  simpanTransaksi('HUTANG', bayar, sisa);
+  alert('✅ Dicatat!\nSisa hutang: ' + formatRupiah(sisa));
 }
 
+// === LAPORAN ===
 function tampilLaporan(){
+  let totalJual = 0, totalUntung = 0, totalHutang = 0;
   const e = document.getElementById('daftarRiwayat');
-  e.innerHTML = '';
+  
   if(riwayat.length === 0){
-    e.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">Belum ada transaksi</p>';
-    document.getElementById('totalJual').textContent = 'Rp 0';
-    document.getElementById('totalUntung').textContent = 'Rp 0';
-    document.getElementById('totalLapHutang').textContent = 'Rp 0';
+    e.innerHTML = '<p style="text-align:center; color:#666;">Belum ada transaksi</p>';
+    document.getElementById('totalJual').textContent = formatRupiah(0);
+    document.getElementById('totalUntung').textContent = formatRupiah(0);
+    document.getElementById('totalLapHutang').textContent = formatRupiah(0);
     document.getElementById('jumlahTransaksi').textContent = '0';
     return;
   }
-  let totalJual = 0, totalUntung = 0, totalHutang = 0;
-  riwayat.forEach(function(t, i){
-    totalJual += t.total;
-    totalUntung += t.untung;
-    totalHutang += t.sisaHutang;
-    e.innerHTML += '<div class="riwayat-item">' +
-      '<input type="checkbox" class="checkbox-item" data-id="' + t.id + '" ' + (t.terpilih ? 'checked' : '') + ' onchange="toggleItemRiwayat(' + t.id + ')" style="margin-right:10px;">' +
-      '<div><strong>' + (i+1) + '. ' + t.pelanggan + '</strong> — Meja: ' + t.meja + '</div>' +
-      '<div style="font-size:13px; color:#666;">' + t.waktu + '</div>' +
-      '<div class="baris" style="margin-top:5px;"><span>Total:</span><span>' + formatRupiah(t.total) + '</span></div>' +
-      '<div class="baris"><span>Bayar:</span><span>' + formatRupiah(t.bayar) + '</span></div>' +
-      (t.sisaHutang > 0 ? '<div class="baris"><span>Sisa Hutang:</span><span style="color:#e65100;">' + formatRupiah(t.sisaHutang) + '</span></div>' : '') +
-      '<div class="baris"><span>Untung:</span><span style="color:#2e7d32; font-weight:bold;">' + formatRupiah(t.untung) + '</span></div>' +
-    '</div>';
+  
+  e.innerHTML = '';
+  riwayat.forEach((t, i) => {
+    if(t.status === 'LUNAS'){
+      totalJual += t.total;
+      totalUntung += t.untung;
+    }
+    if(t.status === 'HUTANG') totalHutang += t.sisaHutang;
+    
+    e.innerHTML += '<div class="riwayat-item">'
+      + '<label style="display:flex; align-items:flex-start; gap:6px;">'
+      + '<input type="checkbox" id="cek-' + i + '" value="' + i + '">'
+      + '<div style="flex:1;">'
+      + '<strong>' + t.waktu + '</strong><br>'
+      + 'Meja: ' + t.meja + ' | ' + t.pelanggan + '<br>'
+      + t.barang + '<br>'
+      + 'Total: ' + formatRupiah(t.total) + ' | Kasir: ' + t.kasir + '<br>'
+      + '<strong style="color:' + (t.status==='LUNAS'?'green':'red') + ';">' + t.status + '</strong>'
+      + '</div></label></div>';
   });
+  
   document.getElementById('totalJual').textContent = formatRupiah(totalJual);
   document.getElementById('totalUntung').textContent = formatRupiah(totalUntung);
   document.getElementById('totalLapHutang').textContent = formatRupiah(totalHutang);
@@ -757,71 +909,174 @@ function tampilLaporan(){
 }
 
 function togglePilihSemua(){
-  const pilihSemua = document.getElementById('pilihSemuaRiwayat').checked;
-  riwayat.forEach(function(t){t.terpilih = pilihSemua;});
-  tampilLaporan();
-}
-
-function toggleItemRiwayat(id){
-  const idx = riwayat.findIndex(function(t){return t.id === id;});
-  if(idx !== -1) riwayat[idx].terpilih = !riwayat[idx].terpilih;
+  const cek = document.getElementById('pilihSemuaRiwayat').checked;
+  document.querySelectorAll('#daftarRiwayat input[type="checkbox"]').forEach(cb => cb.checked = cek);
 }
 
 function hapusTerpilihRiwayat(){
-  const adaTerpilih = riwayat.some(function(t){return t.terpilih;});
-  if(!adaTerpilih){alert('Pilih dulu transaksi yang ingin dihapus!');return;}
-  if(!confirm('⚠️ Yakin hapus transaksi yang dipilih?\nData tidak bisa dikembalikan!')) return;
-  riwayat = riwayat.filter(function(t){return !t.terpilih;});
+  const terpilih = [];
+  document.querySelectorAll('#daftarRiwayat input[type="checkbox"]:checked').forEach(cb => {
+    terpilih.push(parseInt(cb.value));
+  });
+  if(terpilih.length === 0){ alert('Pilih dulu yang ingin dihapus!'); return; }
+  if(!confirm('Yakin hapus ' + terpilih.length + ' transaksi?')) return;
+  riwayat = riwayat.filter((_,i) => !terpilih.includes(i));
   simpanSemua();
   tampilLaporan();
-  alert('✅ Data terpilih dihapus!');
 }
 
+// === HUTANG ===
+function tampilHutang(){
+  let totalPiutang = 0;
+  const e = document.getElementById('daftarHutang');
+  
+  if(daftarHutang.length === 0){
+    e.innerHTML = '<p style="text-align:center; color:#666;">Belum ada data hutang</p>';
+    document.getElementById('totalHutang').textContent = formatRupiah(0);
+    return;
+  }
+  
+  e.innerHTML = '';
+  daftarHutang.forEach((h, i) => {
+    if(!h.lunas) totalPiutang += h.sisa;
+    const status = h.lunas 
+      ? '<span class="status-lunas">✅ LUNAS</span>' 
+      : '<span class="status-belum">⏳ BELUM LUNAS</span>';
+    
+    e.innerHTML += '<div class="hutang-item">'
+      + '<p><strong>' + h.nama + '</strong> | Meja: ' + h.meja + '</p>'
+      + '<p>Barang: ' + h.barang + '</p>'
+      + '<p>Total: ' + formatRupiah(h.total) + ' | Dibayar: ' + formatRupiah(h.dibayar) + '</p>'
+      + '<p>Sisa Hutang: <strong>' + formatRupiah(h.sisa) + '</strong> | ' + status + '</p>'
+      + '<p>Tanggal: ' + h.tanggal + '</p>';
+    
+    if(h.riwayatBayar.length > 0){
+      e.innerHTML += '<p style="margin-top:6px;"><strong>Riwayat Cicilan:</strong></p>';
+      h.riwayatBayar.forEach(c => {
+        e.innerHTML += '<div class="cicilan-item">💰 Bayar: ' + formatRupiah(c.jumlah) + ' — ' + c.waktu + '</div>';
+      });
+    }
+    
+    if(!h.lunas){
+      e.innerHTML += '<div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">'
+        + '<input type="number" id="bayarCicilan-' + i + '" placeholder="Jumlah bayar" style="flex:1; min-width:120px; padding:6px;">'
+        + '<button class="btn-hijau btn-kecil" style="width:auto;" onclick="bayarCicilan(' + i + ')">💳 BAYAR</button>'
+        + '<button class="btn-kuning btn-kecil" style="width:auto;" onclick="lunaskanHutang(' + i + ')">✅ LUNAS</button>'
+        + '</div>';
+    } else {
+      e.innerHTML += '<button class="btn-merah btn-kecil" onclick="hapusHutang(' + i + ')">🗑️ HAPUS DATA</button>';
+    }
+    e.innerHTML += '</div>';
+  });
+  
+  document.getElementById('totalHutang').textContent = formatRupiah(totalPiutang);
+}
+
+function bayarCicilan(index){
+  const h = daftarHutang[index];
+  if(h.lunas){ alert('Hutang sudah lunas!'); return; }
+  
+  const input = document.getElementById('bayarCicilan-' + index);
+  const jumlah = parseInt(input.value) || 0;
+  if(jumlah <= 0){ alert('Masukkan jumlah pembayaran!'); return; }
+  if(jumlah > h.sisa){ alert('Kelebihan bayar! Sisa hutang: ' + formatRupiah(h.sisa)); return; }
+  
+  h.riwayatBayar.push({ jumlah: jumlah, waktu: waktuSekarang() });
+  h.dibayar += jumlah;
+  h.sisa -= jumlah;
+  
+  if(h.sisa === 0){
+    h.lunas = true;
+    alert('✅ Hutang LUNAS!');
+  } else {
+    alert('✅ Dicatat!\nSisa hutang: ' + formatRupiah(h.sisa));
+  }
+  
+  simpanSemua();
+  tampilHutang();
+}
+
+function lunaskanHutang(index){
+  const h = daftarHutang[index];
+  if(h.lunas){ alert('Sudah lunas!'); return; }
+  if(!confirm('Lunaskan hutang ini? Sisa: ' + formatRupiah(h.sisa))){ return; }
+  
+  h.riwayatBayar.push({ jumlah: h.sisa, waktu: waktuSekarang() });
+  h.dibayar += h.sisa;
+  h.sisa = 0;
+  h.lunas = true;
+  
+  alert('✅ Hutang berhasil dilunasi!');
+  simpanSemua();
+  tampilHutang();
+}
+
+function hapusHutang(index){
+  if(!confirm('Hapus data hutang ini? Data tidak bisa dikembalikan!')) return;
+  daftarHutang.splice(index, 1);
+  simpanSemua();
+  tampilHutang();
+}
+
+// === CADANGKAN & PULIHKAN DATA ===
 function cadangkanData(){
-  const dataPenuh = {
+  const data = {
     versi: '1.0',
-    waktu: new Date().toLocaleString('id-ID'),
-    namaToko: namaToko,
+    dibuat: waktuSekarang(),
     daftarBarang: daftarBarang,
     riwayat: riwayat,
-    daftarHutang: daftarHutang
+    daftarHutang: daftarHutang,
+    daftarPinKasir: daftarPinKasir,
+    daftarKodePemilik: daftarKodePemilik,
+    namaToko: namaToko
   };
-  const berkas = JSON.stringify(dataPenuh, null, 2);
-  const namaBerkas = 'Cadangan_Toko_' + new Date().toLocaleDateString('id-ID').replace(/\//g,'-') + '.json';
-  const tautan = document.createElement('a');
-  tautan.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(berkas);
-  tautan.download = namaBerkas;
-  document.body.appendChild(tautan);
-  tautan.click();
-  document.body.removeChild(tautan);
-  alert('✅ Data tersimpan di HP!\nNama file: ' + namaBerkas);
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Cadangan_' + namaToko.replace(/\s/g,'_') + '_' + new Date().toLocaleDateString('id-ID').replace(/\//g,'-') + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert('✅ Data berhasil dicadangkan ke HP!');
 }
 
-function pulihkanData(peristiwa){
-  const berkas = peristiwa.target.files[0];
-  if(!berkas) return;
-  if(!confirm('⚠️ Memulihkan data akan menimpa data yang ada sekarang!\nLanjutkan?')) return;
-  const pembaca = new FileReader();
-  pembaca.onload = function(e){
+function pulihkanData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!confirm('Memulihkan data akan menimpa data yang ada sekarang. Lanjutkan?')){
+    e.target.value = '';
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(event){
     try{
-      const data = JSON.parse(e.target.result);
+      const data = JSON.parse(event.target.result);
       if(data.daftarBarang) daftarBarang = data.daftarBarang;
       if(data.riwayat) riwayat = data.riwayat;
       if(data.daftarHutang) daftarHutang = data.daftarHutang;
-      if(data.namaToko){namaToko = data.namaToko; document.getElementById('tampilNamaToko').textContent = namaToko;}
+      if(data.daftarPinKasir) daftarPinKasir = data.daftarPinKasir;
+      if(data.daftarKodePemilik) daftarKodePemilik = data.daftarKodePemilik;
+      if(data.namaToko) { namaToko = data.namaToko; document.getElementById('tampilNamaToko').textContent = namaToko; }
+      
       simpanSemua();
-      tampilTabel();
-      tampilKasir();
-      tampilHutang();
-      tampilLaporan();
-      alert('✅ Data berhasil dipulihkan!\nWaktu cadangan: ' + (data.waktu || 'Tidak diketahui'));
+      alert('✅ Data berhasil dipulihkan!');
+      buka('kasir');
     }catch(err){
-      alert('❌ File tidak valid atau rusak!');
+      alert('❌ File tidak valid!');
     }
+    e.target.value = '';
   };
-  pembaca.readAsText(berkas);
-  peristiwa.target.value = '';
+  reader.readAsText(file);
 }
+
+// === INISIALISASI AWAL ===
+window.onload = function(){
+  buatDaftarKodePemilik();
+  muatSemua();
+};
+
 </script>
+
 </body>
 </html>
