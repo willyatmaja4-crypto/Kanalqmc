@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QMC Teknologi</title>
+    <title>QMC TEKNOLOGI</title>
     <style>
         *{box-sizing:border-box;font-family:Arial,sans-serif;}
         body{background:#0f172a;color:#fff;padding:20px;max-width:700px;margin:0 auto;min-height:100vh;}
@@ -31,6 +31,8 @@
         .info-box{background:rgba(255,215,0,0.08);border:1px solid #ffd700;padding:12px;border-radius:8px;margin-bottom:20px;font-size:14px;}
         .info-rekening{background:rgba(59,130,246,0.1);border:1px solid #3b82f6;padding:14px;border-radius:8px;margin:12px 0;font-size:14px;line-height:1.8;}
         .peringatan-saldo{background:rgba(239,68,68,0.15);border:1px solid #ef4444;padding:12px;border-radius:6px;margin:10px 0;font-size:14px;color:#fca5a5;}
+        .peringatan-kode{background:rgba(245,158,11,0.1);border:1px solid #f59e0b;padding:10px;border-radius:6px;margin:8px 0;font-size:13px;color:#fcd34d;}
+        .kode-disembunyikan{color:#64748b;font-size:11px;font-style:italic;}
         .admin-badge{background:linear-gradient(135deg,#ffd700,#f59e0b);color:#000;padding:6px 16px;border-radius:20px;font-weight:bold;display:inline-block;margin-bottom:15px;}
         .member-badge{background:linear-gradient(135deg,#22c55e,#16a34a);color:#000;padding:6px 16px;border-radius:20px;font-weight:bold;display:inline-block;margin-bottom:15px;}
         .dompet-utama{background:linear-gradient(135deg,#1d4ed8,#0f2e9e);border-radius:10px;padding:18px;margin-bottom:15px;text-align:center;border:2px solid #ffd700;}
@@ -59,12 +61,10 @@
         .tab-btn{flex:1;padding:8px;background:#334155;border:none;border-radius:6px;color:#fff;font-size:13px;min-width:100px;}
         .tab-btn.active{background:#3b82f6;}
         .link-wa{color:#25d366;text-decoration:none;font-weight:bold;}
-        .peringatan-kode{background:rgba(245,158,11,0.1);border:1px solid #f59e0b;padding:10px;border-radius:6px;margin:8px 0;font-size:13px;color:#fcd34d;}
     </style>
 </head>
 <body>
 
-<!-- HALAMAN LOGIN -->
 <div id="halaman-login">
     <h1>QMC TEKNOLOGI</h1>
     <p class="tagline">Bersama Membangun Masa Depan — Satu Dalam Genggaman</p>
@@ -76,12 +76,10 @@
     </div>
 </div>
 
-<!-- HALAMAN ADMIN / OWNER -->
 <div id="halaman-admin" class="hidden">
     <h1>🌐 DIAGRAM JARINGAN ANDA</h1>
     <span class="admin-badge">👑 OWNER</span>
     
-    <!-- DOMPET UTAMA -->
     <div class="dompet-utama">
         <h3 style="margin-top:0;">💳 DOMPET UTAMA</h3>
         <div class="total-utama" id="saldo-utama-admin">Rp 0</div>
@@ -91,7 +89,6 @@
         </div>
     </div>
     
-    <!-- BAGIAN BONUS -->
     <div class="dompet-bonus">
         <h3 style="margin-top:0;">🎁 DOMPET BONUS</h3>
         <div class="saldo-row">
@@ -114,13 +111,11 @@
         <button class="tab-btn" onclick="bukaTab('jaringan')">📋 JARINGAN</button>
     </div>
     
-    <!-- TAB: PERMINTAAN TOP UP SALDO -->
     <div id="tab-topup" class="box">
         <h2>💳 PERMINTAAN ISI SALDO ANGGOTA</h2>
         <div id="daftar-permintaan-topup" style="font-size:14px;opacity:0.7;">Belum ada permintaan.</div>
     </div>
     
-    <!-- TAB: DAFTAR LANGSUNG -->
     <div id="tab-daftar" class="box hidden">
         <h2>➕ TAMBAH ANGGOTA BARU (LANGSUNG)</h2>
         <hr>
@@ -150,7 +145,6 @@
         </div>
     </div>
     
-    <!-- TAB: JARINGAN -->
     <div id="tab-jaringan" class="box hidden">
         <h2>📋 DIAGRAM JARINGAN LENGKAP</h2>
         <div id="tampilan-diagram-admin"></div>
@@ -166,18 +160,15 @@
     <button class="btn-keluar" onclick="keluarSistem()">🚪 KELUAR</button>
 </div>
 
-<!-- HALAMAN ANGGOTA -->
 <div id="halaman-anggota" class="hidden">
     <h1>🌐 JARINGAN SAYA</h1>
     <span class="member-badge" id="nama-saya-tampil">👤 ANGGOTA</span>
     
-    <!-- DOMPET UTAMA ANGGOTA -->
     <div class="dompet-utama">
         <h3 style="margin-top:0;">💳 DOMPET UTAMA</h3>
         <div class="total-utama" id="saldo-utama-saya">Rp 0</div>
     </div>
     
-    <!-- BAGIAN BONUS ANGGOTA -->
     <div class="dompet-bonus">
         <h3 style="margin-top:0;">🎁 DOMPET BONUS</h3>
         <div class="saldo-row">
@@ -194,7 +185,6 @@
         </div>
     </div>
     
-    <!-- TOMBOL TOP UP SALDO -->
     <div class="box">
         <h2>💳 ISI SALDO DOMPET UTAMA</h2>
         <button class="btn-topup" onclick="bukaFormTopUp()">💰 PERMINTAAN ISI SALDO</button>
@@ -216,7 +206,6 @@
         </div>
     </div>
     
-    <!-- PENDAFTARAN MEMBER LANGSUNG -->
     <div class="box">
         <h2>➕ DAFTARKAN MEMBER BARU</h2>
         <hr>
@@ -365,7 +354,6 @@ function bukaTab(namaTab) {
     if (namaTab === 'jaringan') perbaruiTampilanAdmin();
 }
 
-// === TAMBAH SALDO MANUAL OWNER ===
 function tambahSaldoManual() {
     const jumlah = parseInt(document.getElementById('input-modal-awal').value);
     if (!jumlah || jumlah <= 0) {
@@ -386,7 +374,6 @@ function tambahSaldoManual() {
     alert(`✅ Berhasil! Saldo utama bertambah: ${formatUang(jumlah)}`);
 }
 
-// === PINDAHKAN BONUS KE DOMPET UTAMA — OWNER ===
 function pindahKeUtama(jenis) {
     if (jenis === 'sponsor') {
         if (dataJaringan.sponsor <= 0) { alert('❌ Tidak ada bonus sponsor untuk dipindahkan!'); return; }
@@ -412,7 +399,6 @@ function pindahKeUtama(jenis) {
     alert('✅ Berhasil dipindahkan ke Dompet Utama!');
 }
 
-// === FUNGSI TOP UP SALDO ANGGOTA ===
 function bukaFormTopUp() {
     document.getElementById('form-topup-anggota').classList.toggle('hidden');
 }
@@ -441,7 +427,7 @@ function kirimPermintaanTopUp() {
     
     simpanData();
     document.getElementById('jumlah-topup-saya').value = '';
-    pesan.innerHTML = `<span style="color:#4ade80;">✅ Permintaan terkirim ke Admin! Silakan transfer ke Sea Bank: 9011 9546 5653 a/n M Amin, lalu konfirmasi ke WA Admin: 0813 8506 7500</span>`;
+    pesan.innerHTML = `<span style="color:#4ade80;">✅ Permintaan terkirim ke Admin!\nSilakan transfer ke Sea Bank: 9011 9546 5653 a/n M Amin, lalu konfirmasi ke WA Admin: 0813 8506 7500</span>`;
 }
 
 function perbaruiTampilanPermintaanTopUp() {
@@ -508,28 +494,27 @@ function prosesTopUp(indeks, disetujui) {
     perbaruiTampilanAdmin();
 }
 
-
-// === FUNGSI BONUS ===
-function cariUpline(dariNode, targetNode) {
-    if (!dariNode || !dariNode.anak) return null;
-    for (let i = 0; i < 5; i++) {
-        if (dariNode.anak[i] === targetNode) return dariNode;
-        const hasil = cariUpline(dariNode.anak[i], targetNode);
-        if (hasil) return hasil;
+function cariUpline(dariNode, targetNode, induk = null) {
+    if (!dariNode) return null;
+    if (dariNode === targetNode) return induk;
+    if (dariNode.anak) {
+        for (let i = 0; i < 5; i++) {
+            if (dariNode.anak[i]) {
+                const hasil = cariUpline(dariNode.anak[i], targetNode, dariNode);
+                if (hasil) return hasil;
+            }
+        }
     }
     return null;
 }
 
 function berikanBonusSponsorDanJaringan(pendaftarNode, nodeAnggotaBaru, rincian) {
-    // 💰 Bonus Sponsor HANYA untuk yang MENDAFTARKAN
+    // Bonus Sponsor langsung masuk ke pendaftar
     pendaftarNode.sponsor += BONUS_SPONSOR;
     rincian.push(`💰 Bonus Sponsor: ${pendaftarNode.nama} +${formatUang(BONUS_SPONSOR)}`);
     
-    // 🎁 Bonus Jaringan untuk pendaftar + semua upline sampai level 7
-    pendaftarNode.jaringan += BONUS_JARINGAN;
-    rincian.push(`🎁 Bonus Jaringan: ${pendaftarNode.nama} +${formatUang(BONUS_JARINGAN)}`);
-    
-    berikanBonusJaringanKeUpline(pendaftarNode, rincian, 2);
+    // Bonus Jaringan ke upline sampai level 7
+    berikanBonusJaringanKeUpline(pendaftarNode, rincian, 1);
 }
 
 function berikanBonusJaringanKeUpline(dariNode, rincian, levelSaatIni) {
@@ -537,7 +522,7 @@ function berikanBonusJaringanKeUpline(dariNode, rincian, levelSaatIni) {
     const upline = cariUpline(dataJaringan, dariNode);
     if (upline) {
         upline.jaringan += BONUS_JARINGAN;
-        rincian.push(`🎁 Bonus Jaringan: ${upline.nama} +${formatUang(BONUS_JARINGAN)}`);
+        rincian.push(`🎁 Bonus Jaringan Level ${levelSaatIni}: ${upline.nama} +${formatUang(BONUS_JARINGAN)}`);
         berikanBonusJaringanKeUpline(upline, rincian, levelSaatIni + 1);
     }
 }
@@ -545,29 +530,36 @@ function berikanBonusJaringanKeUpline(dariNode, rincian, levelSaatIni) {
 function cariNodeBerdasarkanKode(node, kodeYangDicari) {
     if (!node) return null;
     if (node.kodeAkses === kodeYangDicari) return node;
-    for (let i = 0; i < 5; i++) {
-        if (node.anak[i]) {
-            const hasil = cariNodeBerdasarkanKode(node.anak[i], kodeYangDicari);
-            if (hasil) return hasil;
+    if (node.anak) {
+        for (let i = 0; i < 5; i++) {
+            if (node.anak[i]) {
+                const hasil = cariNodeBerdasarkanKode(node.anak[i], kodeYangDicari);
+                if (hasil) return hasil;
+            }
         }
     }
     return null;
 }
 
-function gambarTingkat(node, level, kodeSaya = null) {
+function gambarTingkat(node, level, isAdmin = false, kodeSaya = null) {
     if (!node || !node.nama || !node.anak) return '';
     let html = '';
-    html += `<div class="level-label">⬇️ LEVEL ${level} — ${node.nama} ${node.kodeAkses ? '[' + node.kodeAkses + ']' : ''}</div>`;
+    html += `<div class="level-label">⬇️ LEVEL ${level} — ${node.nama}</div>`;
     html += `<div class="tree-row">`;
     for (let i = 0; i < 5; i++) {
         const anggota = node.anak[i];
         if (anggota && anggota.nama) {
             const kelasSaya = kodeSaya && anggota.kodeAkses === kodeSaya ? 'me' : '';
+            const tampilkanKode = isAdmin || (kodeSaya && anggota.kodeAkses === kodeSaya);
+            const tampilKode = tampilkanKode 
+                ? `🔑 ${anggota.kodeAkses}` 
+                : `<span class="kode-disembunyikan">🔑 Rahasia</span>`;
+            
             html += `
                 <div class="member-card ${level === 0 ? 'owner' : ''} ${kelasSaya}">
                     <div class="member-name">${anggota.nama}</div>
                     <div class="member-info">
-                        🔑 ${anggota.kodeAkses}<br>
+                        ${tampilKode}<br>
                         💳 Utama: ${formatUang(anggota.saldoUtama || 0)}<br>
                         💰 Sponsor: ${formatUang(anggota.sponsor)}<br>
                         🎁 Jaringan: ${formatUang(anggota.jaringan)}
@@ -583,23 +575,11 @@ function gambarTingkat(node, level, kodeSaya = null) {
             const adaAnak = node.anak[i].anak.some(a => a !== null);
             if (adaAnak) {
                 html += `<div style="text-align:center;margin:5px 0;">⬇</div>`;
-                html += gambarTingkat(node.anak[i], level + 1, kodeSaya);
+                html += gambarTingkat(node.anak[i], level + 1, isAdmin, kodeSaya);
             }
         }
     }
     return html;
-}
-function ambilSemuaAnggota(node, hasil = [], jalur = '') {
-    if (!node || !node.anak) return hasil;
-    for (let i = 0; i < 5; i++) {
-        const anak = node.anak[i];
-        if (anak && anak.nama) {
-            const label = jalur ? jalur + ' → ' + anak.nama : anak.nama;
-            hasil.push({ nama: anak.nama, kodeAkses: anak.kodeAkses, nodeRef: anak, labelPilihan: label });
-            ambilSemuaAnggota(anak, hasil, label);
-        }
-    }
-    return hasil;
 }
 
 function perbaruiTampilanAdmin() {
@@ -623,11 +603,10 @@ function perbaruiTampilanAdmin() {
         });
     }
     
-    document.getElementById('tampilan-diagram-admin').innerHTML = gambarTingkat(dataJaringan, 0);
+    document.getElementById('tampilan-diagram-admin').innerHTML = gambarTingkat(dataJaringan, 0, true);
     perbaruiTampilanKode();
 }
 
-// === DAFTARKAN ANGGOTA LANGSUNG OLEH ADMIN ===
 function daftarkanAnggotaAdmin() {
     const namaBaru = document.getElementById('nama-baru-admin').value.trim();
     const hpBaru = document.getElementById('hp-baru-admin').value.trim();
@@ -648,7 +627,6 @@ function daftarkanAnggotaAdmin() {
         return;
     }
     
-    // Cari slot kosong di bawah Owner
     let posisiSlot = -1;
     for (let i = 0; i < 5; i++) {
         if (!dataJaringan.anak[i]) {
@@ -676,6 +654,12 @@ function daftarkanAnggotaAdmin() {
     daftarKodeAksesTersedia = daftarKodeAksesTersedia.filter(k => k !== kodeAkses.toUpperCase());
     tandaiKodeTerpakai(kodeAkses.toUpperCase());
     
+    // Owner juga dapat bonus saat mendaftarkan member
+    const rincianBonus = [];
+    dataJaringan.sponsor += BONUS_SPONSOR;
+    rincianBonus.push(`💰 Bonus Sponsor: OWNER +${formatUang(BONUS_SPONSOR)}`);
+    rincianBonus.push(`🎁 Tidak ada upliine di atas Owner`);
+    
     const nomorWA = hpBaru.replace(/\D/g,'').replace(/^0/, '62');
     const pesanWA = encodeURIComponent(
         `Halo ${namaBaru.toUpperCase()}! 🎉\n` +
@@ -688,7 +672,10 @@ function daftarkanAnggotaAdmin() {
     
     daftarRiwayat.unshift({
         teks: `${namaBaru.toUpperCase()} [${kodeAkses.toUpperCase()}] didaftarkan oleh Owner`,
-        rincian: [`📱 Kode dikirim ke: ${hpBaru}`],
+        rincian: [
+            ...rincianBonus,
+            `📱 Kode dikirim ke: ${hpBaru}`
+        ],
         waktu: new Date().toLocaleString('id-ID')
     });
     
@@ -702,7 +689,8 @@ function daftarkanAnggotaAdmin() {
     
     kotakPesan.innerHTML = `
         <span style="color:#4ade80;">
-            ✅ Berhasil! ${namaBaru.toUpperCase()} telah terdaftar!<br><br>
+            ✅ Berhasil! ${namaBaru.toUpperCase()} telah terdaftar!<br>
+            ${rincianBonus.join('<br>')}<br><br>
             <a href="${linkWA}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:bold;">📱 Klik di sini untuk kirim kode via WhatsApp</a>
             <div class="peringatan-kode" style="margin-top:10px;">
                 ⚠️ Ingatkan anggota: JANGAN BERITAHUKAN kode akses kepada siapapun!
@@ -710,7 +698,6 @@ function daftarkanAnggotaAdmin() {
         </span>`;
 }
 
-// === DAFTARKAN MEMBER LANGSUNG OLEH ANGGOTA ===
 function daftarkanMemberLangsung() {
     const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
     if (!nodeSaya) return;
@@ -743,13 +730,10 @@ function daftarkanMemberLangsung() {
         return;
     }
     
-    // Ambil kode akses baru
     const kodeBaru = daftarKodeAksesTersedia[daftarKodeAksesTersedia.length - 1];
     
-    // Potong langsung dari Dompet Utama pendaftar
     nodeSaya.saldoUtama -= BIAYA_DAFTAR_MEMBER;
     
-    // Buat anggota baru
     const anggotaBaru = {
         nama: nama.toUpperCase(),
         kodeAkses: kodeBaru.toUpperCase(),
@@ -759,18 +743,14 @@ function daftarkanMemberLangsung() {
         anak: [null, null, null, null, null]
     };
     
-    // Simpan ke posisi yang dipilih
     nodeSaya.anak[parseInt(slot)] = anggotaBaru;
     
-    // Berikan Bonus Sponsor & Jaringan
     const rincianBonus = [];
     berikanBonusSponsorDanJaringan(nodeSaya, anggotaBaru, rincianBonus);
     
-    // Tandai kode terpakai
     daftarKodeAksesTersedia.pop();
     tandaiKodeTerpakai(kodeBaru.toUpperCase());
     
-    // Buat link WhatsApp otomatis
     const nomorWA = hp.replace(/\D/g,'').replace(/^0/, '62');
     const pesanWA = encodeURIComponent(
         `Halo ${nama.toUpperCase()}! 🎉\n` +
@@ -781,7 +761,6 @@ function daftarkanMemberLangsung() {
     );
     const linkWA = `https://wa.me/${nomorWA}?text=${pesanWA}`;
     
-    // Simpan riwayat
     daftarRiwayat.unshift({
         teks: `${nama.toUpperCase()} [${kodeBaru.toUpperCase()}] didaftarkan oleh ${nodeSaya.nama}`,
         rincian: [
@@ -794,12 +773,10 @@ function daftarkanMemberLangsung() {
     
     simpanData();
     
-    // Reset form
     document.getElementById('nama-baru-saya').value = '';
     document.getElementById('hp-baru-saya').value = '';
     document.getElementById('pilih-slot-saya').value = '';
     
-    // Perbarui tampilan
     muatHalamanAnggota(nodeSaya);
     
     pesan.innerHTML = `
@@ -814,7 +791,6 @@ function daftarkanMemberLangsung() {
         </span>`;
 }
 
-// === PINDAHKAN BONUS KE DOMPET UTAMA — ANGGOTA ===
 function pindahKeUtamaAnggota(jenis) {
     const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
     if (!nodeSaya) return;
@@ -829,7 +805,7 @@ function pindahKeUtamaAnggota(jenis) {
         });
         nodeSaya.sponsor = 0;
     } else {
-        if (nodeSaya.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
+                if (nodeSaya.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
         nodeSaya.saldoUtama += nodeSaya.jaringan;
         daftarRiwayat.unshift({
             teks: `🎁 ${nodeSaya.nama}: Pindah Bonus Jaringan ke Dompet Utama`,
@@ -858,7 +834,6 @@ function cekLogin() {
         document.getElementById('halaman-login').classList.add('hidden');
         document.getElementById('halaman-admin').classList.remove('hidden');
         perbaruiTampilanAdmin();
-        perbaruiTampilanPermintaanTopUp();
         return;
     }
     
@@ -883,9 +858,9 @@ function muatHalamanAnggota(nodeSaya) {
     const infoSaldo = document.getElementById('info-saldo-anggota');
     if (infoSaldo) {
         if (saldoSaya < BIAYA_DAFTAR_MEMBER) {
-            infoSaldo.innerHTML = `<div class="peringatan-saldo">⚠️ Saldo utama anda: ${formatUang(saldoSaya)}. Diperlukan ${formatUang(BIAYA_DAFTAR_MEMBER)} untuk mendaftarkan member baru.</div>`;
+            infoSaldo.innerHTML = `<div style="color:#fbbf24; font-size:13px; margin-bottom:10px;">⚠️ Saldo utama anda: ${formatUang(saldoSaya)}. Diperlukan ${formatUang(BIAYA_DAFTAR_MEMBER)} untuk mendaftarkan member baru.</div>`;
         } else {
-            infoSaldo.innerHTML = `<div class="info-box">✅ Saldo anda mencukupi untuk mendaftarkan member baru!</div>`;
+            infoSaldo.innerHTML = `<div style="color:#4ade80; font-size:13px; margin-bottom:10px;">✅ Saldo anda mencukupi untuk mendaftarkan member baru!</div>`;
         }
     }
     
@@ -901,133 +876,32 @@ function muatHalamanAnggota(nodeSaya) {
     
     const diagramSaya = document.getElementById('tampilan-diagram-saya');
     if (diagramSaya) {
-        diagramSaya.innerHTML = gambarTingkat(nodeSaya, 0, nodeSaya.kodeAkses);
+        diagramSaya.innerHTML = gambarTingkat(nodeSaya, 0, false, nodeSaya.kodeAkses);
     }
 }
 
 function hapusSemuaData() {
-    if (confirm('⚠️ Hati-hati! Semua data akan dihapus! Lanjutkan?')) {
-        localStorage.removeItem('dataJaringanMLM');
-        dataJaringan = { nama: '👑 OWNER', kodeAkses: null, saldoUtama: 0, sponsor: 0, jaringan: 0, anak: [null, null, null, null, null] };
-        daftarRiwayat = [];
-        daftarPermintaanTopUp = [];
-        daftarKodeAksesTersedia = buatDaftarKode();
-        daftarKodeAksesTerpakai = [];
-        kodeSementara = null;
-        simpanData();
-        alert('✅ Semua data telah dihapus!');
-        perbaruiTampilanAdmin();
+    if (confirm('⚠️ Hati-hati! Semua data akan dihapus dan tidak bisa dikembalikan! Lanjutkan?')) {
+        localStorage.clear();
+        location.reload();
     }
 }
 
 function keluarSistem() {
     penggunaSaatIni = null;
+    kodeSementara = null;
     document.getElementById('halaman-admin').classList.add('hidden');
     document.getElementById('halaman-anggota').classList.add('hidden');
     document.getElementById('halaman-login').classList.remove('hidden');
     document.getElementById('input-kode').value = '';
     document.getElementById('pesan-login').innerHTML = '';
 }
-// === SISTEM OTOMATIS BACKUP DATA ===
-const NAMA_FILE_BACKUP = 'QMC_Teknologi_Backup';
-const JAM_BACKUP_1 = 23; // Jam 11 malam
-const JAM_BACKUP_2 = 0;  // Jam 12 malam
 
-function dapatkanSemuaData() {
-    return {
-        versi: 'QMC Teknologi v1.0',
-        waktuBackup: new Date().toLocaleString('id-ID'),
-        jaringan: dataJaringan,
-        riwayat: daftarRiwayat,
-        kodeTersedia: daftarKodeAksesTersedia,
-        kodeTerpakai: daftarKodeAksesTerpakai,
-        permintaanTopUp: daftarPermintaanTopUp
-    };
-}
-
-function simpanBackupKeFile() {
-    const data = dapatkanSemuaData();
-    const teks = JSON.stringify(data, null, 2);
-    const blob = new Blob([teks], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    const tanggal = new Date().toISOString().slice(0, 10);
-    const jam = new Date().toTimeString().slice(0,5).replace(':','-');
-    a.download = `${NAMA_FILE_BACKUP}_${tanggal}_jam${jam}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    console.log('✅ Backup selesai:', new Date().toLocaleString('id-ID'));
-}
-
-function pulihkanDariFile(fileTerpilih, callbackSelesai) {
-    const pembaca = new FileReader();
-    pembaca.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (!data.versi || !data.jaringan) {
-                alert('❌ File backup tidak valid!');
-                return;
-            }
-            if (confirm(`⚠️ Memulihkan data dari backup:\n📅 ${data.waktuBackup}\n\nData saat ini akan diganti! Lanjutkan?`)) {
-                dataJaringan = data.jaringan;
-                daftarRiwayat = data.riwayat || [];
-                daftarKodeAksesTersedia = data.kodeTersedia || buatDaftarKode();
-                daftarKodeAksesTerpakai = data.kodeTerpakai || [];
-                daftarPermintaanTopUp = data.permintaanTopUp || [];
-                simpanData();
-                alert('✅ Data berhasil dipulihkan! Halaman akan dimuat ulang.');
-                location.reload();
-            }
-        } catch(err) {
-            alert('❌ Gagal membaca file! Pastikan file yang dipilih benar.');
-        }
-        if (callbackSelesai) callbackSelesai();
-    };
-    pembaca.readAsText(fileTerpilih);
-}
-
-function cekJalankanBackupOtomatis() {
-    const sekarang = new Date();
-    const jamSekarang = sekarang.getHours();
-    const menitSekarang = sekarang.getMinutes();
-    const kunciBackupHariIni = 'backupTerakhir_' + sekarang.toDateString();
-    
-    // Jalankan di jam 23:00 dan 00:00, sekali saja per jam
-    if ((jamSekarang === JAM_BACKUP_1 || jamSekarang === JAM_BACKUP_2) && menitSekarang === 0) {
-        const terakhir = localStorage.getItem(kunciBackupHariIni);
-        if (!terakhir) {
-            simpanBackupKeFile();
-            localStorage.setItem(kunciBackupHariIni, 'sudah');
-            // Hapus catatan kemarin agar besok bisa backup lagi
-            const kemarin = new Date(Date.now() - 86400000).toDateString();
-            localStorage.removeItem('backupTerakhir_' + kemarin);
-        }
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !document.getElementById('halaman-login').classList.contains('hidden')) {
+        cekLogin();
     }
-}
-
-// Jalankan pengecekan setiap 60 detik
-setInterval(cekJalankanBackupOtomatis, 60000);
-
-// Tampilkan tombol backup manual di halaman Admin
-window.onloadFungsiBackup = function() {
-    const kotakRiwayat = document.getElementById('daftar-riwayat');
-    if (kotakRiwayat) {
-        const tombolBackup = document.createElement('div');
-        tombolBackup.style = 'margin:15px 0;display:flex;gap:10px;flex-wrap:wrap;';
-        tombolBackup.innerHTML = `
-            <button onclick="simpanBackupKeFile()" style="background:#10b981;color:#fff;padding:8px 15px;border-radius:6px;border:none;font-weight:bold;">💾 UNDUH BACKUP SEKARANG</button>
-            <label style="background:#3b82f6;color:#fff;padding:8px 15px;border-radius:6px;cursor:pointer;font-weight:bold;margin:0;">
-                📂 PULIHKAN DARI BACKUP
-                <input type="file" accept=".json" onchange="pulihkanDariFile(this.files[0])" style="display:none;">
-            </label>
-        `;
-        kotakRiwayat.parentNode.insertBefore(tombolBackup, kotakRiwayat);
-    }
-};
-
-// Jalankan saat halaman selesai dimuat
-setTimeout(window.onloadFungsiBackup, 500);
+});
 
 muatData();
 </script>
