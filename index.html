@@ -249,7 +249,8 @@ const firebaseConfig = {
   projectId: "qmc-technologi",
   storageBucket: "qmc-technologi.firebasestorage.app",
   messagingSenderId: "688192662212",
-  appId: "1:688192662212:web:7a8c5b7d8e9f0a1b2c3d4e"
+  appId: "1:688192662212:web:dfa310465e19475f693791",
+  measurementId: "G-QNLBRZ8VTH"
 };
 
 // Inisialisasi Firebase
@@ -777,7 +778,7 @@ async function daftarkanMemberLangsung() {
         anak: [null, null, null, null, null]
     };
     
-    nodeSaya.anak[parseInt(slot)] = anggotaBaru;
+        nodeSaya.anak[parseInt(slot)] = anggotaBaru;
     
     const rincianBonus = [];
     berikanBonusSponsorDanJaringan(nodeSaya, anggotaBaru, rincianBonus);
@@ -785,7 +786,7 @@ async function daftarkanMemberLangsung() {
     await tandaiKodeTerpakai(kodeBaru.toUpperCase());
     
     const nomorWA = hp.replace(/\D/g,'').replace(/^0/, '62');
-        const pesanWA = encodeURIComponent(
+    const pesanWA = encodeURIComponent(
         `Halo ${nama.toUpperCase()}! 🎉\n` +
         `Selamat anda telah terdaftar di QMC TEKNOLOGI.\n\n` +
         `Kode akses anda: ${kodeBaru.toUpperCase()}\n\n` +
@@ -810,7 +811,6 @@ async function daftarkanMemberLangsung() {
     document.getElementById('hp-baru-saya').value = '';
     document.getElementById('pilih-slot-saya').value = '';
     
-    const dataTerbaru = await bacaSemuaData();
     const nodeSayaTerbaru = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
     if (nodeSayaTerbaru) muatHalamanAnggota(nodeSayaTerbaru);
     
