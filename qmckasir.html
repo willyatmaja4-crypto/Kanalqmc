@@ -24,7 +24,7 @@ body{background:linear-gradient(135deg,#2d5a27,#4a8c43); min-height:100vh; paddi
 .info-demo{background:#fff3cd; border:1px solid #ffc107; color:#856404; padding:10px; border-radius:6px; margin-bottom:15px; font-size:13px;}
 .info-penuh{background:#e8f5e9; border:1px solid #4caf50; color:#2e7d32; padding:10px; border-radius:6px; margin-bottom:15px; font-size:13px;}
 .link-admin{margin-top:15px; font-size:12px; color:#888;}
-.link-admin a{color:#2d5a27; text-decoration:none;}
+.link-admin a{color:#2d5a27; text-decoration:none; cursor:pointer;}
 
 .menu{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
 .menu button{flex:1; min-width:70px; padding:12px 4px; font-size:13px; width:auto;}
@@ -100,12 +100,12 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
       <div id="pilihanUtama">
         <button onclick="tampilMintaKode()">📤 MINTA KODE DEMO</button>
         <button class="tombol-pisah" onclick="tampilMasukKode()">🔑 SUDAH PUNYA KODE — MASUK</button>
-        <p class="link-admin"><a href="#" onclick="tampilLoginAdmin(); return false;">Masuk sebagai Admin</a></p>
+        <p class="link-admin"><a onclick="tampilLoginAdmin(); return false;">Masuk sebagai Admin</a></p>
       </div>
       
       <div id="formMintaKode" class="sembunyi">
         <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
-        <p style="font-size:14px; color:#66; margin-bottom:10px;">Masukkan nomor WhatsApp Anda untuk mendapatkan kode demo.<br><small>⚠️ 1 HP & 1 Nomor hanya boleh 1 kali saja</small></p>
+        <p style="font-size:14px; color:#666; margin-bottom:10px;">Masukkan nomor WhatsApp Anda untuk mendapatkan kode demo.<br><small>⚠️ 1 HP & 1 Nomor hanya boleh 1 kali saja</small></p>
         <input type="tel" id="nomorWAPeminta" placeholder="Contoh: 08123456789" autocomplete="off">
         <button onclick="buatDanKirimKode()">✅ BUAT KODE</button>
         <p id="pesanMinta" class="pesan-salah sembunyi"></p>
@@ -113,9 +113,9 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
       
       <div id="formMasukKode" class="sembunyi">
         <button class="tombol-pisah" style="margin-bottom:12px;" onclick="kembaliKePilihan()">← Kembali</button>
-        <p style="font-size:13px; color:#66; margin-bottom:8px;">Masukkan nomor WA pemilik kode ini:</p>
+        <p style="font-size:13px; color:#666; margin-bottom:8px;">Masukkan nomor WA pemilik kode ini:</p>
         <input type="tel" id="nomorWAMasuk" placeholder="Nomor WhatsApp" autocomplete="off">
-        <p style="font-size:13px; color:#66; margin-bottom:8px;">Masukkan kode akses:</p>
+        <p style="font-size:13px; color:#666; margin-bottom:8px;">Masukkan kode akses:</p>
         <input type="text" id="kodeAkses" placeholder="Kode Akses" autocomplete="off">
         <button onclick="cekKode()">✅ MASUK</button>
         <p id="pesanSalah" class="pesan-salah sembunyi"></p>
@@ -130,7 +130,7 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     </div>
     
     <div id="formPinKasir" class="sembunyi">
-      <p style="font-size:14px; color:#66; margin-bottom:10px;">Masukkan PIN yang diberikan pemilik toko.</p>
+      <p style="font-size:14px; color:#666; margin-bottom:10px;">Masukkan PIN yang diberikan pemilik toko.</p>
       <input type="password" id="pinKasirMasuk" placeholder="Masukkan PIN (4-6 angka)" maxlength="6" autocomplete="off">
       <button onclick="cekPinKasir()">✅ MASUK KASIR</button>
       <p id="pesanPin" class="pesan-salah sembunyi"></p>
@@ -427,8 +427,9 @@ function tampilLoginAdmin(){
   sembunyikanPesan();
 }
 function kembaliKePilihan(){
-  ['formMintaKode','formMasukKode','formLoginAdmin'].forEach(id => 
-    document.getElementById(id).classList.add('sembunyi'));
+  document.getElementById('formMintaKode').classList.add('sembunyi');
+  document.getElementById('formMasukKode').classList.add('sembunyi');
+  document.getElementById('formLoginAdmin').classList.add('sembunyi');
   document.getElementById('pilihanUtama').classList.remove('sembunyi');
   sembunyikanPesan();
 }
@@ -479,13 +480,11 @@ async function buatDanKirimKode(){
     return;
   }
   
-  // ✅ Cek: Perangkat ini sudah pernah minta demo?
   if(await perangkatSudahMintaDemo()){
     tampilPesan('pesanMinta', '❌ Perangkat ini sudah pernah meminta kode demo.\nHubungi admin untuk versi penuh.', true);
     return;
   }
   
-  // ✅ Cek: Nomor WA ini sudah pernah dapat demo?
   if(await nomorSudahPernahDaftarDemo(nomorWA)){
     tampilPesan('pesanMinta', '❌ Nomor WA ini sudah pernah mendapatkan kode demo.\nSatu nomor hanya boleh 1 kali saja.', true);
     return;
@@ -515,7 +514,6 @@ async function buatDanKirimKode(){
       idPerangkat: ID_PERANGKAT
     });
     
-    // ✅ Catat perangkat ini sudah minta demo
     await db.collection('permintaan_perangkat').doc(ID_PERANGKAT).set({
       nomorWA: nomorWA,
       dimintaPada: new Date().toISOString()
@@ -603,7 +601,6 @@ async function cekKode(){
     if(!doc.exists){ tampilPesan('pesanSalah', '❌ Kode akses tidak ditemukan!'); return; }
     const data = doc.data();
     
-    // ✅ Verifikasi nomor WA: harus sama dengan yang terdaftar
     if(data.nomorWAPemilik && data.nomorWAPemilik !== nomorWAMasuk){
       tampilPesan('pesanSalah', '❌ Nomor WA tidak cocok dengan pemilik kode ini!\nHanya pemilik nomor yang boleh masuk.', true);
       return;
@@ -754,7 +751,8 @@ function masukBerhasil(tipe){
     if(elInfoVersi) elInfoVersi.classList.add('sembunyi');
     if(elFooter) elFooter.style.display = 'none';
     if(elLabelVersi) elLabelVersi.textContent = '';
-buka('kasir');
+    buka('kasir');
+  }
 }
 
 function sembunyikanSemuaMenu(){
@@ -763,6 +761,7 @@ function sembunyikanSemuaMenu(){
     const el = document.getElementById(id);
     if(el) el.classList.add('sembunyi');
   });
+  document.getElementById('menuKasir').classList.remove('sembunyi');
 }
 
 function buka(namaHalaman){
@@ -1035,11 +1034,9 @@ function bayar(){
   const meja = document.getElementById('nomorMeja').value.trim() || '-';
   
   if(uangDibayar >= total){
-    // ✅ LUNAS
     const kembalian = uangDibayar - total;
     const keuntungan = keranjang.reduce((sum, k) => sum + ((k.hargaJual - k.hargaModal) * k.jumlah), 0);
     
-    // Kurangi stok
     keranjang.forEach(k => {
       const brg = daftarBarang.find(b => b.id === k.id);
       if(brg) brg.stok -= k.jumlah;
@@ -1064,14 +1061,12 @@ function bayar(){
     alert('✅ Pembayaran Lunas!\nKembalian: ' + formatUang(kembalian));
     
   }else if(uangDibayar > 0){
-    // ✅ BAYAR SEBAGIAN — CATAT HUTANG
     const sisa = total - uangDibayar;
     const hutangIndex = daftarHutang.findIndex(h => 
       h.namaPelanggan === namaPel && h.meja === meja && !h.lunas
     );
     
     if(hutangIndex > -1){
-      // Tambah cicilan ke hutang yang sudah ada
       daftarHutang[hutangIndex].dibayar += uangDibayar;
       daftarHutang[hutangIndex].cicilan.push({
         tanggal: new Date().toISOString(),
@@ -1088,7 +1083,6 @@ function bayar(){
         alert('✅ Pembayaran dicatat!\nSisa hutang: ' + formatUang(daftarHutang[hutangIndex].sisa));
       }
     }else{
-      // Hutang baru
       daftarHutang.unshift({
         id: Date.now(),
         namaPelanggan: namaPel,
@@ -1106,7 +1100,6 @@ function bayar(){
             '\nSisa Hutang: ' + formatUang(sisa));
     }
     
-    // Kurangi stok
     keranjang.forEach(k => {
       const brg = daftarBarang.find(b => b.id === k.id);
       if(brg) brg.stok -= k.jumlah;
@@ -1128,7 +1121,6 @@ function bayar(){
     buatStruk(total, uangDibayar, sisa, false);
     
   }else{
-    // ✅ TIDAK ADA UANG DIPAYAR — CATAT HUTANG PENUH
     if(!namaPel){ alert('Masukkan nama pelanggan untuk mencatat hutang!'); return; }
     
     daftarHutang.unshift({
@@ -1144,7 +1136,6 @@ function bayar(){
       lunas: false
     });
     
-    // Kurangi stok
     keranjang.forEach(k => {
       const brg = daftarBarang.find(b => b.id === k.id);
       if(brg) brg.stok -= k.jumlah;
@@ -1190,7 +1181,6 @@ function catatHutang(){
     lunas: false
   });
   
-  // Kurangi stok
   keranjang.forEach(k => {
     const brg = daftarBarang.find(b => b.id === k.id);
     if(brg) brg.stok -= k.jumlah;
@@ -1524,7 +1514,6 @@ function bayarCicilan(idHutang){
   
   simpanSemua();
   tampilDaftarHutang();
-  tampilLaporan();
 }
 
 function tandaiLunas(idHutang){
@@ -1548,7 +1537,6 @@ function tandaiLunas(idHutang){
   simpanSemua();
   alert('✅ Hutang ditandai LUNAS!');
   tampilDaftarHutang();
-  tampilLaporan();
 }
 
 // ==========================================
