@@ -343,14 +343,15 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
 <div class="kaki-halaman" id="footerVersi">⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan</div>
 
 <script>
-// === KONFIGURASI FIREBASE ===
+// === KONFIGURASI FIREBASE — SUDAH DIPERBAIKI ===
 const firebaseConfig = {
-  apiKey: "AIzaSyC9t8H-REPLt8HxY2ZpVhXzL0bYdQeRfK8M",
-  authDomain: "willyatmaja4-crypto.firebaseapp.com",
-  projectId: "willyatmaja4-crypto",
-  storageBucket: "willyatmaja4-crypto.appspot.com",
-  messagingSenderId: "1023456789012",
-  appId: "1:1023456789012:web:abc123def456ghi789jkl01"
+  apiKey: "AIzaSyDWbFhfGkveSLpHyfXdB1G-4iQOP_UjOts",
+  authDomain: "qmc-technologi.firebaseapp.com",
+  projectId: "qmc-technologi",
+  storageBucket: "qmc-technologi.firebasestorage.app",
+  messagingSenderId: "688192662212",
+  appId: "1:688192662212:web:dfa310465e19475f693791",
+  measurementId: "G-QNLBRZ8VTH"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -477,7 +478,7 @@ async function buatDanKirimKode(){
       demoSelesai: false
     });
     
-    tampilPesan('pesanMinta', '✅ Kode Demo Anda: ' + kodeAkses + '\\n\\nMasa berlaku 72 jam sejak pertama digunakan.', false);
+    tampilPesan('pesanMinta', '✅ Kode Demo Anda: ' + kodeAkses + '\n\nMasa berlaku 72 jam sejak pertama digunakan.', false);
     document.getElementById('nomorWAPeminta').value = '';
     
   }catch(error){
@@ -512,7 +513,7 @@ async function buatKodeDemoBaru(){
       demoSelesai: false
     });
     
-    alert('✅ KODE DEMO DIBUAT:\\n' + kodeAkses + '\\n\\nMasa berlaku: 72 jam sejak pertama masuk.');
+    alert('✅ KODE DEMO DIBUAT:\n' + kodeAkses + '\n\nMasa berlaku: 72 jam sejak pertama masuk.');
     document.getElementById('nomorWAKodeBaru').value = '';
     tampilDaftarKodeFirebase();
     
@@ -544,7 +545,7 @@ async function buatKodePenuhBaru(){
       dibuatPada: new Date().toISOString()
     });
     
-    alert('✅ KODE PENUH DIBUAT:\\n' + kodeAkses + '\\n\\nTanpa batas waktu — selamanya berlaku!');
+    alert('✅ KODE PENUH DIBUAT:\n' + kodeAkses + '\n\nTanpa batas waktu — selamanya berlaku!');
     document.getElementById('nomorWAKodeBaru').value = '';
     tampilDaftarKodeFirebase();
     
@@ -614,7 +615,7 @@ async function cekKode(){
         await db.collection('kode_akses').doc(input).update({
           demoSelesai: true
         });
-        tampilPesan('pesanSalah', '⏰ Masa demo 72 jam telah habis.\\n\\nHubungi admin untuk kode versi penuh.');
+        tampilPesan('pesanSalah', '⏰ Masa demo 72 jam telah habis.\n\nHubungi admin untuk kode versi penuh.');
         return;
       }
       
@@ -848,7 +849,7 @@ function buatPinKasir(){
   simpanSemua();
   document.getElementById('namaKasirBaru').value = '';
   document.getElementById('pinKasirBaru').value = '';
-  alert('✅ PIN Kasir berhasil dibuat!\\n\\nNama: ' + nama + '\\nPIN: ' + pin);
+  alert('✅ PIN Kasir berhasil dibuat!\n\nNama: ' + nama + '\nPIN: ' + pin);
   tampilTabelPinKasir();
 }
 
@@ -874,50 +875,49 @@ function hapusPinKasir(index){
   tampilTabelPinKasir();
 }
 
-// === BARANG ===
+// === KELOLA BARANG ===
 function simpanBarang(){
   const nama = document.getElementById('namaBrg').value.trim();
   const stok = amanAngka(document.getElementById('stokBrg').value);
   const modal = amanAngka(document.getElementById('modalBrg').value);
   const jual = amanAngka(document.getElementById('jualBrg').value);
   
-  if(!nama){ alert('Nama barang tidak boleh kosong!'); return; }
-  if(daftarBarang.some(b => b.nama === nama)){ alert('Barang sudah ada!'); return; }
+  if(!nama || jual <= 0){ alert('Lengkapi data barang!'); return; }
   
-  daftarBarang.push({
-    id: Date.now(),
+  const barangBaru = {
+    id: Date.now().toString(),
     nama: nama,
     stok: stok,
     modal: modal,
     jual: jual
-  });
+  };
   
+  daftarBarang.push(barangBaru);
   simpanSemua();
+  tampilTabel();
+  
   document.getElementById('namaBrg').value = '';
   document.getElementById('stokBrg').value = '';
   document.getElementById('modalBrg').value = '';
   document.getElementById('jualBrg').value = '';
-  alert('✅ Barang ditambahkan!');
-  tampilTabel();
 }
 
 function tampilTabel(){
   const tbody = document.getElementById('tabelDaftarBody');
   if(!tbody) return;
-  if(daftarBarang.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666;">Belum ada barang</td></tr>';
-    return;
-  }
+  
   tbody.innerHTML = '';
-  daftarBarang.forEach((b, i) => {
+  daftarBarang.forEach((brg, i) => {
     tbody.innerHTML += '<tr>'
       + '<td>' + (i+1) + '</td>'
-      + '<td>' + b.nama + '</td>'
-      + '<td>' + b.stok + '</td>'
-      + '<td>' + formatRupiah(b.modal) + '</td>'
-      + '<td>' + formatRupiah(b.jual) + '</td>'
-      + '<td><button class="btn-kecil" style="background:#ff9800; color:#fff; margin:2px;" onclick="bukaFormUbah(' + i + ')">Ubah</button>'
-      + '<button class="btn-merah btn-kecil" style="margin:2px;" onclick="hapusBarang(' + i + ')">Hapus</button></td>'
+      + '<td>' + brg.nama + '</td>'
+      + '<td>' + brg.stok + '</td>'
+      + '<td>' + formatRupiah(brg.modal) + '</td>'
+      + '<td>' + formatRupiah(brg.jual) + '</td>'
+      + '<td style="display:flex; gap:4px; justify-content:center;">'
+        + '<button class="btn-biru btn-kecil" onclick="formUbahHarga(\'' + brg.id + '\')">Ubah</button>'
+        + '<button class="btn-merah btn-kecil" onclick="hapusBarang(\'' + brg.id + '\')">Hapus</button>'
+      + '</td>'
       + '</tr>';
   });
 }
@@ -925,17 +925,20 @@ function tampilTabel(){
 function filterBarangTabel(){
   const kata = document.getElementById('cariBarangTabel').value.toLowerCase().trim();
   document.querySelectorAll('#tabelDaftarBody tr').forEach(tr => {
-    const nama = tr.cells[1]?.textContent.toLowerCase() || '';
-    tr.style.display = nama.includes(kata) ? '' : 'none';
+    const nama = tr.cells[1]?.textContent?.toLowerCase() || '';
+    tr.style.display = (kata === '' || nama.includes(kata)) ? '' : 'none';
   });
 }
 
-function bukaFormUbah(index){
+function formUbahHarga(id){
+  const brg = daftarBarang.find(b => b.id === id);
+  if(!brg) return;
+  
   document.getElementById('formUbahHarga').classList.remove('sembunyi');
-  document.getElementById('namaBarangUbah').textContent = daftarBarang[index].nama;
-  document.getElementById('idBarangUbah').value = index;
-  document.getElementById('modalBaru').value = daftarBarang[index].modal;
-  document.getElementById('jualBaru').value = daftarBarang[index].jual;
+  document.getElementById('namaBarangUbah').textContent = brg.nama;
+  document.getElementById('idBarangUbah').value = id;
+  document.getElementById('modalBaru').value = brg.modal;
+  document.getElementById('jualBaru').value = brg.jual;
 }
 
 function batalUbahHarga(){
@@ -943,289 +946,312 @@ function batalUbahHarga(){
 }
 
 function simpanPerubahanHarga(){
-  const idx = parseInt(document.getElementById('idBarangUbah').value);
+  const id = document.getElementById('idBarangUbah').value;
   const modalBaru = amanAngka(document.getElementById('modalBaru').value);
   const jualBaru = amanAngka(document.getElementById('jualBaru').value);
   
-  daftarBarang[idx].modal = modalBaru;
-  daftarBarang[idx].jual = jualBaru;
-  simpanSemua();
-  alert('✅ Harga diperbarui!');
-  batalUbahHarga();
-  tampilTabel();
-  tampilKasir();
-}
-
-function hapusBarang(index){
-  if(!confirm('Yakin hapus barang ini?')) return;
-  daftarBarang.splice(index, 1);
-  simpanSemua();
-  tampilTabel();
-  tampilKasir();
-}
-
-// === KASIR ===
-function tampilKasir(){
-  const el = document.getElementById('daftarKasir');
-  if(!el) return;
-  if(daftarBarang.length === 0){
-    el.innerHTML = '<p style="width:100%; text-align:center; color:#666;">Belum ada barang</p>';
-    return;
+  if(jualBaru <= 0){ alert('Harga jual harus diisi!'); return; }
+  
+  const idx = daftarBarang.findIndex(b => b.id === id);
+  if(idx !== -1){
+    daftarBarang[idx].modal = modalBaru;
+    daftarBarang[idx].jual = jualBaru;
+    simpanSemua();
+    tampilTabel();
+    batalUbahHarga();
   }
-  el.innerHTML = '';
-  daftarBarang.forEach((b, i) => {
-    const dipilih = keranjang.some(k => k.id === b.id);
-    el.innerHTML += '<div class="item-barang ' + (dipilih ? 'dipilih' : '') + '" onclick="tambahKeKeranjang(' + i + ')">'
-      + '<div><strong>' + b.nama + '</strong></div>'
-      + '<div style="font-size:12px; color:#666;">Stok: ' + b.stok + '</div>'
-      + '<div style="color:#2d5a27; font-weight:bold;">' + formatRupiah(b.jual) + '</div>'
+}
+
+function hapusBarang(id){
+  if(!confirm('Yakin hapus barang ini?')) return;
+  daftarBarang = daftarBarang.filter(b => b.id !== id);
+  keranjang = keranjang.filter(k => k.id !== id);
+  simpanSemua();
+  tampilTabel();
+  tampilKasir();
+}
+
+// === KASIR & KERANJANG ===
+function tampilKasir(){
+  const wadah = document.getElementById('daftarKasir');
+  if(!wadah) return;
+  
+  wadah.innerHTML = '';
+  daftarBarang.forEach(brg => {
+    wadah.innerHTML += '<div class="item-barang" onclick="tambahKeKeranjang(\'' + brg.id + '\', this)">'
+      + '<div><strong>' + brg.nama + '</strong></div>'
+      + '<div style="font-size:13px; color:#666;">' + formatRupiah(brg.jual) + '</div>'
+      + '<div style="font-size:12px; color:#999;">Stok: ' + brg.stok + '</div>'
       + '</div>';
   });
-  renderKeranjang();
+  
+  tampilKeranjang();
 }
 
 function filterBarangKasir(){
   const kata = document.getElementById('cariBarangKasir').value.toLowerCase().trim();
-  const el = document.getElementById('daftarKasir');
-  if(!el) return;
-  if(daftarBarang.length === 0){ tampilKasir(); return; }
-  el.innerHTML = '';
-  daftarBarang.filter(b => b.nama.toLowerCase().includes(kata)).forEach((b, i) => {
-    const idxAsli = daftarBarang.indexOf(b);
-    const dipilih = keranjang.some(k => k.id === b.id);
-    el.innerHTML += '<div class="item-barang ' + (dipilih ? 'dipilih' : '') + '" onclick="tambahKeKeranjang(' + idxAsli + ')">'
-      + '<div><strong>' + b.nama + '</strong></div>'
-      + '<div style="font-size:12px; color:#666;">Stok: ' + b.stok + '</div>'
-      + '<div style="color:#2d5a27; font-weight:bold;">' + formatRupiah(b.jual) + '</div>'
-      + '</div>';
+  document.querySelectorAll('#daftarKasir .item-barang').forEach(el => {
+    const nama = el.querySelector('strong')?.textContent?.toLowerCase() || '';
+    el.style.display = (kata === '' || nama.includes(kata)) ? '' : 'none';
   });
 }
 
-function tambahKeKeranjang(index){
-  const brg = daftarBarang[index];
-  if(brg.stok <= 0){ alert('Stok habis!'); return; }
+function tambahKeKeranjang(id, elemen){
+  const brg = daftarBarang.find(b => b.id === id);
+  if(!brg) return;
   
-  const ada = keranjang.find(k => k.id === brg.id);
-  if(ada){
-    if(ada.qty >= brg.stok){ alert('Stok tidak cukup!'); return; }
-    ada.qty++;
+  elemen.classList.add('dipilih');
+  setTimeout(() => elemen.classList.remove('dipilih'), 200);
+  
+  const itemDiKeranjang = keranjang.find(k => k.id === id);
+  if(itemDiKeranjang){
+    itemDiKeranjang.jumlah += 1;
   }else{
     keranjang.push({
       id: brg.id,
       nama: brg.nama,
       harga: brg.jual,
       modal: brg.modal,
-      qty: 1,
-      stokIndex: index
+      jumlah: 1
     });
   }
-  tampilKasir();
+  tampilKeranjang();
 }
 
-function renderKeranjang(){
-  const el = document.getElementById('keranjangIsi');
-  if(!el) return;
+function tampilKeranjang(){
+  const wadah = document.getElementById('keranjangIsi');
+  if(!wadah) return;
+  
   if(keranjang.length === 0){
-    el.innerHTML = '<p style="text-align:center; color:#666;">Belum ada barang</p>';
-    document.getElementById('lblTotal').textContent = formatRupiah(0);
+    wadah.innerHTML = '<p style="text-align:center; color:#666;">Belum ada barang</p>';
+    document.getElementById('lblTotal').textContent = 'Rp 0';
+    document.getElementById('uangBayar').value = '';
+    document.getElementById('kembalian').value = '';
     return;
   }
-  el.innerHTML = '';
+  
   let total = 0;
-  keranjang.forEach((item, i) => {
-    const subtotal = item.harga * item.qty;
-    total += subtotal;
-    el.innerHTML += '<div class="baris">'
-      + '<span>' + item.nama + ' × ' + item.qty + '</span>'
-      + '<span>' + formatRupiah(subtotal) + '</span>'
-      + '<span style="min-width:60px; text-align:right;">'
-      + '<button class="btn-kecil" style="width:24px; padding:2px; font-size:12px; background:#ddd; color:#333;" onclick="ubahQty(' + i + ',-1)">−</button> '
-      + '<button class="btn-kecil" style="width:24px; padding:2px; font-size:12px; background:#ddd; color:#333;" onclick="ubahQty(' + i + ',1)">+</button>'
-      + '</span></div>';
+  wadah.innerHTML = '';
+  keranjang.forEach((item, idx) => {
+    total += item.harga * item.jumlah;
+    wadah.innerHTML += '<div class="baris">'
+      + '<span>' + item.nama + ' × ' + item.jumlah + '</span>'
+      + '<span>' + formatRupiah(item.harga * item.jumlah) + ' <button style="background:none; color:red; border:none; font-size:14px; padding:0 4px;" onclick="ubahJumlah(' + idx + ', -1)">−</button> <button style="background:none; color:green; border:none; font-size:14px; padding:0 4px;" onclick="ubahJumlah(' + idx + ', 1)">+</button> <button style="background:none; color:red; border:none; font-size:14px; padding:0 4px;" onclick="hapusDariKeranjang(' + idx + ')">×</button></span>'
+      + '</div>';
   });
+  
   document.getElementById('lblTotal').textContent = formatRupiah(total);
   hitungKembalian();
 }
 
-function ubahQty(index, delta){
-  const item = keranjang[index];
-  const brg = daftarBarang.find(b => b.id === item.id);
-  
-  item.qty += delta;
-  if(item.qty <= 0){
-    keranjang.splice(index, 1);
-  }else if(brg && item.qty > brg.stok){
-    item.qty = brg.stok;
-    alert('Stok terbatas!');
+function ubahJumlah(idx, nilai){
+  keranjang[idx].jumlah += nilai;
+  if(keranjang[idx].jumlah <= 0){
+    keranjang.splice(idx, 1);
   }
-  tampilKasir();
+  tampilKeranjang();
 }
 
-function hitungKembalian(){
-  const total = keranjang.reduce((sum, i) => sum + i.harga * i.qty, 0);
-  const bayar = amanAngka(document.getElementById('uangBayar').value);
-  document.getElementById('kembalian').value = formatRupiah(bayar - total);
+function hapusDariKeranjang(idx){
+  keranjang.splice(idx, 1);
+  tampilKeranjang();
 }
 
 function kosongkanKeranjang(){
   keranjang = [];
-  document.getElementById('uangBayar').value = '';
-  document.getElementById('kembalian').value = '';
   document.getElementById('nomorMeja').value = '';
   document.getElementById('namaPelanggan').value = '';
-  tampilKasir();
+  document.getElementById('uangBayar').value = '';
+  document.getElementById('kembalian').value = '';
+  tampilKeranjang();
 }
 
-function bayarLunas(){
-  if(keranjang.length === 0){ alert('Keranjang kosong!'); return; }
-  const total = keranjang.reduce((sum, i) => sum + i.harga * i.qty, 0);
+function hitungKembalian(){
+  const total = keranjang.reduce((sum, i) => sum + (i.harga * i.jumlah), 0);
   const bayar = amanAngka(document.getElementById('uangBayar').value);
-  if(bayar < total){ alert('Uang kurang!'); return; }
-  
-  kurangiStok();
-  
-  const transaksi = simpanTransaksi('lunas');
-  cetakStruk(transaksi);
-  kosongkanKeranjang();
+  document.getElementById('kembalian').value = formatRupiah(bayar - total);
 }
 
-function catatHutang(){
-  if(keranjang.length === 0){ alert('Keranjang kosong!'); return; }
-  const namaPembeli = document.getElementById('namaPelanggan').value.trim();
-  if(!namaPembeli){ alert('Masukkan nama pembeli!'); return; }
+function buatStruk(total, bayar, hutang=false){
+  const meja = document.getElementById('nomorMeja').value || '-';
+  const pelanggan = document.getElementById('namaPelanggan').value || '-';
+  const sekarang = new Date();
+  const jam = sekarang.toLocaleTimeString('id-ID');
+  const tgl = sekarang.toLocaleDateString('id-ID');
   
-  kurangiStok();
-  
-  const transaksi = simpanTransaksi('hutang', namaPembeli);
-  daftarHutang.push({
-    id: transaksi.id,
-    nama: namaPembeli,
-    total: transaksi.total,
-    waktu: transaksi.waktu,
-    lunas: false
-  });
-  simpanSemua();
-  
-  cetakStruk(transaksi);
-  kosongkanKeranjang();
-}
-
-function kurangiStok(){
-  keranjang.forEach(item => {
-    const idx = daftarBarang.findIndex(b => b.id === item.id);
-    if(idx !== -1){
-      daftarBarang[idx].stok -= item.qty;
-    }
-  });
-  simpanSemua();
-}
-
-function simpanTransaksi(status, namaPembeli=''){
-  const total = keranjang.reduce((sum, i) => sum + i.harga * i.qty, 0);
-  const modal = keranjang.reduce((sum, i) => sum + i.modal * i.qty, 0);
-  const untung = total - modal;
-  const id = Date.now();
-  const waktu = waktuSekarang();
-  
-  const transaksi = {
-    id: id,
-    waktu: waktu,
-    namaPelanggan: namaPembeli,
-    items: keranjang.map(i => ({nama:i.nama, qty:i.qty, harga:i.harga, modal:i.modal})),
-    total: total,
-    modal: modal,
-    untung: untung,
-    status: status,
-    terpilih: false
-  };
-  
-  riwayat.unshift(transaksi);
-  simpanSemua();
-  return transaksi;
-}
-
-function cetakStruk(t){
-  const area = document.getElementById('areaStruk');
-  const isi = document.getElementById('isiStruk');
-  if(!area || !isi) return;
-  
-  let html = '<div style="text-align:center;"><h3 style="border:none; margin:0; padding:0;">' + namaToko + '</h3>'
-    + '<p style="font-size:12px; color:#66; margin:4px 0;">' + t.waktu + '</p>'
-    + '<p style="margin:4px 0;">No: ' + t.id + '</p>'
+  let isi = '<div style="text-align:center;">'
+    + '<h3 style="margin:0; padding:0;">' + namaToko.toUpperCase() + '</h3>'
+    + '<p style="margin:4px 0; font-size:12px;">Tanggal: ' + tgl + ' ' + jam + '<br>No. Meja: ' + meja + '<br>Pelanggan: ' + pelanggan + '</p>'
     + '<div class="garis"></div>';
   
-  t.items.forEach(i => {
-    html += '<div class="baris" style="font-size:13px;">'
-      + '<span>' + i.nama + ' × ' + i.qty + '</span>'
-      + '<span>' + formatRupiah(i.harga * i.qty) + '</span>'
+  keranjang.forEach(item => {
+    isi += '<div class="baris">'
+      + '<span>' + item.nama + ' × ' + item.jumlah + '</span>'
+      + '<span>' + formatRupiah(item.harga * item.jumlah) + '</span>'
       + '</div>';
   });
   
-  html += '<div class="garis"></div>'
-    + '<div class="baris total" style="border:none;">'
-    + '<span>TOTAL</span>'
-    + '<span>' + formatRupiah(t.total) + '</span>'
-    + '</div>'
-    + '<p style="text-align:center; margin-top:10px; font-weight:bold;">' + (t.status==='lunas'?'✅ LUNAS':'📝 BELUM BAYAR') + '</p>'
-    + '<p style="text-align:center; font-size:11px; color:#888; margin-top:15px;">Terima Kasih</p>'
+  isi += '<div class="garis"></div>'
+    + '<div class="baris total"><span>TOTAL</span><span>' + formatRupiah(total) + '</span></div>';
+  
+  if(!hutang){
+    isi += '<div class="baris"><span>BAYAR</span><span>' + formatRupiah(bayar) + '</span></div>'
+      + '<div class="baris"><span>KEMBALI</span><span>' + formatRupiah(bayar - total) + '</span></div>';
+  }else{
+    isi += '<div class="baris" style="color:#e65100; font-weight:bold;"><span>HUTANG</span><span>' + formatRupiah(total) + '</span></div>';
+  }
+  
+  isi += '<div class="garis" style="margin-top:15px;"></div>'
+    + '<p style="text-align:center; font-size:11px; margin-top:8px;">Terima kasih atas kunjungan Anda</p>'
     + '</div>';
   
-  isi.innerHTML = html;
-  area.classList.remove('sembunyi');
+  return isi;
+}
+
+function bayarLunas(){
+  const total = keranjang.reduce((sum, i) => sum + (i.harga * i.jumlah), 0);
+  const bayar = amanAngka(document.getElementById('uangBayar').value);
+  
+  if(total === 0){ alert('Belum ada barang!'); return; }
+  if(bayar < total){ alert('Uang bayar kurang! Kurang: ' + formatRupiah(total - bayar)); return; }
+  
+  // Kurangi stok
+  keranjang.forEach(item => {
+    const brg = daftarBarang.find(b => b.id === item.id);
+    if(brg) brg.stok = Math.max(0, brg.stok - item.jumlah);
+  });
+  
+  // Simpan ke riwayat
+  riwayat.unshift({
+    jenis: 'lunas',
+    barang: [...keranjang],
+    total: total,
+    bayar: bayar,
+    kembalian: bayar - total,
+    meja: document.getElementById('nomorMeja').value || '-',
+    pelanggan: document.getElementById('namaPelanggan').value || '-',
+    waktu: waktuSekarang(),
+    dipilih: false
+  });
+  
+  simpanSemua();
+  
+  // Tampil struk
+  document.getElementById('isiStruk').innerHTML = buatStruk(total, bayar);
+  document.getElementById('areaStruk').classList.remove('sembunyi');
+  
+  keranjang = [];
+  tampilKeranjang();
+}
+
+function catatHutang(){
+  const total = keranjang.reduce((sum, i) => sum + (i.harga * i.jumlah), 0);
+  const pelanggan = document.getElementById('namaPelanggan').value?.trim();
+  
+  if(total === 0){ alert('Belum ada barang!'); return; }
+  if(!pelanggan){ alert('Masukkan nama pelanggan untuk dicatat hutangnya!'); return; }
+  
+  // Kurangi stok
+  keranjang.forEach(item => {
+    const brg = daftarBarang.find(b => b.id === item.id);
+    if(brg) brg.stok = Math.max(0, brg.stok - item.jumlah);
+  });
+  
+  const dataHutang = {
+    nama: pelanggan,
+    barang: [...keranjang],
+    total: total,
+    lunas: false,
+    waktu: waktuSekarang(),
+    cicilan: []
+  };
+  
+  daftarHutang.unshift(dataHutang);
+  riwayat.unshift({
+    jenis: 'hutang',
+    ...dataHutang,
+    dipilih: false
+  });
+  
+  simpanSemua();
+  
+  document.getElementById('isiStruk').innerHTML = buatStruk(total, 0, true);
+  document.getElementById('areaStruk').classList.remove('sembunyi');
+  
+  keranjang = [];
+  tampilKeranjang();
 }
 
 function tutupStruk(){
   document.getElementById('areaStruk').classList.add('sembunyi');
+  document.getElementById('nomorMeja').value = '';
+  document.getElementById('namaPelanggan').value = '';
+  document.getElementById('uangBayar').value = '';
+  document.getElementById('kembalian').value = '';
 }
 
 // === LAPORAN ===
 function tampilLaporan(){
   let totalJual = 0, totalUntung = 0, totalHutang = 0;
-  riwayat.forEach(t => {
-    totalJual += t.total;
-    totalUntung += t.untung;
+  
+  riwayat.forEach(r => {
+    totalJual += r.total || 0;
+    if(r.barang){
+      r.barang.forEach(b => {
+        totalUntung += (b.harga - b.modal) * b.jumlah;
+      });
+    }
+    if(r.jenis === 'hutang' && !r.lunas) totalHutang += r.total || 0;
   });
-  daftarHutang.filter(h => !h.lunas).forEach(h => totalHutang += h.total);
   
   document.getElementById('totalJual').textContent = formatRupiah(totalJual);
   document.getElementById('totalUntung').textContent = formatRupiah(totalUntung);
   document.getElementById('totalLapHutang').textContent = formatRupiah(totalHutang);
   document.getElementById('jumlahTransaksi').textContent = riwayat.length;
   
-  const el = document.getElementById('daftarRiwayat');
+  const wadah = document.getElementById('daftarRiwayat');
   if(riwayat.length === 0){
-    el.innerHTML = '<p style="text-align:center; color:#666;">Belum ada transaksi</p>';
+    wadah.innerHTML = '<p style="text-align:center; color:#666;">Belum ada transaksi</p>';
     return;
   }
-  el.innerHTML = '';
-  riwayat.forEach((t, i) => {
-    el.innerHTML += '<div style="background:#f9f9f9; padding:8px; border-radius:6px; margin-bottom:6px;">'
-      + '<label style="display:flex; align-items:center; gap:8px; cursor:pointer;">'
-      + '<input type="checkbox" id="cek-' + i + '" onchange="tandaiTerpilih(' + i + ')">'
-      + '<span style="font-size:13px;">#' + t.id + ' — ' + t.waktu + '</span>'
-      + '<span style="margin-left:auto; font-weight:bold; color:' + (t.status==='lunas'?'#2e7d32':'#e65100') + ';">' + formatRupiah(t.total) + '</span>'
-      + '</label></div>';
+  
+  wadah.innerHTML = '';
+  riwayat.forEach((r, i) => {
+    const isHutang = r.jenis === 'hutang';
+    wadah.innerHTML += '<div style="padding:8px; border-bottom:1px solid #eee; display:flex; align-items:flex-start; gap:8px;">'
+      + '<input type="checkbox" id="pilih-' + i + '" ' + (r.dipilih ? 'checked' : '') + ' onchange="pilihItem(' + i + ')" style="margin-top:4px;">'
+      + '<div style="flex:1;">'
+        + '<div style="display:flex; justify-content:space-between;">'
+          + '<strong>' + r.waktu + '</strong>'
+          + '<span style="color:' + (isHutang ? '#e65100' : '#2e7d32') + '; font-weight:bold;">' + formatRupiah(r.total) + '</span>'
+        + '</div>'
+        + '<div style="font-size:12px; color:#666;">'
+          + (isHutang ? '💰 HUTANG — ' + (r.nama || 'Tanpa Nama') + (r.lunas ? ' ✅ LUNAS' : ' ⏳ BELUM LUNAS') : '✅ LUNAS — Meja: ' + (r.meja || '-') + ' | Pelanggan: ' + (r.pelanggan || '-'))
+          + ' | Barang: ' + (r.barang?.length || 0) + ' item'
+        + '</div>'
+      + '</div>'
+    + '</div>';
   });
 }
 
-function tandaiTerpilih(index){
-  riwayat[index].terpilih = document.getElementById('cek-'+index).checked;
+function pilihItem(idx){
+  riwayat[idx].dipilih = !riwayat[idx].dipilih;
 }
 
 function togglePilihSemua(){
-  const cek = document.getElementById('pilihSemuaRiwayat').checked;
+  const semuaTerpilih = riwayat.every(r => r.dipilih);
   riwayat.forEach((_, i) => {
-    const el = document.getElementById('cek-'+i);
-    if(el) el.checked = cek;
-    riwayat[i].terpilih = cek;
+    const cb = document.getElementById('pilih-' + i);
+    if(cb) cb.checked = !semuaTerpilih;
+    riwayat[i].dipilih = !semuaTerpilih;
   });
 }
 
 function hapusTerpilihRiwayat(){
-  const terpilih = riwayat.filter(t => t.terpilih);
-  if(terpilih.length === 0){ alert('Pilih dulu yang mau dihapus!'); return; }
-  if(!confirm('Yakin hapus ' + terpilih.length + ' transaksi terpilih?')) return;
-  riwayat = riwayat.filter(t => !t.terpilih);
+  const terpilih = riwayat.filter(r => r.dipilih);
+  if(terpilih.length === 0){ alert('Pilih dulu transaksi yang mau dihapus!'); return; }
+  if(!confirm('Yakin hapus ' + terpilih.length + ' transaksi terpilih? TIDAK BISA DIKEMBALIKAN!')) return;
+  riwayat = riwayat.filter(r => !r.dipilih);
   simpanSemua();
   tampilLaporan();
 }
@@ -1233,91 +1259,139 @@ function hapusTerpilihRiwayat(){
 function cadangkanData(){
   const data = {
     versi: '1.0',
-    namaToko: namaToko,
+    waktuCadangan: waktuSekarang(),
     daftarPinKasir: daftarPinKasir,
     daftarBarang: daftarBarang,
     riwayat: riwayat,
     daftarHutang: daftarHutang,
-    dicadangkanPada: waktuSekarang()
+    namaToko: namaToko
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'cadangan-toko-' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'cadangan_toko_' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
   URL.revokeObjectURL(a.href);
-  alert('✅ Data dicadangkan!');
+  alert('✅ Data berhasil dicadangkan!');
 }
 
 function pulihkanData(e){
   const file = e.target.files[0];
   if(!file) return;
-  if(!confirm('⚠️ Data saat ini akan diganti dengan data cadangan! Lanjutkan?')) return;
   
-  const reader = new FileReader();
-  reader.onload = function(ev){
+  if(!confirm('⚠️ MEMULIHKAN DATA AKAN MENIMPA DATA YANG ADA SAAT INI!\nLanjutkan?')) return;
+  
+  const pembaca = new FileReader();
+  pembaca.onload = function(acara){
     try{
-      const d = JSON.parse(ev.target.result);
-      namaToko = d.namaToko || 'TOKO SAYA';
-      daftarPinKasir = d.daftarPinKasir || [];
-      daftarBarang = d.daftarBarang || [];
-      riwayat = d.riwayat || [];
-      daftarHutang = d.daftarHutang || [];
+      const data = JSON.parse(acara.target.result);
+      daftarPinKasir = data.daftarPinKasir || [];
+      daftarBarang = data.daftarBarang || [];
+      riwayat = data.riwayat || [];
+      daftarHutang = data.daftarHutang || [];
+      namaToko = data.namaToko || 'TOKO SAYA';
       simpanSemua();
-      alert('✅ Data berhasil dipulihkan!');
-      buka('kasir');
+      alert('✅ Data berhasil dipulihkan! Halaman akan dimuat ulang.');
+      location.reload();
     }catch(err){
-      alert('❌ File tidak valid!');
+      alert('❌ Gagal membaca file cadangan: ' + err.message);
     }
   };
-  reader.readAsText(file);
+  pembaca.readAsText(file);
 }
 
 // === HUTANG ===
 function tampilHutang(){
-  const totalBelumLunas = daftarHutang.filter(h => !h.lunas).reduce((s,h) => s + h.total, 0);
-  document.getElementById('totalHutang').textContent = formatRupiah(totalBelumLunas);
+  const wadah = document.getElementById('daftarHutang');
+  const totalEl = document.getElementById('totalHutang');
+  let total = 0;
   
-  const el = document.getElementById('daftarHutang');
-  const belumLunas = daftarHutang.filter(h => !h.lunas);
+  const daftarBelumLunas = daftarHutang.filter(h => !h.lunas);
   
-  if(belumLunas.length === 0){
-    el.innerHTML = '<p style="text-align:center; color:#666;">Belum ada piutang</p>';
+  if(daftarBelumLunas.length === 0){
+    wadah.innerHTML = '<p style="text-align:center; color:#666;">Belum ada piutang</p>';
+    totalEl.textContent = formatRupiah(0);
     return;
   }
   
-  el.innerHTML = '';
-  belumLunas.forEach((h, i) => {
-    el.innerHTML += '<div style="background:#fff; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #ff9800;">'
-      + '<div class="baris"><strong>' + h.nama + '</strong><span class="status-belum">BELUM LUNAS</span></div>'
-      + '<div class="baris"><span>Waktu:</span><span style="font-size:12px;">' + h.waktu + '</span></div>'
-      + '<div class="baris"><span>Total:</span><span style="font-weight:bold; color:#e65100;">' + formatRupiah(h.total) + '</span></div>'
-      + '<button class="btn-hijau" style="margin-top:8px;" onclick="tandaiLunas(' + i + ')">✅ TANDAI LUNAS</button>'
-      + '</div>';
+  wadah.innerHTML = '';
+  daftarBelumLunas.forEach((hutang, idx) => {
+    total += hutang.total;
+    const sisaId = 'sisa-' + idx;
+    const cicilanId = 'cicilan-' + idx;
+    
+    let sudahDibayar = hutang.cicilan.reduce((sum, c) => sum + c.jumlah, 0);
+    let sisa = hutang.total - sudahDibayar;
+    
+    wadah.innerHTML += '<div class="kotak-hutang">'
+      + '<div class="baris"><strong>' + hutang.nama + '</strong><span class="status-belum">BELUM LUNAS</span></div>'
+      + '<div class="baris"><span>Total Hutang:</span><span>' + formatRupiah(hutang.total) + '</span></div>'
+      + (sudahDibayar > 0 
+        ? '<div class="baris"><span>Sudah Dibayar:</span><span style="color:#2e7d32;">−' + formatRupiah(sudahDibayar) + '</span></div>'
+        : '')
+      + '<div class="baris"><span>Sisa Hutang:</span><span style="font-weight:bold; color:#e65100;">' + formatRupiah(sisa) + '</span></div>'
+      + '<div style="font-size:12px; color:#666; margin:4px 0 8px 0;">' + hutang.waktu + '</div>';
+    
+    if(hutang.cicilan.length > 0){
+      wadah.innerHTML += '<div style="margin:6px 0; padding:6px; background:#fff; border-radius:4px;">'
+        + '<strong style="font-size:12px;">Riwayat Cicilan:</strong>';
+      hutang.cicilan.forEach(c => {
+        wadah.innerHTML += '<div class="cicilan-item">💰 ' + formatRupiah(c.jumlah) + ' — ' + c.waktu + '</div>';
+      });
+      wadah.innerHTML += '</div>';
+    }
+    
+    wadah.innerHTML += '<div style="display:flex; gap:6px; margin-top:8px;">'
+      + '<input type="number" id="' + cicilanId + '" placeholder="Bayar cicilan" style="flex:1; margin:0;">'
+      + '<button class="btn-hijau btn-kecil" style="width:auto; white-space:nowrap;" onclick="bayarCicilan(' + idx + ')">💰 BAYAR</button>'
+      + '<button class="btn-merah btn-kecil" style="width:auto;" onclick="tandaiLunas(' + idx + ')">✓ LUNAS</button>'
+      + '</div></div>';
   });
+  
+  totalEl.textContent = formatRupiah(total);
 }
 
-function tandaiLunas(index){
-  if(!confirm('Tandai hutang ini sudah lunas?')) return;
-  daftarHutang.filter(h => !h.lunas)[index].lunas = true;
+function bayarCicilan(idx){
+  const hutang = daftarHutang.filter(h => !h.lunas)[idx];
+  if(!hutang) return;
+  
+  const el = document.getElementById('cicilan-' + idx);
+  const jumlah = amanAngka(el.value);
+  if(jumlah <= 0){ alert('Masukkan jumlah cicilan!'); return; }
+  
+  const sudahDibayar = hutang.cicilan.reduce((sum, c) => sum + c.jumlah, 0);
+  const sisa = hutang.total - sudahDibayar;
+  if(jumlah > sisa){ alert('Cicilan tidak boleh lebih besar dari sisa hutang (' + formatRupiah(sisa) + ')'); return; }
+  
+  hutang.cicilan.push({
+    jumlah: jumlah,
+    waktu: waktuSekarang()
+  });
+  
+  if(jumlah >= sisa){
+    hutang.lunas = true;
+    alert('✅ Hutang sudah LUNAS!');
+  }else{
+    alert('✅ Cicilan dicatat. Sisa hutang: ' + formatRupiah(sisa - jumlah));
+  }
+  
   simpanSemua();
   tampilHutang();
 }
 
-// === INISIALISASI AWAL ===
+function tandaiLunas(idx){
+  if(!confirm('Tandai hutang ini sebagai LUNAS?')) return;
+  daftarHutang.filter(h => !h.lunas)[idx].lunas = true;
+  simpanSemua();
+  alert('✅ Hutang ditandai LUNAS!');
+  tampilHutang();
+}
+
+// === INISIALISASI ===
 window.onload = function(){
   muatSemua();
-  if(daftarBarang.length === 0){
-    daftarBarang = [
-      {id:1, nama:'Telur', stok:100, modal:18000, jual:20000},
-      {id:2, nama:'Beras 5kg', stok:50, modal:65000, jual:72000},
-      {id:3, nama:'Minyak 1L', stok:80, modal:14000, jual:16500},
-      {id:4, nama:'Gula 1kg', stok:120, modal:12500, jual:14000}
-    ];
-    simpanSemua();
-  }
+  console.log('✅ Aplikasi Toko Saya siap — terhubung ke Firebase qmc-technologi');
 };
-
 </script>
 </body>
 </html>
