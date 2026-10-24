@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QMC TEKNOLOGI</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <style>
         *{box-sizing:border-box;font-family:Arial,sans-serif;}
         body{background:#0f172a;color:#fff;padding:20px;max-width:700px;margin:0 auto;min-height:100vh;}
@@ -61,9 +63,14 @@
         .tab-btn{flex:1;padding:8px;background:#334155;border:none;border-radius:6px;color:#fff;font-size:13px;min-width:100px;}
         .tab-btn.active{background:#3b82f6;}
         .link-wa{color:#25d366;text-decoration:none;font-weight:bold;}
+        .notif{position:fixed;top:15px;right:15px;left:15px;background:#22c55e;color:#fff;padding:15px;border-radius:8px;z-index:9999;text-align:center;display:none;}
+        .notif.tampil{display:block;animation:turun 0.3s ease;}
+        @keyframes turun{0%{transform:translateY(-20px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
     </style>
 </head>
 <body>
+
+<div id="notif" class="notif"></div>
 
 <div id="halaman-login">
     <h1>QMC TEKNOLOGI</h1>
@@ -235,6 +242,21 @@
 </div>
 
 <script>
+// ========= KONFIGURASI FIREBASE =========
+const firebaseConfig = {
+  apiKey: "AIzaSyDWbFhfGkveSLpHyfXdB1G-4iQOP_UjOts",
+  authDomain: "qmc-technologi.firebaseapp.com",
+  projectId: "qmc-technologi",
+  storageBucket: "qmc-technologi.firebasestorage.app",
+  messagingSenderId: "688192662212",
+  appId: "1:688192662212:web:7a8c5b7d8e9f0a1b2c3d4e"
+};
+
+// Inisialisasi Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Konstanta
 const KODE_OWNER = 'qwerty';
 const BIAYA_DAFTAR_MEMBER = 250000;
 const BONUS_SPONSOR = 50000;
@@ -244,6 +266,35 @@ const NO_REKENING = '9011 9546 5653';
 const AN_REKENING = 'M Amin';
 const BANK_REKENING = 'Sea Bank';
 const WA_ADMIN = '6281385067500';
+
+// Variabel Global
+let daftarKodeAksesTersedia = [];
+let daftarKodeAksesTerpakai = [];
+let dataJaringan = { 
+    nama: '👑 OWNER', 
+    kodeAkses: null, 
+    saldoUtama: 0,
+    sponsor: 0, 
+    jaringan: 0, 
+    anak: [null, null, null, null, null] 
+};
+let daftarRiwayat = [];
+let daftarPermintaanTopUp = [];
+let penggunaSaatIni = null;
+let kodeSementara = null;
+let pemantauPerubahan = null;
+
+// ========= FUNGSI BANTUAN =========
+function formatUang(angka) {
+    return new Intl.NumberFormat('id-ID', {style:'currency',currency:'IDR',minimumFractionDigits:0}).format(angka || 0);
+}
+
+function tampilNotif(pesan) {
+    const el = document.getElementById('notif');
+    el.textContent = pesan;
+    el.classList.add('tampil');
+    setTimeout(()=>{el.classList.remove('tampil');}, 3000);
+}
 
 function buatDaftarKode() {
     const angka = '123456789';
@@ -259,66 +310,56 @@ function buatDaftarKode() {
     return Array.from(daftar);
 }
 
-let daftarKodeAksesTersedia = [];
-let daftarKodeAksesTerpakai = [];
-let dataJaringan = { 
-    nama: '👑 OWNER', 
-    kodeAkses: null, 
-    saldoUtama: 0,
-    sponsor: 0, 
-    jaringan: 0, 
-    anak: [null, null, null, null, null] 
-};
-let daftarRiwayat = [];
-let daftarPermintaanTopUp = [];
-let penggunaSaatIni = null;
-let kodeSementara = null;
-
-function formatUang(angka) {
-    return 'Rp ' + Number(angka).toLocaleString('id-ID');
+// ========= FUNGSI DATABASE FIREBASE =========
+async function bacaSemuaData() {
+    const snap = await db.collection('qmc_data').doc('data_utama').get();
+    if(snap.exists) {
+        const d = snap.data();
+        dataJaringan = d.jaringan || dataJaringan;
+        daftarRiwayat = Array.isArray(d.riwayat) ? d.riwayat : [];
+        daftarPermintaanTopUp = Array.isArray(d.permintaanTopUp) ? d.permintaanTopUp : [];
+        daftarKodeAksesTersedia = Array.isArray(d.kodeTersedia) && d.kodeTersedia.length > 0 
+            ? d.kodeTersedia 
+            : buatDaftarKode();
+        daftarKodeAksesTerpakai = Array.isArray(d.kodeTerpakai) ? d.kodeTerpakai : [];
+    } else {
+        daftarKodeAksesTersedia = buatDaftarKode();
+        daftarKodeAksesTerpakai = [];
+        daftarPermintaanTopUp = [];
+        await simpanSemuaData();
+    }
+    perbaruiTampilanKode();
 }
 
-function simpanData() {
-    const paket = {
+async function simpanSemuaData() {
+    await db.collection('qmc_data').doc('data_utama').set({
         jaringan: dataJaringan,
         riwayat: daftarRiwayat,
         kodeTersedia: daftarKodeAksesTersedia,
         kodeTerpakai: daftarKodeAksesTerpakai,
         permintaanTopUp: daftarPermintaanTopUp
-    };
-    localStorage.setItem('dataJaringanMLM', JSON.stringify(paket));
+    });
 }
 
-function muatData() {
-    try {
-        const ada = localStorage.getItem('dataJaringanMLM');
-        if (ada) {
-            const d = JSON.parse(ada);
-            if (d.jaringan && d.jaringan.nama) {
-                if (!d.jaringan.saldoUtama) d.jaringan.saldoUtama = 0;
-                dataJaringan = d.jaringan;
-            }
-            if (Array.isArray(d.riwayat)) daftarRiwayat = d.riwayat;
-            if (Array.isArray(d.permintaanTopUp)) daftarPermintaanTopUp = d.permintaanTopUp;
-            if (Array.isArray(d.kodeTersedia) && d.kodeTersedia.length > 0) {
-                daftarKodeAksesTersedia = d.kodeTersedia;
-            } else {
-                daftarKodeAksesTersedia = buatDaftarKode();
-            }
-            if (Array.isArray(d.kodeTerpakai)) daftarKodeAksesTerpakai = d.kodeTerpakai;
-        } else {
-            daftarKodeAksesTersedia = buatDaftarKode();
-            daftarKodeAksesTerpakai = [];
-            daftarPermintaanTopUp = [];
+function mulaiPantauPerubahan() {
+    pemantauPerubahan = db.collection('qmc_data').doc('data_utama').onSnapshot(snap=>{
+        if(!snap.exists) return;
+        const d = snap.data();
+        if(penggunaSaatIni === KODE_OWNER) {
+            dataJaringan = d.jaringan || dataJaringan;
+            daftarRiwayat = Array.isArray(d.riwayat) ? d.riwayat : [];
+            daftarPermintaanTopUp = Array.isArray(d.permintaanTopUp) ? d.permintaanTopUp : [];
+            daftarKodeAksesTersedia = Array.isArray(d.kodeTersedia) ? d.kodeTersedia : [];
+            daftarKodeAksesTerpakai = Array.isArray(d.kodeTerpakai) ? d.kodeTerpakai : [];
+            perbaruiTampilanAdmin();
+        } else if(penggunaSaatIni) {
+            const node = cariNodeBerdasarkanKode(d.jaringan || dataJaringan, penggunaSaatIni);
+            if(node) muatHalamanAnggota(node);
         }
-    } catch (e) {
-        daftarKodeAksesTersedia = buatDaftarKode();
-        daftarKodeAksesTerpakai = [];
-        daftarPermintaanTopUp = [];
-    }
-    perbaruiTampilanKode();
+    });
 }
 
+// ========= FUNGSI NAVIGASI & PENCARIAN =========
 function perbaruiTampilanKode() {
     const elTersedia = document.getElementById('jumlah-tersedia');
     const elTerpakai = document.getElementById('jumlah-terpakai');
@@ -337,10 +378,11 @@ function ambilKodeAkses() {
     document.getElementById('kode-akses-baru').value = kodeSementara;
 }
 
-function tandaiKodeTerpakai(kode) {
+async function tandaiKodeTerpakai(kode) {
     daftarKodeAksesTerpakai.push(kode.toUpperCase());
+    daftarKodeAksesTersedia = daftarKodeAksesTersedia.filter(k => k !== kode.toUpperCase());
     perbaruiTampilanKode();
-    simpanData();
+    await simpanSemuaData();
 }
 
 function bukaTab(namaTab) {
@@ -354,144 +396,18 @@ function bukaTab(namaTab) {
     if (namaTab === 'jaringan') perbaruiTampilanAdmin();
 }
 
-function tambahSaldoManual() {
-    const jumlah = parseInt(document.getElementById('input-modal-awal').value);
-    if (!jumlah || jumlah <= 0) {
-        alert('❌ Masukkan jumlah yang benar!');
-        return;
-    }
-    dataJaringan.saldoUtama += jumlah;
-    
-    daftarRiwayat.unshift({
-        teks: `💳 Penambahan Modal Manual: +${formatUang(jumlah)}`,
-        rincian: ['Ditambahkan oleh Owner'],
-        waktu: new Date().toLocaleString('id-ID')
-    });
-    
-    document.getElementById('input-modal-awal').value = '';
-    simpanData();
-    perbaruiTampilanAdmin();
-    alert(`✅ Berhasil! Saldo utama bertambah: ${formatUang(jumlah)}`);
-}
-
-function pindahKeUtama(jenis) {
-    if (jenis === 'sponsor') {
-        if (dataJaringan.sponsor <= 0) { alert('❌ Tidak ada bonus sponsor untuk dipindahkan!'); return; }
-        dataJaringan.saldoUtama += dataJaringan.sponsor;
-        daftarRiwayat.unshift({
-            teks: '💰 Pindah Bonus Sponsor ke Dompet Utama',
-            rincian: ['+' + formatUang(dataJaringan.sponsor)],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        dataJaringan.sponsor = 0;
-    } else {
-        if (dataJaringan.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
-        dataJaringan.saldoUtama += dataJaringan.jaringan;
-        daftarRiwayat.unshift({
-            teks: '🎁 Pindah Bonus Jaringan ke Dompet Utama',
-            rincian: ['+' + formatUang(dataJaringan.jaringan)],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        dataJaringan.jaringan = 0;
-    }
-    simpanData();
-    perbaruiTampilanAdmin();
-    alert('✅ Berhasil dipindahkan ke Dompet Utama!');
-}
-
-function bukaFormTopUp() {
-    document.getElementById('form-topup-anggota').classList.toggle('hidden');
-}
-
-function kirimPermintaanTopUp() {
-    const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
-    if (!nodeSaya) return;
-    
-    const jumlah = parseInt(document.getElementById('jumlah-topup-saya').value);
-    const pesan = document.getElementById('pesan-topup-saya');
-    pesan.innerHTML = '';
-    
-    if (!jumlah || jumlah < 10000) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan jumlah yang benar! Minimal Rp 10.000</span>';
-        return;
-    }
-    
-    daftarPermintaanTopUp.unshift({
-        id: Date.now(),
-        pemohonKode: nodeSaya.kodeAkses,
-        pemohonNama: nodeSaya.nama,
-        jumlah: jumlah,
-        waktu: new Date().toLocaleString('id-ID'),
-        status: 'PENDING'
-    });
-    
-    simpanData();
-    document.getElementById('jumlah-topup-saya').value = '';
-    pesan.innerHTML = `<span style="color:#4ade80;">✅ Permintaan terkirim ke Admin!\nSilakan transfer ke Sea Bank: 9011 9546 5653 a/n M Amin, lalu konfirmasi ke WA Admin: 0813 8506 7500</span>`;
-}
-
-function perbaruiTampilanPermintaanTopUp() {
-    const kotak = document.getElementById('daftar-permintaan-topup');
-    if (daftarPermintaanTopUp.length === 0) {
-        kotak.innerHTML = 'Belum ada permintaan top up saldo.';
-        return;
-    }
-    kotak.innerHTML = '';
-    daftarPermintaanTopUp.forEach((p, idx) => {
-        if (p.status !== 'PENDING') return;
-        kotak.innerHTML += `
-            <div class="permintaan-topup-item">
-                <strong>${p.pemohonNama}</strong> [${p.pemohonKode}] meminta isi saldo:<br>
-                💰 Jumlah: <strong style="color:#4ade80;font-size:16px;">${formatUang(p.jumlah)}</strong><br>
-                <span class="tanggal-riwayat">${p.waktu}</span>
-                <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-                    <button class="btn-setuju" onclick="prosesTopUp(${idx}, true)">✅ KONFIRMASI & MASUKKAN</button>
-                    <button class="btn-tolak" onclick="prosesTopUp(${idx}, false)">❌ TOLAK</button>
-                </div>
-            </div>`;
-    });
-    if (kotak.innerHTML === '') kotak.innerHTML = 'Tidak ada permintaan top up baru.';
-}
-
-function prosesTopUp(indeks, disetujui) {
-    const p = daftarPermintaanTopUp[indeks];
-    const nodeAnggota = cariNodeBerdasarkanKode(dataJaringan, p.pemohonKode);
-    
-    if (!nodeAnggota) {
-        alert('❌ Anggota tidak ditemukan!');
-        return;
-    }
-    
-    if (disetujui) {
-        if ((dataJaringan.saldoUtama || 0) < p.jumlah) {
-            alert(`❌ Saldo Admin tidak cukup!\nSaldo Admin: ${formatUang(dataJaringan.saldoUtama || 0)}\nDiperlukan: ${formatUang(p.jumlah)}`);
-            return;
+function cariNodeBerdasarkanKode(node, kodeYangDicari) {
+    if (!node) return null;
+    if (node.kodeAkses === kodeYangDicari) return node;
+    if (node.anak) {
+        for (let i = 0; i < 5; i++) {
+            if (node.anak[i]) {
+                const hasil = cariNodeBerdasarkanKode(node.anak[i], kodeYangDicari);
+                if (hasil) return hasil;
+            }
         }
-        
-        dataJaringan.saldoUtama -= p.jumlah;
-        
-        if (!nodeAnggota.saldoUtama) nodeAnggota.saldoUtama = 0;
-        nodeAnggota.saldoUtama += p.jumlah;
-        p.status = 'DISETUJUI';
-        
-        daftarRiwayat.unshift({
-            teks: `💳 Top Up Saldo: ${p.pemohonNama} +${formatUang(p.jumlah)}`,
-            rincian: [
-                `Dari saldo Admin: -${formatUang(p.jumlah)}`,
-                `Ditambahkan ke: ${p.pemohonNama}`
-            ],
-            waktu: new Date().toLocaleString('id-ID')
-        });
-        
-        alert(`✅ Berhasil!\nSaldo Admin berkurang: ${formatUang(p.jumlah)}\nSaldo ${p.pemohonNama} bertambah: ${formatUang(p.jumlah)}`);
-    } else {
-        p.status = 'DITOLAK';
-        alert('❌ Permintaan ditolak.');
     }
-    
-    simpanData();
-    perbaruiTampilanPermintaanTopUp();
-    perbaruiTampilanAdmin();
+    return null;
 }
 
 function cariUpline(dariNode, targetNode, induk = null) {
@@ -509,11 +425,8 @@ function cariUpline(dariNode, targetNode, induk = null) {
 }
 
 function berikanBonusSponsorDanJaringan(pendaftarNode, nodeAnggotaBaru, rincian) {
-    // Bonus Sponsor langsung masuk ke pendaftar
     pendaftarNode.sponsor += BONUS_SPONSOR;
     rincian.push(`💰 Bonus Sponsor: ${pendaftarNode.nama} +${formatUang(BONUS_SPONSOR)}`);
-    
-    // Bonus Jaringan ke upline sampai level 7
     berikanBonusJaringanKeUpline(pendaftarNode, rincian, 1);
 }
 
@@ -527,20 +440,6 @@ function berikanBonusJaringanKeUpline(dariNode, rincian, levelSaatIni) {
     }
 }
 
-function cariNodeBerdasarkanKode(node, kodeYangDicari) {
-    if (!node) return null;
-    if (node.kodeAkses === kodeYangDicari) return node;
-    if (node.anak) {
-        for (let i = 0; i < 5; i++) {
-            if (node.anak[i]) {
-                const hasil = cariNodeBerdasarkanKode(node.anak[i], kodeYangDicari);
-                if (hasil) return hasil;
-            }
-        }
-    }
-    return null;
-}
-
 function gambarTingkat(node, level, isAdmin = false, kodeSaya = null) {
     if (!node || !node.nama || !node.anak) return '';
     let html = '';
@@ -550,7 +449,7 @@ function gambarTingkat(node, level, isAdmin = false, kodeSaya = null) {
         const anggota = node.anak[i];
         if (anggota && anggota.nama) {
             const kelasSaya = kodeSaya && anggota.kodeAkses === kodeSaya ? 'me' : '';
-            const tampilkanKode = isAdmin || (kodeSaya && anggota.kodeAkses === kodeSaya);
+            const tampilkanKode = isAdmin;
             const tampilKode = tampilkanKode 
                 ? `🔑 ${anggota.kodeAkses}` 
                 : `<span class="kode-disembunyikan">🔑 Rahasia</span>`;
@@ -582,32 +481,116 @@ function gambarTingkat(node, level, isAdmin = false, kodeSaya = null) {
     return html;
 }
 
-function perbaruiTampilanAdmin() {
-    document.getElementById('saldo-utama-admin').textContent = formatUang(dataJaringan.saldoUtama || 0);
-    document.getElementById('uang-sponsor').textContent = formatUang(dataJaringan.sponsor);
-    document.getElementById('uang-jaringan').textContent = formatUang(dataJaringan.jaringan);
-    
-    const kotakRiwayat = document.getElementById('daftar-riwayat');
-    if (daftarRiwayat.length === 0) {
-        kotakRiwayat.innerHTML = 'Belum ada riwayat.';
-    } else {
-        kotakRiwayat.innerHTML = '';
-        daftarRiwayat.forEach(item => {
-            const rincian = Array.isArray(item.rincian) ? item.rincian.join('<br>') : item.rincian;
-            kotakRiwayat.innerHTML += `
-                <div class="riwayat-item">
-                    ✅ ${item.teks}<br>
-                    ${rincian}
-                    <span class="tanggal-riwayat">${item.waktu}</span>
-                </div>`;
-        });
+// ========= HALAMAN ADMIN =========
+async function tambahSaldoManual() {
+    const jumlah = parseInt(document.getElementById('input-modal-awal').value);
+    if (!jumlah || jumlah <= 0) {
+        alert('❌ Masukkan jumlah yang benar!');
+        return;
     }
+    dataJaringan.saldoUtama += jumlah;
     
-    document.getElementById('tampilan-diagram-admin').innerHTML = gambarTingkat(dataJaringan, 0, true);
-    perbaruiTampilanKode();
+    daftarRiwayat.unshift({
+        teks: `💳 Penambahan Modal Manual: +${formatUang(jumlah)}`,
+        rincian: ['Ditambahkan oleh Owner'],
+        waktu: new Date().toLocaleString('id-ID')
+    });
+    
+    document.getElementById('input-modal-awal').value = '';
+    await simpanSemuaData();
+    perbaruiTampilanAdmin();
+    alert(`✅ Berhasil! Saldo utama bertambah: ${formatUang(jumlah)}`);
 }
 
-function daftarkanAnggotaAdmin() {
+async function pindahKeUtama(jenis) {
+    if (jenis === 'sponsor') {
+        if (dataJaringan.sponsor <= 0) { alert('❌ Tidak ada bonus sponsor untuk dipindahkan!'); return; }
+        dataJaringan.saldoUtama += dataJaringan.sponsor;
+        daftarRiwayat.unshift({
+            teks: '💰 Pindah Bonus Sponsor ke Dompet Utama',
+            rincian: ['+' + formatUang(dataJaringan.sponsor)],
+            waktu: new Date().toLocaleString('id-ID')
+        });
+        dataJaringan.sponsor = 0;
+    } else {
+        if (dataJaringan.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
+        dataJaringan.saldoUtama += dataJaringan.jaringan;
+        daftarRiwayat.unshift({
+            teks: '🎁 Pindah Bonus Jaringan ke Dompet Utama',
+            rincian: ['+' + formatUang(dataJaringan.jaringan)],
+            waktu: new Date().toLocaleString('id-ID')
+        });
+        dataJaringan.jaringan = 0;
+    }
+    await simpanSemuaData();
+    perbaruiTampilanAdmin();
+    alert('✅ Berhasil dipindahkan ke Dompet Utama!');
+}
+
+function perbaruiTampilanPermintaanTopUp() {
+    const kotak = document.getElementById('daftar-permintaan-topup');
+    if (daftarPermintaanTopUp.length === 0) {
+        kotak.innerHTML = 'Belum ada permintaan top up saldo.';
+        return;
+    }
+    kotak.innerHTML = '';
+    daftarPermintaanTopUp.forEach((p, idx) => {
+        if (p.status !== 'PENDING') return;
+        kotak.innerHTML += `
+            <div class="permintaan-topup-item">
+                <strong>${p.pemohonNama}</strong> [${p.pemohonKode}] meminta isi saldo:<br>
+                💰 Jumlah: <strong style="color:#4ade80;font-size:16px;">${formatUang(p.jumlah)}</strong><br>
+                <span class="tanggal-riwayat">${p.waktu}</span>
+                <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn-setuju" onclick="prosesTopUp(${idx}, true)">✅ KONFIRMASI & MASUKKAN</button>
+                    <button class="btn-tolak" onclick="prosesTopUp(${idx}, false)">❌ TOLAK</button>
+                </div>
+            </div>`;
+    });
+    if (kotak.innerHTML === '') kotak.innerHTML = 'Tidak ada permintaan top up baru.';
+}
+
+async function prosesTopUp(indeks, disetujui) {
+    const p = daftarPermintaanTopUp[indeks];
+    const nodeAnggota = cariNodeBerdasarkanKode(dataJaringan, p.pemohonKode);
+    
+    if (!nodeAnggota) {
+        alert('❌ Anggota tidak ditemukan!');
+        return;
+    }
+    
+    if (disetujui) {
+        if ((dataJaringan.saldoUtama || 0) < p.jumlah) {
+            alert(`❌ Saldo Admin tidak cukup!\nSaldo Admin: ${formatUang(dataJaringan.saldoUtama || 0)}\nDiperlukan: ${formatUang(p.jumlah)}`);
+            return;
+        }
+        
+        dataJaringan.saldoUtama -= p.jumlah;
+        if (!nodeAnggota.saldoUtama) nodeAnggota.saldoUtama = 0;
+        nodeAnggota.saldoUtama += p.jumlah;
+        p.status = 'DISETUJUI';
+        
+        daftarRiwayat.unshift({
+            teks: `💳 Top Up Saldo: ${p.pemohonNama} +${formatUang(p.jumlah)}`,
+            rincian: [
+                `Dari saldo Admin: -${formatUang(p.jumlah)}`,
+                `Ditambahkan ke: ${p.pemohonNama}`
+            ],
+            waktu: new Date().toLocaleString('id-ID')
+        });
+        
+        alert(`✅ Berhasil!\nSaldo Admin berkurang: ${formatUang(p.jumlah)}\nSaldo ${p.pemohonNama} bertambah: ${formatUang(p.jumlah)}`);
+    } else {
+        p.status = 'DITOLAK';
+        alert('❌ Permintaan ditolak.');
+    }
+    
+    await simpanSemuaData();
+    perbaruiTampilanPermintaanTopUp();
+    perbaruiTampilanAdmin();
+}
+
+async function daftarkanAnggotaAdmin() {
     const namaBaru = document.getElementById('nama-baru-admin').value.trim();
     const hpBaru = document.getElementById('hp-baru-admin').value.trim();
     const kodeAkses = document.getElementById('kode-akses-baru').value.trim();
@@ -650,15 +633,12 @@ function daftarkanAnggotaAdmin() {
     };
     
     dataJaringan.anak[posisiSlot] = anggotaBaru;
+    await tandaiKodeTerpakai(kodeAkses.toUpperCase());
     
-    daftarKodeAksesTersedia = daftarKodeAksesTersedia.filter(k => k !== kodeAkses.toUpperCase());
-    tandaiKodeTerpakai(kodeAkses.toUpperCase());
-    
-    // Owner juga dapat bonus saat mendaftarkan member
     const rincianBonus = [];
     dataJaringan.sponsor += BONUS_SPONSOR;
     rincianBonus.push(`💰 Bonus Sponsor: OWNER +${formatUang(BONUS_SPONSOR)}`);
-    rincianBonus.push(`🎁 Tidak ada upliine di atas Owner`);
+    rincianBonus.push(`🎁 Tidak ada upline di atas Owner`);
     
     const nomorWA = hpBaru.replace(/\D/g,'').replace(/^0/, '62');
     const pesanWA = encodeURIComponent(
@@ -672,14 +652,11 @@ function daftarkanAnggotaAdmin() {
     
     daftarRiwayat.unshift({
         teks: `${namaBaru.toUpperCase()} [${kodeAkses.toUpperCase()}] didaftarkan oleh Owner`,
-        rincian: [
-            ...rincianBonus,
-            `📱 Kode dikirim ke: ${hpBaru}`
-        ],
+        rincian: [...rincianBonus, `📱 Kode dikirim ke: ${hpBaru}`],
         waktu: new Date().toLocaleString('id-ID')
     });
     
-    simpanData();
+    await simpanSemuaData();
     
     document.getElementById('nama-baru-admin').value = '';
     document.getElementById('hp-baru-admin').value = '';
@@ -691,14 +668,71 @@ function daftarkanAnggotaAdmin() {
         <span style="color:#4ade80;">
             ✅ Berhasil! ${namaBaru.toUpperCase()} telah terdaftar!<br>
             ${rincianBonus.join('<br>')}<br><br>
-            <a href="${linkWA}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:bold;">📱 Klik di sini untuk kirim kode via WhatsApp</a>
+            <a href="${linkWA}" target="_blank" class="link-wa">📱 Klik di sini untuk kirim kode via WhatsApp</a>
             <div class="peringatan-kode" style="margin-top:10px;">
                 ⚠️ Ingatkan anggota: JANGAN BERITAHUKAN kode akses kepada siapapun!
             </div>
         </span>`;
 }
 
-function daftarkanMemberLangsung() {
+function perbaruiTampilanAdmin() {
+    document.getElementById('saldo-utama-admin').textContent = formatUang(dataJaringan.saldoUtama || 0);
+    document.getElementById('uang-sponsor').textContent = formatUang(dataJaringan.sponsor);
+    document.getElementById('uang-jaringan').textContent = formatUang(dataJaringan.jaringan);
+    
+    const kotakRiwayat = document.getElementById('daftar-riwayat');
+    if (daftarRiwayat.length === 0) {
+        kotakRiwayat.innerHTML = 'Belum ada riwayat.';
+    } else {
+        kotakRiwayat.innerHTML = '';
+        daftarRiwayat.forEach(item => {
+            const rincian = Array.isArray(item.rincian) ? item.rincian.join('<br>') : item.rincian;
+            kotakRiwayat.innerHTML += `
+                <div class="riwayat-item">
+                    ✅ ${item.teks}<br>
+                    ${rincian}
+                    <span class="tanggal-riwayat">${item.waktu}</span>
+                </div>`;
+        });
+    }
+    
+    document.getElementById('tampilan-diagram-admin').innerHTML = gambarTingkat(dataJaringan, 0, true);
+    perbaruiTampilanKode();
+}
+
+// ========= HALAMAN ANGGOTA =========
+function bukaFormTopUp() {
+    document.getElementById('form-topup-anggota').classList.toggle('hidden');
+}
+
+async function kirimPermintaanTopUp() {
+    const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
+    if (!nodeSaya) return;
+    
+    const jumlah = parseInt(document.getElementById('jumlah-topup-saya').value);
+    const pesan = document.getElementById('pesan-topup-saya');
+    pesan.innerHTML = '';
+    
+    if (!jumlah || jumlah < 10000) {
+        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan jumlah yang benar! Minimal Rp 10.000</span>';
+        return;
+    }
+    
+    daftarPermintaanTopUp.unshift({
+        id: Date.now(),
+        pemohonKode: nodeSaya.kodeAkses,
+        pemohonNama: nodeSaya.nama,
+        jumlah: jumlah,
+        waktu: new Date().toLocaleString('id-ID'),
+        status: 'PENDING'
+    });
+    
+    await simpanSemuaData();
+    document.getElementById('jumlah-topup-saya').value = '';
+    pesan.innerHTML = `<span style="color:#4ade80;">✅ Permintaan terkirim ke Admin!\nSilakan transfer ke Sea Bank: 9011 9546 5653 a/n M Amin, lalu konfirmasi ke WA Admin: 0813 8506 7500</span>`;
+}
+
+async function daftarkanMemberLangsung() {
     const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
     if (!nodeSaya) return;
     
@@ -748,11 +782,10 @@ function daftarkanMemberLangsung() {
     const rincianBonus = [];
     berikanBonusSponsorDanJaringan(nodeSaya, anggotaBaru, rincianBonus);
     
-    daftarKodeAksesTersedia.pop();
-    tandaiKodeTerpakai(kodeBaru.toUpperCase());
+    await tandaiKodeTerpakai(kodeBaru.toUpperCase());
     
     const nomorWA = hp.replace(/\D/g,'').replace(/^0/, '62');
-    const pesanWA = encodeURIComponent(
+        const pesanWA = encodeURIComponent(
         `Halo ${nama.toUpperCase()}! 🎉\n` +
         `Selamat anda telah terdaftar di QMC TEKNOLOGI.\n\n` +
         `Kode akses anda: ${kodeBaru.toUpperCase()}\n\n` +
@@ -771,27 +804,29 @@ function daftarkanMemberLangsung() {
         waktu: new Date().toLocaleString('id-ID')
     });
     
-    simpanData();
+    await simpanSemuaData();
     
     document.getElementById('nama-baru-saya').value = '';
     document.getElementById('hp-baru-saya').value = '';
     document.getElementById('pilih-slot-saya').value = '';
     
-    muatHalamanAnggota(nodeSaya);
+    const dataTerbaru = await bacaSemuaData();
+    const nodeSayaTerbaru = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
+    if (nodeSayaTerbaru) muatHalamanAnggota(nodeSayaTerbaru);
     
     pesan.innerHTML = `
         <span style="color:#4ade80;">
             ✅ Berhasil! ${nama.toUpperCase()} telah terdaftar!<br>
             💳 Dompet Utama dipotong: ${formatUang(BIAYA_DAFTAR_MEMBER)}<br>
             ${rincianBonus.join('<br>')}<br><br>
-            <a href="${linkWA}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:bold;">📱 Klik di sini untuk kirim kode via WhatsApp</a>
+            <a href="${linkWA}" target="_blank" class="link-wa">📱 Klik di sini untuk kirim kode via WhatsApp</a>
             <div class="peringatan-kode" style="margin-top:8px;">
                 ⚠️ Ingatkan member: JANGAN BERITAHUKAN kode akses kepada siapapun!
             </div>
         </span>`;
 }
 
-function pindahKeUtamaAnggota(jenis) {
+async function pindahKeUtamaAnggota(jenis) {
     const nodeSaya = cariNodeBerdasarkanKode(dataJaringan, penggunaSaatIni);
     if (!nodeSaya) return;
     
@@ -805,7 +840,7 @@ function pindahKeUtamaAnggota(jenis) {
         });
         nodeSaya.sponsor = 0;
     } else {
-                if (nodeSaya.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
+        if (nodeSaya.jaringan <= 0) { alert('❌ Tidak ada bonus jaringan untuk dipindahkan!'); return; }
         nodeSaya.saldoUtama += nodeSaya.jaringan;
         daftarRiwayat.unshift({
             teks: `🎁 ${nodeSaya.nama}: Pindah Bonus Jaringan ke Dompet Utama`,
@@ -814,38 +849,9 @@ function pindahKeUtamaAnggota(jenis) {
         });
         nodeSaya.jaringan = 0;
     }
-    simpanData();
+    await simpanSemuaData();
     muatHalamanAnggota(nodeSaya);
     alert('✅ Berhasil dipindahkan ke Dompet Utama!');
-}
-
-function cekLogin() {
-    const kode = document.getElementById('input-kode').value.trim().toUpperCase();
-    const pesan = document.getElementById('pesan-login');
-    pesan.innerHTML = '';
-    
-    if (!kode) {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan kode akses!</span>';
-        return;
-    }
-    
-    if (kode === KODE_OWNER.toUpperCase()) {
-        penggunaSaatIni = KODE_OWNER;
-        document.getElementById('halaman-login').classList.add('hidden');
-        document.getElementById('halaman-admin').classList.remove('hidden');
-        perbaruiTampilanAdmin();
-        return;
-    }
-    
-    const nodeDitemukan = cariNodeBerdasarkanKode(dataJaringan, kode);
-    if (nodeDitemukan) {
-        penggunaSaatIni = kode;
-        document.getElementById('halaman-login').classList.add('hidden');
-        document.getElementById('halaman-anggota').classList.remove('hidden');
-        muatHalamanAnggota(nodeDitemukan);
-    } else {
-        pesan.innerHTML = '<span style="color:#f87171;">❌ Kode akses tidak ditemukan!</span>';
-    }
 }
 
 function muatHalamanAnggota(nodeSaya) {
@@ -880,14 +886,45 @@ function muatHalamanAnggota(nodeSaya) {
     }
 }
 
+function cekLogin() {
+    const kode = document.getElementById('input-kode').value.trim().toUpperCase();
+    const pesan = document.getElementById('pesan-login');
+    pesan.innerHTML = '';
+    
+    if (!kode) {
+        pesan.innerHTML = '<span style="color:#f87171;">❌ Masukkan kode akses!</span>';
+        return;
+    }
+    
+    if (kode === KODE_OWNER.toUpperCase()) {
+        penggunaSaatIni = KODE_OWNER;
+        document.getElementById('halaman-login').classList.add('hidden');
+        document.getElementById('halaman-admin').classList.remove('hidden');
+        perbaruiTampilanAdmin();
+        return;
+    }
+    
+    const nodeDitemukan = cariNodeBerdasarkanKode(dataJaringan, kode);
+    if (nodeDitemukan) {
+        penggunaSaatIni = kode;
+        document.getElementById('halaman-login').classList.add('hidden');
+        document.getElementById('halaman-anggota').classList.remove('hidden');
+        muatHalamanAnggota(nodeDitemukan);
+    } else {
+        pesan.innerHTML = '<span style="color:#f87171;">❌ Kode akses tidak ditemukan!</span>';
+    }
+}
+
 function hapusSemuaData() {
     if (confirm('⚠️ Hati-hati! Semua data akan dihapus dan tidak bisa dikembalikan! Lanjutkan?')) {
-        localStorage.clear();
-        location.reload();
+        db.collection('qmc_data').doc('data_utama').delete().then(()=>{
+            location.reload();
+        });
     }
 }
 
 function keluarSistem() {
+    if (pemantauPerubahan) pemantauPerubahan();
     penggunaSaatIni = null;
     kodeSementara = null;
     document.getElementById('halaman-admin').classList.add('hidden');
@@ -903,7 +940,10 @@ document.addEventListener('keypress', function(e) {
     }
 });
 
-muatData();
+(async function mulai() {
+    await bacaSemuaData();
+    mulaiPantauPerubahan();
+})();
 </script>
 </body>
 </html>
