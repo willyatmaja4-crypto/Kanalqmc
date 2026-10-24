@@ -121,7 +121,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
       </div>
     </div>
     
-
     <div id="formPinKasir" class="sembunyi">
       <p style="font-size:14px; color:#66; margin-bottom:10px;">Masukkan PIN yang diberikan pemilik toko.</p>
       <input type="password" id="pinKasirMasuk" placeholder="Masukkan PIN (4-6 angka)" maxlength="6" autocomplete="off">
@@ -131,7 +130,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
   </div>
 </div>
 
-<!-- HALAMAN UTAMA -->
 <div id="halamanUtama" class="sembunyi">
   <h1 class="nama-toko">TOKO SAYA <span id="labelVersi" style="font-size:12px; font-weight:normal;">— VERSI DEMO</span></h1>
   <div style="text-align:right; margin-bottom:10px;">
@@ -139,7 +137,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
   </div>
   <button class="btn-keluar" onclick="keluarAplikasi()">🚪 KELUAR APLIKASI</button>
   
-  <!-- MENU -->
   <div class="menu">
     <button onclick="buka('kasir')" id="menuKasir">💳 KASIR</button>
     <button onclick="buka('barang')" id="menuBarang" class="sembunyi">📦 BARANG</button>
@@ -151,7 +148,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     <button onclick="buka('daftarkode')" id="menuDaftarKode" class="sembunyi">🔑 KODE AKSES</button>
   </div>
 
-  <!-- HALAMAN KASIR -->
   <div id="pgKasir" class="konten">
     <h3>🛒 KASIR PENJUALAN</h3>
     <input type="text" class="input-cari" id="cariBarangKasir" placeholder="🔍 Cari barang..." oninput="filterBarangKasir()">
@@ -194,7 +190,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     </div>
   </div>
 
-  <!-- HALAMAN BARANG -->
   <div id="pgBarang" class="konten sembunyi">
     <h3>📦 DAFTAR BARANG</h3>
     <input type="text" class="input-cari" id="cariBarangTabel" placeholder="🔍 Cari barang..." oninput="filterBarangTabel()">
@@ -234,7 +229,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     </div>
   </div>
 
-  <!-- HALAMAN LAPORAN -->
   <div id="pgLaporan" class="konten sembunyi">
     <h3>📊 LAPORAN PENJUALAN</h3>
     <div class="kotak-rekap">
@@ -260,7 +254,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     <div id="daftarRiwayat"></div>
   </div>
 
-  <!-- HALAMAN PIUTANG -->
   <div id="pgHutang" class="konten sembunyi">
     <h3>💰 DAFTAR PIUTANG</h3>
     <div class="kotak-rekap">
@@ -269,14 +262,12 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     <div id="daftarHutang"></div>
   </div>
 
-  <!-- HALAMAN PENGATURAN -->
   <div id="pgPengaturan" class="konten sembunyi">
     <h3>⚙️ PENGATURAN TOKO</h3>
     <input type="text" id="inputNamaToko" placeholder="Nama Toko / Usaha">
     <button class="btn-hijau" onclick="simpanNamaToko()">✅ SIMPAN NAMA TOKO</button>
   </div>
 
-  <!-- HALAMAN KELOLA KARYAWAN & PIN -->
   <div id="pgKelolapin" class="konten sembunyi">
     <h3>👤 KELOLA KARYAWAN</h3>
     <input type="text" id="namaKasirBaru" placeholder="Nama Karyawan">
@@ -301,7 +292,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     </table>
   </div>
 
-  <!-- HALAMAN RIWAYAT MASUK KARYAWAN -->
   <div id="pgRiwayatmasuk" class="konten sembunyi">
     <h3>🕐 RIWAYAT MASUK KARYAWAN</h3>
     <table>
@@ -320,7 +310,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
     </table>
   </div>
 
-  <!-- HALAMAN DAFTAR KODE AKSES (ADMIN) -->
   <div id="pgDaftarkode" class="konten sembunyi">
     <h3>🔑 DAFTAR KODE AKSES</h3>
     <input type="text" class="input-cari" id="cariKodeFirebase" placeholder="🔍 Cari kode atau nomor HP..." oninput="filterKodeFirebase()">
@@ -356,7 +345,6 @@ button{padding:10px 12px; font-size:14px; font-weight:bold; border:none; border-
 <div class="kaki-halaman" id="footerVersi" style="display:none;">⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan</div>
 
 <script>
-// === KONFIGURASI FIREBASE ===
 const firebaseConfig = {
   apiKey: "AIzaSyDWbFhfGkveSLpHyfXdB1G-4iQOP_UjOts",
   authDomain: "qmc-technologi.firebaseapp.com",
@@ -370,11 +358,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// === KONSTAN ===
 const KODE_ADMIN = "qwerty";
 const BATAS_DEMO_JAM = 72;
 
-// === DATA LOKAL ===
 let penggunaSaatIni = null;
 let daftarPinKasir = [];
 let riwayatMasukKaryawan = [];
@@ -384,7 +370,6 @@ let riwayat = [];
 let daftarHutang = [];
 let namaToko = "TOKO SAYA";
 
-// === FUNGSI TAB ===
 function gantiTab(tab){
   document.getElementById('tabKodeAkses').classList.toggle('aktif', tab === 'kode');
   document.getElementById('tabPinKasir').classList.toggle('aktif', tab === 'pin');
@@ -407,7 +392,6 @@ function tampilPesan(elId, teks, isError=true){
   el.style.color = isError ? '#e74c3c' : '#2e7d32';
 }
 
-// === FUNGSI NAVIGASI ===
 function tampilMintaKode(){
   document.getElementById('pilihanUtama').classList.add('sembunyi');
   document.getElementById('formMintaKode').classList.remove('sembunyi');
@@ -430,7 +414,6 @@ function kembaliKePilihan(){
   sembunyikanPesan();
 }
 
-// === BUAT KODE FORMAT ===
 function buatKodeFormat(panjang){
   const angka = '0123456789';
   const huruf = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -450,7 +433,6 @@ function tentukanTipeKode(kode){
   return 'lainnya';
 }
 
-// === CEK NOMOR SUDAH SELESAI DEMO ===
 async function nomorSudahDemoSelesai(nomorWA){
   const snapshot = await db.collection('kode_akses')
     .where('nomorWA', '==', nomorWA)
@@ -460,7 +442,6 @@ async function nomorSudahDemoSelesai(nomorWA){
   return !snapshot.empty;
 }
 
-// === BUAT KODE DEMO DARI PENGGUNA ===
 async function buatDanKirimKode(){
   const nomorWA = document.getElementById('nomorWAPeminta').value.trim();
   if(!nomorWA || nomorWA.length < 10){
@@ -513,7 +494,6 @@ async function buatDanKirimKode(){
   }
 }
 
-// === ADMIN BUAT KODE DEMO ===
 async function buatKodeDemoBaru(){
   const nomorWA = document.getElementById('nomorWAKodeBaru').value.trim() || '-';
   try{
@@ -540,7 +520,6 @@ async function buatKodeDemoBaru(){
   }
 }
 
-// === ADMIN BUAT KODE PENUH ===
 async function buatKodePenuhBaru(){
   const nomorWA = document.getElementById('nomorWAKodeBaru').value.trim() || '-';
   try{
@@ -567,7 +546,6 @@ async function buatKodePenuhBaru(){
   }
 }
 
-// === CEK KODE SAAT LOGIN ===
 async function cekKode(){
   const input = document.getElementById('kodeAkses').value.trim().toUpperCase();
   if(!input){ tampilPesan('pesanSalah', '❌ Masukkan kode akses!'); return; }
@@ -578,7 +556,6 @@ async function cekKode(){
     if(!doc.exists){ tampilPesan('pesanSalah', '❌ Kode akses tidak ditemukan!'); return; }
     const data = doc.data();
     
-    // KODE PENUH
     if(tipeKode === 'penuh'){
       penggunaSaatIni = { tipe:'penuh', kode:input, nama:'PEMILIK USAHA' };
       alert('✅ Selamat datang! Versi Penuh — tanpa batas waktu.');
@@ -586,7 +563,6 @@ async function cekKode(){
       return;
     }
     
-    // KODE DEMO
     if(data.demoSelesai){
       tampilPesan('pesanSalah', '⏰ Masa demo sudah habis.\nHubungi admin untuk kode versi penuh.');
       return;
@@ -619,7 +595,6 @@ async function cekKode(){
   }
 }
 
-// === LOGIN PIN KASIR ===
 function cekPinKasir(){
   const pin = document.getElementById('pinKasirMasuk').value.trim();
   if(!pin){ tampilPesan('pesanPin', '❌ Masukkan PIN!'); return; }
@@ -649,7 +624,6 @@ function cekPinKasir(){
   masukBerhasil('kasir');
 }
 
-// === LOGIN ADMIN ===
 function cekLoginAdmin(){
   const input = document.getElementById('kodeAdmin').value.trim();
   if(input === KODE_ADMIN){
@@ -660,7 +634,6 @@ function cekLoginAdmin(){
   }
 }
 
-// === MASUK BERHASIL ===
 function masukBerhasil(tipe){
   document.getElementById('halamanLogin').classList.add('sembunyi');
   document.getElementById('halamanUtama').classList.remove('sembunyi');
@@ -684,6 +657,7 @@ function masukBerhasil(tipe){
     document.getElementById('menuHutang').classList.remove('sembunyi');
     document.getElementById('menuPengaturan').classList.remove('sembunyi');
     document.getElementById('menuKelolaPin').classList.remove('sembunyi');
+    document.getElementById('menuRiwayatMasuk').classList.remove('sembunyi');
     buka('daftarkode');
     tampilDaftarKodeFirebase();
   }else if(tipe === 'penuh'){
@@ -709,6 +683,12 @@ function masukBerhasil(tipe){
     }
     if(elFooter) elFooter.style.display = 'block', elFooter.textContent = '⏰ VERSI DEMO — Berlaku 72 jam sejak pertama digunakan';
     if(elLabelVersi) elLabelVersi.textContent = '— VERSI DEMO';
+    document.getElementById('menuBarang').classList.remove('sembunyi');
+    document.getElementById('menuLaporan').classList.remove('sembunyi');
+    document.getElementById('menuHutang').classList.remove('sembunyi');
+    document.getElementById('menuPengaturan').classList.remove('sembunyi');
+    document.getElementById('menuKelolaPin').classList.remove('sembunyi');
+    document.getElementById('menuRiwayatMasuk').classList.remove('sembunyi');
     buka('kasir');
   }else if(tipe === 'kasir'){
     if(elInfoVersi) elInfoVersi.classList.add('sembunyi');
@@ -736,7 +716,6 @@ function keluarAplikasi(){
   }
 }
 
-// === TAMPIL DAFTAR KODE FIREBASE ===
 async function tampilDaftarKodeFirebase(){
   const tbody = document.getElementById('tabelKodeFirebaseBody');
   if(!tbody) return;
@@ -788,500 +767,529 @@ function filterKodeFirebase(){
   });
 }
 
-// === FUNGSI DASAR ===
 function amanAngka(nilai){ return isNaN(Number(nilai)) ? 0 : Number(nilai); }
 function formatRupiah(angka){ return 'Rp ' + amanAngka(angka).toLocaleString('id-ID'); }
 function waktuSekarang(){ return new Date().toLocaleString('id-ID'); }
 
-// === PENYIMPANAN DATA LOKAL ===
-function simpanData(key, nilai){ localStorage.setItem(key, JSON.stringify(nilai)); }
-function ambilData(key){ const v=localStorage.getItem(key); try{return v?JSON.parse(v):null;}catch(e){return null;} }
 function simpanSemua(){
-  simpanData('daftarPinKasir', daftarPinKasir);
-  simpanData('riwayatMasukKaryawan', riwayatMasukKaryawan);
-  simpanData('daftarBarang', daftarBarang);
-  simpanData('riwayat', riwayat);
-  simpanData('daftarHutang', daftarHutang);
-  simpanData('namaToko', namaToko);
-}
-function muatSemua(){
-  const dp = ambilData('daftarPinKasir');
-  const rm = ambilData('riwayatMasukKaryawan');
-  const b = ambilData('daftarBarang');
-  const r = ambilData('riwayat');
-  const h = ambilData('daftarHutang');
-  const n = ambilData('namaToko');
-  if(dp) daftarPinKasir = dp;
-  if(rm) riwayatMasukKaryawan = rm;
-  if(b) daftarBarang = b;
-  if(r) riwayat = r;
-  if(h) daftarHutang = h;
-  if(n) namaToko = n;
+  localStorage.setItem('namaToko', namaToko);
+  localStorage.setItem('daftarBarang', JSON.stringify(daftarBarang));
+  localStorage.setItem('riwayat', JSON.stringify(riwayat));
+  localStorage.setItem('daftarHutang', JSON.stringify(daftarHutang));
+  localStorage.setItem('daftarPinKasir', JSON.stringify(daftarPinKasir));
+  localStorage.setItem('riwayatMasukKaryawan', JSON.stringify(riwayatMasukKaryawan));
 }
 
-// === BUKA HALAMAN ===
-function buka(nama){
-  ['Kasir','Barang','Laporan','Hutang','Pengaturan','Kelolapin','Riwayatmasuk','Daftarkode'].forEach(pg=>{
-    const el = document.getElementById('pg'+pg); if(el) el.classList.add('sembunyi');
+function muatSemua(){
+  namaToko = localStorage.getItem('namaToko') || 'TOKO SAYA';
+  const elNamaToko = document.querySelector('.nama-toko');
+  if(elNamaToko) elNamaToko.textContent = namaToko;
+  
+  const brg = localStorage.getItem('daftarBarang');
+  if(brg) daftarBarang = JSON.parse(brg);
+  
+  const rwy = localStorage.getItem('riwayat');
+  if(rwy) riwayat = JSON.parse(rwy);
+  
+  const hut = localStorage.getItem('daftarHutang');
+  if(hut) daftarHutang = JSON.parse(hut);
+  
+  const pin = localStorage.getItem('daftarPinKasir');
+  if(pin) daftarPinKasir = JSON.parse(pin);
+  
+  const rwyMasuk = localStorage.getItem('riwayatMasukKaryawan');
+  if(rwyMasuk) riwayatMasukKaryawan = JSON.parse(rwyMasuk);
+  
+  tampilDaftarPinKasir();
+  tampilRiwayatMasuk();
+}
+
+function buka(namaHalaman){
+  ['pgKasir','pgBarang','pgLaporan','pgHutang','pgPengaturan','pgKelolapin','pgRiwayatmasuk','pgDaftarkode'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.add('sembunyi');
   });
-  const halaman = document.getElementById('pg'+nama.charAt(0).toUpperCase()+nama.slice(1));
+  
+  const halaman = document.getElementById('pg'+namaHalaman.charAt(0).toUpperCase() + namaHalaman.slice(1));
   if(halaman) halaman.classList.remove('sembunyi');
   
-  if(nama==='barang'){ tampilTabel(); const el=document.getElementById('cariBarangTabel'); if(el)el.value=''; }
-  if(nama==='kasir'){ tampilKasir(); const el=document.getElementById('cariBarangKasir'); if(el)el.value=''; }
-  if(nama==='laporan'){ tampilLaporan(); }
-  if(nama==='hutang'){ tampilHutang(); }
-  if(nama==='pengaturan'){ const el=document.getElementById('inputNamaToko'); if(el)el.value=namaToko; }
-  if(nama==='kelolapin'){ tampilTabelPinKasir(); }
-  if(nama==='riwayatmasuk'){ tampilTabelRiwayatMasuk(); }
-  if(nama==='daftarkode'){ tampilDaftarKodeFirebase(); }
+  if(namaHalaman === 'kasir') tampilBarangKasir();
+  if(namaHalaman === 'barang') tampilDaftarBarang();
+  if(namaHalaman === 'laporan') tampilLaporan();
+  if(namaHalaman === 'hutang') tampilHutang();
+  if(namaHalaman === 'pengaturan') {
+    const el = document.getElementById('inputNamaToko');
+    if(el) el.value = namaToko;
+  }
+  if(namaHalaman === 'kelolapin') tampilDaftarPinKasir();
+  if(namaHalaman === 'riwayatmasuk') tampilRiwayatMasuk();
+  if(namaHalaman === 'daftarkode') tampilDaftarKodeFirebase();
 }
 
-// === NAMA USAHA ===
-function simpanNamaToko(){
-  const n = document.getElementById('inputNamaToko').value.trim();
-  if(!n){ alert('Isi nama usaha dulu!'); return; }
-  namaToko = n;
-  simpanSemua();
-  alert('✅ Nama usaha disimpan!');
-}
-
-// === KELOLA PIN KASIR / KARYAWAN ===
-function buatPinKasir(){
-  const nama = document.getElementById('namaKasirBaru').value.trim();
-  const noHP = document.getElementById('nomorHPKaryawan').value.trim();
-  const pin = document.getElementById('pinKasirBaru').value.trim();
+// === FUNGSI KASIR ===
+function tampilBarangKasir(){
+  const el = document.getElementById('daftarKasir');
+  const cari = document.getElementById('cariBarangKasir')?.value?.toLowerCase() || '';
+  const hasil = daftarBarang.filter(b=>
+    b.nama.toLowerCase().includes(cari) && b.stok > 0
+  );
   
-  if(!nama || !pin){ alert('Isi nama dan PIN!'); return; }
-  if(pin.length !== 4){ alert('PIN harus 4 angka!'); return; }
-  if(isNaN(pin)){ alert('PIN hanya boleh angka!'); return; }
-  if(daftarPinKasir.some(d=>d.pin===pin)){ alert('PIN sudah dipakai! Gunakan PIN lain.'); return; }
-  
-  daftarPinKasir.push({ nama:nama, nomorHP:noHP, pin:pin });
-  simpanSemua();
-  document.getElementById('namaKasirBaru').value = '';
-  document.getElementById('nomorHPKaryawan').value = '';
-  document.getElementById('pinKasirBaru').value = '';
-  alert('✅ Karyawan berhasil didaftarkan!\n\nNama: ' + nama + '\nNo.HP: ' + noHP + '\nPIN: ' + pin);
-  tampilTabelPinKasir();
-}
-
-function tampilTabelPinKasir(){
-  const tbody = document.getElementById('tabelPinKasirBody');
-  if(!tbody) return;
-  if(daftarPinKasir.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada karyawan</td></tr>';
+  if(hasil.length === 0){
+    el.innerHTML = '<p style="color:#666; text-align:center; width:100%; padding:20px;">Belum ada barang. Tambahkan dulu di menu Barang.</p>';
+    tampilKeranjang();
     return;
   }
-  tbody.innerHTML = '';
-  daftarPinKasir.forEach((d,i)=>{
-    tbody.innerHTML += '<tr>'
-      + '<td>' + (i+1) + '</td>'
-      + '<td>' + d.nama + '</td>'
-      + '<td>' + (d.nomorHP || '-') + '</td>'
-      + '<td>' + d.pin + '</td>'
-      + '<td><button class="btn-merah btn-kecil" onclick="hapusPinKasir(' + i + ')">Hapus</button></td>'
-      + '</tr>';
-  });
+  
+  el.innerHTML = hasil.map((b,i)=>{
+    const diKeranjang = keranjang.find(k=>k.id === b.id);
+    return '<div class="item-barang'+(diKeranjang?' dipilih':'')+'" onclick="tambahKeKeranjang('+i+')">'
+      + '<div><strong>' + b.nama + '</strong></div>'
+      + '<div style="font-size:12px; color:#555;">Stok: ' + b.stok + '</div>'
+      + '<div style="color:#2d5a27; font-weight:bold;">' + formatRupiah(b.jual) + '</div>'
+      + (diKeranjang?'<div style="color:#fff; font-weight:bold; margin-top:4px;">×'+diKeranjang.jumlah+'</div>':'')
+      + '</div>';
+  }).join('');
+  tampilKeranjang();
 }
 
-function hapusPinKasir(index){
-  if(!confirm('Hapus data karyawan ini?')) return;
-  daftarPinKasir.splice(index,1);
-  simpanSemua();
-  tampilTabelPinKasir();
+function filterBarangKasir(){ tampilBarangKasir(); }
+
+function tambahKeKeranjang(indexTerfilter){
+  const cari = document.getElementById('cariBarangKasir')?.value?.toLowerCase() || '';
+  const hasil = daftarBarang.filter(b=>
+    b.nama.toLowerCase().includes(cari) && b.stok > 0
+  );
+  const b = hasil[indexTerfilter];
+  if(!b) return alert('Barang tidak ditemukan!');
+  
+  const diKeranjang = keranjang.find(k=>k.id === b.id);
+  if(diKeranjang){
+    if(diKeranjang.jumlah >= b.stok) return alert('Stok tidak cukup! Tersedia: ' + b.stok);
+    diKeranjang.jumlah++;
+  }else{
+    keranjang.push({ id: b.id, nama: b.nama, harga: b.jual, jumlah: 1, stokAsli: b.stok });
+  }
+  tampilBarangKasir();
 }
 
-// === RIWAYAT MASUK KARYAWAN ===
-function tampilTabelRiwayatMasuk(){
-  const tbody = document.getElementById('tabelRiwayatMasukBody');
-  if(!tbody) return;
-  if(riwayatMasukKaryawan.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada riwayat masuk</td></tr>';
+function tampilKeranjang(){
+  const el = document.getElementById('keranjangIsi');
+  if(keranjang.length === 0){
+    el.innerHTML = '<p style="color:#888; text-align:center;">Keranjang kosong</p>';
+    document.getElementById('lblTotal').textContent = formatRupiah(0);
     return;
   }
-  tbody.innerHTML = '';
-  riwayatMasukKaryawan.forEach((d,i)=>{
-    tbody.innerHTML += '<tr>'
-      + '<td>' + (i+1) + '</td>'
-      + '<td>' + d.nama + '</td>'
-      + '<td>' + (d.nomorHP || '-') + '</td>'
-      + '<td>' + d.pin + '</td>'
-      + '<td style="font-size:11px;">' + d.jamMasuk + '</td>'
-      + '</tr>';
-  });
+  
+  let total = 0;
+  el.innerHTML = keranjang.map((k,i)=>{
+    const subtotal = k.harga * k.jumlah;
+    total += subtotal;
+    return '<div class="baris">'
+      + '<span>' + k.nama + ' × ' + k.jumlah + '</span>'
+      + '<span>' + formatRupiah(subtotal) + '</span>'
+      + '</div>';
+  }).join('');
+  
+  document.getElementById('lblTotal').textContent = formatRupiah(total);
+  hitungKembalian();
 }
 
-// === BARANG ===
+function hitungKembalian(){
+  const total = keranjang.reduce((s,k)=>s+k.harga*k.jumlah,0);
+  const bayar = amanAngka(document.getElementById('uangBayar').value);
+  document.getElementById('kembalian').textContent = formatRupiah(bayar - total);
+}
+
+function kosongkanKeranjang(){
+  keranjang = [];
+  document.getElementById('uangBayar').value = '';
+  document.getElementById('nomorMeja').value = '';
+  document.getElementById('namaPelanggan').value = '';
+  tampilBarangKasir();
+}
+
+function bayarLunas(){
+  if(keranjang.length === 0) return alert('Keranjang masih kosong!');
+  const total = keranjang.reduce((s,k)=>s+k.harga*k.jumlah,0);
+  const bayar = amanAngka(document.getElementById('uangBayar').value);
+  if(bayar < total) return alert('Uang bayar kurang! Kurang: ' + formatRupiah(total - bayar));
+  
+  keranjang.forEach(k=>{
+    const idx = daftarBarang.findIndex(b=>b.id === k.id);
+    if(idx !== -1) daftarBarang[idx].stok -= k.jumlah;
+  });
+  
+  const meja = document.getElementById('nomorMeja').value || '-';
+  const pelanggan = document.getElementById('namaPelanggan').value || 'Umum';
+  riwayat.unshift({
+    id: Date.now(),
+    waktu: waktuSekarang(),
+    meja: meja,
+    pelanggan: pelanggan,
+    barang: keranjang.map(k=>({nama:k.nama, harga:k.harga, jumlah:k.jumlah})),
+    total: total,
+    bayar: bayar,
+    kembalian: bayar - total,
+    jenis: 'lunas',
+    kasir: penggunaSaatIni?.nama || '-'
+  });
+  
+  simpanSemua();
+  cetakStruk(riwayat[0]);
+  kosongkanKeranjang();
+}
+
+function catatHutang(){
+  if(keranjang.length === 0) return alert('Keranjang masih kosong!');
+  const namaPel = document.getElementById('namaPelanggan').value?.trim();
+  if(!namaPel) return alert('Masukkan nama pelanggan!');
+  
+  const total = keranjang.reduce((s,k)=>s+k.harga*k.jumlah,0);
+  
+  keranjang.forEach(k=>{
+    const idx = daftarBarang.findIndex(b=>b.id === k.id);
+    if(idx !== -1) daftarBarang[idx].stok -= k.jumlah;
+  });
+  
+  daftarHutang.unshift({
+    id: Date.now(),
+    waktu: waktuSekarang(),
+    namaPelanggan: namaPel,
+    barang: keranjang.map(k=>({nama:k.nama, harga:k.harga, jumlah:k.jumlah})),
+    total: total,
+    lunas: false,
+    kasir: penggunaSaatIni?.nama || '-'
+  });
+  
+  simpanSemua();
+  alert('✅ Piutang dicatat!');
+  kosongkanKeranjang();
+}
+
+function cetakStruk(transaksi){
+  const el = document.getElementById('isiStruk');
+  el.innerHTML = ''
+    + '<div style="text-align:center; font-weight:bold; font-size:18px;">' + namaToko + '</div>'
+    + '<div style="text-align:center; font-size:12px; margin-bottom:10px;">' + transaksi.waktu + '</div>'
+    + '<div class="garis"></div>'
+    + (transaksi.meja !== '-' ? '<div>No. Meja: ' + transaksi.meja + '</div>' : '')
+    + '<div>Pelanggan: ' + transaksi.pelanggan + '</div>'
+    + '<div class="garis"></div>'
+    + transaksi.barang.map(b=>'<div>' + b.nama + ' × ' + b.jumlah + ' = ' + formatRupiah(b.harga*b.jumlah) + '</div>').join('')
+    + '<div class="garis"></div>'
+    + '<div style="text-align:right; font-weight:bold; font-size:16px;">TOTAL: ' + formatRupiah(transaksi.total) + '</div>'
+    + '<div style="text-align:right;">Bayar: ' + formatRupiah(transaksi.bayar) + '</div>'
+    + '<div style="text-align:right;">Kembalian: ' + formatRupiah(transaksi.kembalian) + '</div>'
+    + '<div class="garis" style="margin-top:15px;"></div>'
+    + '<div style="text-align:center; font-size:12px; margin-top:10px;">Terima Kasih 🙏</div>';
+  
+  document.getElementById('areaStruk').classList.remove('sembunyi');
+}
+
+function tutupStruk(){
+  document.getElementById('areaStruk').classList.add('sembunyi');
+}
+
+// === FUNGSI BARANG ===
+function tampilDaftarBarang(){
+  const cari = document.getElementById('cariBarangTabel')?.value?.toLowerCase() || '';
+  const hasil = daftarBarang.filter(b=>b.nama.toLowerCase().includes(cari));
+  const tbody = document.getElementById('tabelDaftarBody');
+  
+  if(hasil.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666;">Belum ada barang</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = hasil.map((b,i)=>'<tr>'
+    + '<td>' + (i+1) + '</td>'
+    + '<td>' + b.nama + '</td>'
+    + '<td class="'+(b.stok<=5?'terpakai':'')+'">' + b.stok + '</td>'
+    + '<td>' + formatRupiah(b.modal) + '</td>'
+    + '<td>' + formatRupiah(b.jual) + '</td>'
+    + '<td><button class="btn-kecil btn-biru" onclick="bukaUbahHarga('+i+')">✏️</button> '
+    + '<button class="btn-kecil btn-merah" onclick="hapusBarang('+i+')">🗑️</button></td>'
+    + '</tr>').join('');
+}
+
+function filterBarangTabel(){ tampilDaftarBarang(); }
+
 function simpanBarang(){
   const nama = document.getElementById('namaBrg').value.trim();
   const stok = amanAngka(document.getElementById('stokBrg').value);
   const modal = amanAngka(document.getElementById('modalBrg').value);
   const jual = amanAngka(document.getElementById('jualBrg').value);
-  if(!nama || jual <= 0){ alert('Lengkapi data barang!'); return; }
   
-  daftarBarang.push({ id: Date.now().toString(), nama:nama, stok:stok, modal:modal, jual:jual });
-  simpanSemua(); tampilTabel();
-  document.getElementById('namaBrg').value='';
-  document.getElementById('stokBrg').value='';
-  document.getElementById('modalBrg').value='';
-  document.getElementById('jualBrg').value='';
-}
-
-function tampilTabel(){
-  const tbody = document.getElementById('tabelDaftarBody');
-  if(!tbody) return; tbody.innerHTML='';
-  daftarBarang.forEach((brg,i)=>{
-    tbody.innerHTML += '<tr>'
-      + '<td>' + (i+1) + '</td>'
-      + '<td>' + brg.nama + '</td>'
-      + '<td>' + brg.stok + '</td>'
-      + '<td>' + formatRupiah(brg.modal) + '</td>'
-      + '<td>' + formatRupiah(brg.jual) + '</td>'
-      + '<td style="display:flex; gap:4px; justify-content:center;">'
-        + '<button class="btn-biru btn-kecil" onclick="formUbahHarga(\'' + brg.id + '\')">Ubah</button>'
-        + '<button class="btn-merah btn-kecil" onclick="hapusBarang(\'' + brg.id + '\')">Hapus</button>'
-      + '</td></tr>';
+  if(!nama) return alert('Nama barang wajib diisi!');
+  if(stok < 0 || modal <= 0 || jual <= 0) return alert('Masukkan angka yang benar!');
+  
+  daftarBarang.push({
+    id: Date.now(),
+    nama: nama,
+    stok: stok,
+    modal: modal,
+    jual: jual
   });
+  
+  document.getElementById('namaBrg').value = '';
+  document.getElementById('stokBrg').value = '';
+  document.getElementById('modalBrg').value = '';
+  document.getElementById('jualBrg').value = '';
+  
+  simpanSemua();
+  tampilDaftarBarang();
+  tampilBarangKasir();
+  alert('✅ Barang ditambahkan!');
 }
 
-function filterBarangTabel(){
-  const kata = document.getElementById('cariBarangTabel').value.toLowerCase().trim();
-  document.querySelectorAll('#tabelDaftarBody tr').forEach(tr=>{
-    const nama = tr.cells[1]?.textContent?.toLowerCase()||'';
-    tr.style.display = (!kata || nama.includes(kata)) ? '' : 'none';
-  });
-}
-
-function formUbahHarga(id){
-  const brg = daftarBarang.find(b=>b.id===id); if(!brg) return;
+function bukaUbahHarga(index){
   document.getElementById('formUbahHarga').classList.remove('sembunyi');
-  document.getElementById('namaBarangUbah').textContent = brg.nama;
-  document.getElementById('idBarangUbah').value = id;
-  document.getElementById('modalBaru').value = brg.modal;
-  document.getElementById('jualBaru').value = brg.jual;
+  document.getElementById('idBarangUbah').value = index;
+  document.getElementById('namaBarangUbah').textContent = daftarBarang[index].nama;
+  document.getElementById('modalBaru').value = daftarBarang[index].modal;
+  document.getElementById('jualBaru').value = daftarBarang[index].jual;
 }
-function batalUbahHarga(){ document.getElementById('formUbahHarga').classList.add('sembunyi'); }
+
+function batalUbahHarga(){
+  document.getElementById('formUbahHarga').classList.add('sembunyi');
+}
+
 function simpanPerubahanHarga(){
-  const id = document.getElementById('idBarangUbah').value;
-  const modalBaru = amanAngka(document.getElementById('modalBaru').value);
-  const jualBaru = amanAngka(document.getElementById('jualBaru').value);
-  if(jualBaru <= 0){ alert('Harga jual harus diisi!'); return; }
-  const idx = daftarBarang.findIndex(b=>b.id===id);
-  if(idx !== -1){
-    daftarBarang[idx].modal = modalBaru;
-    daftarBarang[idx].jual = jualBaru;
-    simpanSemua(); tampilTabel(); batalUbahHarga();
-  }
+  const idx = amanAngka(document.getElementById('idBarangUbah').value);
+  const modal = amanAngka(document.getElementById('modalBaru').value);
+  const jual = amanAngka(document.getElementById('jualBaru').value);
+  
+  if(modal <= 0 || jual <= 0) return alert('Masukkan angka yang benar!');
+  
+  daftarBarang[idx].modal = modal;
+  daftarBarang[idx].jual = jual;
+  
+  simpanSemua();
+  tampilDaftarBarang();
+  tampilBarangKasir();
+  batalUbahHarga();
+  alert('✅ Harga diperbarui!');
 }
-function hapusBarang(id){
+
+function hapusBarang(index){
   if(!confirm('Yakin hapus barang ini?')) return;
-  daftarBarang = daftarBarang.filter(b=>b.id!==id);
-  keranjang = keranjang.filter(k=>k.id!==id);
-  simpanSemua(); tampilTabel(); tampilKasir();
+  daftarBarang.splice(index,1);
+  simpanSemua();
+  tampilDaftarBarang();
+  tampilBarangKasir();
 }
 
-// === KASIR ===
-function tampilKasir(){
-  const wadah = document.getElementById('daftarKasir'); if(!wadah) return;
-  wadah.innerHTML='';
-  daftarBarang.forEach(brg=>{
-    wadah.innerHTML += '<div class="item-barang" onclick="tambahKeKeranjang(\'' + brg.id + '\', this)">'
-      + '<div><strong>' + brg.nama + '</strong></div>'
-      + '<div style="font-size:13px; color:#666;">' + formatRupiah(brg.jual) + '</div>'
-      + '<div style="font-size:12px; color:#999;">Stok: ' + brg.stok + '</div>'
-      + '</div>';
-  });
-  tampilKeranjang();
-}
-function filterBarangKasir(){
-  const kata = document.getElementById('cariBarangKasir').value.toLowerCase().trim();
-  document.querySelectorAll('#daftarKasir .item-barang').forEach(el=>{
-    const nama = el.querySelector('strong')?.textContent?.toLowerCase()||'';
-    el.style.display = (!kata || nama.includes(kata)) ? '' : 'none';
-  });
-}
-function tambahKeKeranjang(id, elemen){
-  const brg = daftarBarang.find(b=>b.id===id); if(!brg) return;
-  elemen.classList.add('dipilih'); setTimeout(()=>elemen.classList.remove('dipilih'),200);
-  
-  const item = keranjang.find(k=>k.id===id);
-  if(item){ item.jumlah++; }
-  else{ keranjang.push({ id:brg.id, nama:brg.nama, harga:brg.jual, modal:brg.modal, jumlah:1 }); }
-  tampilKeranjang();
-}
-function tampilKeranjang(){
-  const wadah = document.getElementById('keranjangIsi'); if(!wadah) return;
-  if(keranjang.length === 0){
-    wadah.innerHTML = '<p style="text-align:center; color:#666;">Belum ada barang</p>';
-    document.getElementById('lblTotal').textContent = 'Rp 0';
-    document.getElementById('uangBayar').value = '';
-    document.getElementById('kembalian').value = '';
-    return;
-  }
-  let total = 0; wadah.innerHTML = '';
-  keranjang.forEach((item,idx)=>{
-    total += item.harga * item.jumlah;
-    wadah.innerHTML += '<div class="baris">'
-      + '<span>' + item.nama + ' × ' + item.jumlah + '</span>'
-      + '<span>' + formatRupiah(item.harga*item.jumlah) 
-      + ' <button style="background:none; color:red; border:none; font-size:14px;" onclick="ubahJumlah('+idx+',-1)">−</button>'
-      + ' <button style="background:none; color:green; border:none; font-size:14px;" onclick="ubahJumlah('+idx+',1)">+</button>'
-      + ' <button style="background:none; color:red; border:none; font-size:14px;" onclick="hapusDariKeranjang('+idx+')">×</button>'
-      + '</span></div>';
-  });
-  document.getElementById('lblTotal').textContent = formatRupiah(total);
-  hitungKembalian();
-}
-function ubahJumlah(idx, n){
-  keranjang[idx].jumlah += n;
-  if(keranjang[idx].jumlah <= 0) keranjang.splice(idx,1);
-  tampilKeranjang();
-}
-function hapusDariKeranjang(idx){ keranjang.splice(idx,1); tampilKeranjang(); }
-function kosongkanKeranjang(){
-  keranjang = [];
-  document.getElementById('nomorMeja').value='';
-  document.getElementById('namaPelanggan').value='';
-  document.getElementById('uangBayar').value='';
-  document.getElementById('kembalian').value='';
-  tampilKeranjang();
-}
-function hitungKembalian(){
-  const total = keranjang.reduce((s,i)=>s+i.harga*i.jumlah,0);
-  const bayar = amanAngka(document.getElementById('uangBayar').value);
-  document.getElementById('kembalian').textContent = formatRupiah(bayar-total);
-}
-function buatStruk(total, bayar, hutang=false){
-  const meja = document.getElementById('nomorMeja').value||'-';
-  const pelanggan = document.getElementById('namaPelanggan').value||'-';
-  const sekarang = new Date(), jam=sekarang.toLocaleTimeString('id-ID'), tgl=sekarang.toLocaleDateString('id-ID');
-  let s = '<div style="text-align:center;">'
-    + '<h3 style="margin:0;">' + namaToko.toUpperCase() + '</h3>'
-    + '<p style="font-size:12px;">' + tgl + ' ' + jam + '<br>Meja: ' + meja + '<br>Pelanggan: ' + pelanggan + '</p>'
-    + '<div class="garis"></div>';
-  keranjang.forEach(i=>s+='<div class="baris"><span>'+i.nama+' × '+i.jumlah+'</span><span>'+formatRupiah(i.harga*i.jumlah)+'</span></div>');
-  s += '<div class="garis"></div><div class="baris total"><span>TOTAL</span><span>'+formatRupiah(total)+'</span></div>';
-  if(!hutang){
-    s += '<div class="baris"><span>BAYAR</span><span>'+formatRupiah(bayar)+'</span></div>'
-      + '<div class="baris"><span>KEMBALI</span><span>'+formatRupiah(bayar-total)+'</span></div>';
-  }else{
-    s += '<div class="baris" style="color:#e65100; font-weight:bold;"><span>HUTANG</span><span>'+formatRupiah(total)+'</span></div>';
-  }
-  s += '<div class="garis" style="margin-top:15px;"></div><p style="font-size:11px; text-align:center;">Terima kasih</p></div>';
-  return s;
-}
-function bayarLunas(){
-  const total = keranjang.reduce((s,i)=>s+i.harga*i.jumlah,0);
-  const bayar = amanAngka(document.getElementById('uangBayar').value);
-  if(total===0){ alert('Belum ada barang!'); return; }
-  if(bayar<total){ alert('Uang kurang: ' + formatRupiah(total-bayar)); return; }
-  
-  keranjang.forEach(item=>{
-    const brg = daftarBarang.find(b=>b.id===item.id);
-    if(brg) brg.stok = Math.max(0, brg.stok - item.jumlah);
-  });
-  
-  riwayat.unshift({
-    jenis:'lunas', barang:[...keranjang], total:total, bayar:bayar, kembalian:bayar-total,
-    meja:document.getElementById('nomorMeja').value||'-',
-    pelanggan:document.getElementById('namaPelanggan').value||'-',
-    waktu:waktuSekarang(), dipilih:false
-  });
-  simpanSemua();
-  document.getElementById('isiStruk').innerHTML = buatStruk(total,bayar);
-  document.getElementById('areaStruk').classList.remove('sembunyi');
-  keranjang=[]; tampilKeranjang();
-}
-function catatHutang(){
-  const total = keranjang.reduce((s,i)=>s+i.harga*i.jumlah,0);
-  const pelanggan = document.getElementById('namaPelanggan').value?.trim();
-  if(total===0){ alert('Belum ada barang!'); return; }
-  if(!pelanggan){ alert('Masukkan nama pelanggan!'); return; }
-  
-  keranjang.forEach(item=>{
-    const brg = daftarBarang.find(b=>b.id===item.id);
-    if(brg) brg.stok = Math.max(0, brg.stok - item.jumlah);
-  });
-  
-  const dataHutang = { nama:pelanggan, barang:[...keranjang], total:total, lunas:false, waktu:waktuSekarang(), cicilan:[] };
-  daftarHutang.unshift(dataHutang);
-  riwayat.unshift({ jenis:'hutang', ...dataHutang, dipilih:false });
-  simpanSemua();
-  document.getElementById('isiStruk').innerHTML = buatStruk(total,0,true);
-  document.getElementById('areaStruk').classList.remove('sembunyi');
-  keranjang=[]; tampilKeranjang();
-}
-function tutupStruk(){
-  document.getElementById('areaStruk').classList.add('sembunyi');
-  document.getElementById('nomorMeja').value='';
-  document.getElementById('namaPelanggan').value='';
-  document.getElementById('uangBayar').value='';
-  document.getElementById('kembalian').value='';
-}
-
-// === LAPORAN ===
+// === FUNGSI LAPORAN ===
 function tampilLaporan(){
-  let totalJual=0, totalUntung=0, totalHutang=0;
-  riwayat.forEach(r=>{
-    totalJual += r.total||0;
-    if(r.barang) r.barang.forEach(b=>totalUntung += (b.harga-b.modal)*b.jumlah);
-    if(r.jenis==='hutang' && !r.lunas) totalHutang += r.total||0;
-  });
+  const totalJual = riwayat.reduce((s,t)=>s + t.total, 0);
+  const totalUntung = riwayat.reduce((s,t)=>{
+    const untungTrans = t.barang.reduce((u,b)=>{
+      const brg = daftarBarang.find(x=>x.nama === b.nama);
+      const modal = brg?.modal || 0;
+      return u + (b.harga - modal) * b.jumlah;
+    },0);
+    return s + untungTrans;
+  },0);
+  const totalHutang = daftarHutang.filter(h=>!h.lunas).reduce((s,h)=>s + h.total,0);
+  
   document.getElementById('totalJual').textContent = formatRupiah(totalJual);
   document.getElementById('totalUntung').textContent = formatRupiah(totalUntung);
   document.getElementById('totalLapHutang').textContent = formatRupiah(totalHutang);
   document.getElementById('jumlahTransaksi').textContent = riwayat.length;
   
-  const wadah = document.getElementById('daftarRiwayat');
-  if(riwayat.length===0){
-    wadah.innerHTML = '<p style="text-align:center; color:#666;">Belum ada transaksi</p>';
+  const el = document.getElementById('daftarRiwayat');
+  if(riwayat.length === 0){
+    el.innerHTML = '<p style="color:#666; text-align:center;">Belum ada transaksi</p>';
     return;
   }
-  wadah.innerHTML='';
-  riwayat.forEach((r,i)=>{
-    const isHutang = r.jenis==='hutang';
-    wadah.innerHTML += '<div style="padding:8px; border-bottom:1px solid #eee; display:flex; gap:8px;">'
-      + '<input type="checkbox" id="pilih-'+i+'" '+(r.dipilih?'checked':'')+' onchange="pilihItem('+i+')" style="margin-top:4px;">'
-      + '<div style="flex:1;">'
-        + '<div style="display:flex; justify-content:space-between;">'
-          + '<strong>' + r.waktu + '</strong>'
-          + '<span style="color:'+(isHutang?'#e65100':'#2e7d32')+'; font-weight:bold;">'+formatRupiah(r.total)+'</span>'
-        + '</div>'
-        + '<div style="font-size:12px; color:#666;">'
-          + (isHutang ? '💰 HUTANG — '+(r.nama||'Tanpa Nama')+(r.lunas?' ✅ LUNAS':' ⏳ BELUM LUNAS')
-                     : '✅ LUNAS — Meja: '+(r.meja||'-')+' | Pelanggan: '+(r.pelanggan||'-'))
-        + '</div>'
-      + '</div></div>';
-  });
+  
+  el.innerHTML = riwayat.map(t=>'<div style="border-bottom:1px solid #ddd; padding:8px 0;">'
+    + '<label><input type="checkbox" class="pilih-riwayat" data-id="'+t.id+'"> '
+    + '<strong>' + t.waktu + '</strong> — Meja: ' + t.meja + ' — ' + t.pelanggan + '</label>'
+    + '<div style="margin-left:25px;">'
+    + t.barang.map(b=>b.nama+'×'+b.jumlah).join(', ')
+    + '</div>'
+    + '<div style="margin-left:25px; font-weight:bold; color:#2d5a27;">' + formatRupiah(t.total) + '</div>'
+    + '</div>').join('');
 }
-function pilihItem(i){ riwayat[i].dipilih = !riwayat[i].dipilih; }
+
 function togglePilihSemua(){
-  const semuaTerpilih = riwayat.every(r=>r.dipilih);
-  riwayat.forEach((_,i)=>{
-    const cb = document.getElementById('pilih-'+i); if(cb) cb.checked = !semuaTerpilih;
-    riwayat[i].dipilih = !semuaTerpilih;
-  });
+  const cek = document.getElementById('pilihSemua').checked;
+  document.querySelectorAll('.pilih-riwayat').forEach(cb=>cb.checked = cek);
 }
+
 function hapusTerpilihRiwayat(){
-  const terpilih = riwayat.filter(r=>r.dipilih);
-  if(terpilih.length===0){ alert('Pilih dulu transaksi yang mau dihapus!'); return; }
-  if(!confirm('Yakin hapus '+terpilih.length+' transaksi? Tidak bisa dikembalikan!')) return;
-  riwayat = riwayat.filter(r=>!r.dipilih);
-  simpanSemua(); tampilLaporan();
+  const terpilih = Array.from(document.querySelectorAll('.pilih-riwayat:checked'))
+    .map(cb=>Number(cb.dataset.id));
+  if(terpilih.length === 0) return alert('Pilih dulu yang ingin dihapus!');
+  if(!confirm('Yakin hapus ' + terpilih.length + ' transaksi terpilih?')) return;
+  
+  riwayat = riwayat.filter(t=>!terpilih.includes(t.id));
+  simpanSemua();
+  tampilLaporan();
 }
+
 function cadangkanData(){
-  const data = { versi:'1.0', waktuCadangan:waktuSekarang(), daftarPinKasir, riwayatMasukKaryawan, daftarBarang, riwayat, daftarHutang, namaToko };
+  const data = {
+    versi: '1.0',
+    namaToko: namaToko,
+    daftarBarang: daftarBarang,
+    riwayat: riwayat,
+    daftarHutang: daftarHutang,
+    daftarPinKasir: daftarPinKasir,
+    riwayatMasukKaryawan: riwayatMasukKaryawan,
+    waktuCadangan: new Date().toISOString()
+  };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'cadangan_toko_' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'cadangan-toko-' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
   URL.revokeObjectURL(a.href);
   alert('✅ Data dicadangkan!');
 }
+
 function pulihkanData(e){
-  const file = e.target.files[0]; if(!file) return;
-  if(!confirm('⚠️ Memulihkan akan menimpa data saat ini! Lanjutkan?')) return;
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!confirm('⚠️ Data saat ini akan diganti dengan data cadangan!\nYakin ingin melanjutkan?')) return;
+  
   const pembaca = new FileReader();
-  pembaca.onload = function(acara){
+  pembaca.onload = function(ev){
     try{
-      const data = JSON.parse(acara.target.result);
-      daftarPinKasir = data.daftarPinKasir||[];
-      riwayatMasukKaryawan = data.riwayatMasukKaryawan||[];
-      daftarBarang = data.daftarBarang||[];
-      riwayat = data.riwayat||[];
-      daftarHutang = data.daftarHutang||[];
-      namaToko = data.namaToko||'TOKO SAYA';
+      const data = JSON.parse(ev.target.result);
+      namaToko = data.namaToko || 'TOKO SAYA';
+      daftarBarang = data.daftarBarang || [];
+      riwayat = data.riwayat || [];
+      daftarHutang = data.daftarHutang || [];
+      daftarPinKasir = data.daftarPinKasir || [];
+      riwayatMasukKaryawan = data.riwayatMasukKaryawan || [];
+      
       simpanSemua();
+      muatSemua();
       alert('✅ Data dipulihkan! Halaman akan dimuat ulang.');
       location.reload();
-    }catch(err){ alert('❌ Gagal membaca file: ' + err.message); }
+    }catch(err){
+      alert('❌ Gagal membaca file cadangan!');
+    }
   };
   pembaca.readAsText(file);
 }
 
-// === PIUTANG / HUTANG ===
+// === FUNGSI PIUTANG ===
 function tampilHutang(){
-  const wadah = document.getElementById('daftarHutang');
-  const totalEl = document.getElementById('totalHutang');
-  let total = 0;
-  const daftarBelumLunas = daftarHutang.filter(h=>!h.lunas);
-  if(daftarBelumLunas.length===0){
-    wadah.innerHTML = '<p style="text-align:center; color:#666;">Belum ada piutang</p>';
-    totalEl.textContent = formatRupiah(0);
+  const belumLunas = daftarHutang.filter(h=>!h.lunas);
+  document.getElementById('totalHutang').textContent = formatRupiah(belumLunas.reduce((s,h)=>s+h.total,0));
+  
+  const el = document.getElementById('daftarHutang');
+  if(belumLunas.length === 0){
+    el.innerHTML = '<p style="color:#666; text-align:center;">Tidak ada piutang</p>';
     return;
   }
-  wadah.innerHTML='';
-  daftarBelumLunas.forEach((hutang,idx)=>{
-    total += hutang.total;
-    const sudahDibayar = hutang.cicilan.reduce((s,c)=>s+c.jumlah,0);
-    const sisa = hutang.total - sudahDibayar;
-    wadah.innerHTML += '<div class="kotak-hutang">'
-      + '<div class="baris"><strong>' + hutang.nama + '</strong><span class="status-belum">BELUM LUNAS</span></div>'
-      + '<div class="baris"><span>Total Hutang:</span><span>' + formatRupiah(hutang.total) + '</span></div>'
-      + (sudahDibayar>0?'<div class="baris"><span>Sudah Dibayar:</span><span style="color:#2e7d32;">−'+formatRupiah(sudahDibayar)+'</span></div>':'')
-      + '<div class="baris"><span>Sisa Hutang:</span><span style="font-weight:bold; color:#e65100;">'+formatRupiah(sisa)+'</span></div>'
-      + '<div style="font-size:12px; color:#666; margin:4px 0 8px 0;">' + hutang.waktu + '</div>';
-    if(hutang.cicilan.length>0){
-      wadah.innerHTML += '<div style="padding:6px; background:#fff; border-radius:4px; margin:6px 0;">'
-        + '<div style="font-size:11px; color:#666; margin-bottom:4px;">Riwayat Cicilan:</div>';
-      hutang.cicilan.forEach(c=>{
-        wadah.innerHTML += '<div style="font-size:12px; padding:2px 0; border-bottom:1px dotted #eee;">'
-          + c.waktu + ' — ' + formatRupiah(c.jumlah) + '</div>';
-      });
-      wadah.innerHTML += '</div>';
-    }
-    wadah.innerHTML += '<div style="display:flex; gap:6px; margin-top:8px;">'
-      + '<input type="number" id="bayar-' + idx + '" placeholder="Jumlah bayar" style="flex:1; padding:6px; font-size:13px;">'
-      + '<button class="btn-hijau btn-kecil" onclick="bayarCicilan(' + idx + ')">Bayar</button>'
-      + '<button class="btn-biru btn-kecil" onclick="tandaiLunas(' + idx + ')">LUNAS</button>'
-      + '</div></div>';
-  });
-  totalEl.textContent = formatRupiah(total);
+  
+  el.innerHTML = belumLunas.map(h=>'<div class="kotak-hutang">'
+    + '<div style="display:flex; justify-content:space-between; align-items:flex-start;">'
+    + '<div><strong>' + h.namaPelanggan + '</strong><br><small>' + h.waktu + '</small></div>'
+    + '<strong style="color:#e65100; font-size:16px;">' + formatRupiah(h.total) + '</strong>'
+    + '</div>'
+    + '<div style="margin-top:8px; font-size:13px;">'
+    + h.barang.map(b=>b.nama+' × '+b.jumlah).join(', ')
+    + '</div>'
+    + '<button class="btn-hijau" style="margin-top:10px;" onclick="tandaiLunas(' + h.id + ')">✅ TANDAI LUNAS</button>'
+    + '</div>').join('');
 }
 
-function bayarCicilan(idx){
-  const daftarBelumLunas = daftarHutang.filter(h=>!h.lunas);
-  const hutang = daftarBelumLunas[idx];
-  if(!hutang) return;
-  const elInput = document.getElementById('bayar-' + idx);
-  const jumlah = amanAngka(elInput.value);
-  if(jumlah <= 0){ alert('Masukkan jumlah pembayaran!'); return; }
-  
-  const indeksAsli = daftarHutang.indexOf(hutang);
-  daftarHutang[indeksAsli].cicilan.push({
-    jumlah: jumlah,
-    waktu: waktuSekarang()
-  });
-  
-  const sudahDibayar = daftarHutang[indeksAsli].cicilan.reduce((s,c)=>s+c.jumlah,0);
-  if(sudahDibayar >= daftarHutang[indeksAsli].total){
-    daftarHutang[indeksAsli].lunas = true;
-    alert('✅ Hutang sudah lunas!');
+function tandaiLunas(id){
+  if(!confirm('Yakin sudah lunas?')) return;
+  const idx = daftarHutang.findIndex(h=>h.id === id);
+  if(idx !== -1){
+    daftarHutang[idx].lunas = true;
+    simpanSemua();
+    tampilHutang();
+    alert('✅ Ditandai lunas!');
   }
+}
+
+// === FUNGSI PENGATURAN ===
+function simpanNamaToko(){
+  const baru = document.getElementById('inputNamaToko').value.trim();
+  if(!baru) return alert('Nama toko tidak boleh kosong!');
+  namaToko = baru;
+  const el = document.querySelector('.nama-toko');
+  if(el) el.textContent = namaToko;
+  simpanSemua();
+  alert('✅ Nama toko disimpan!');
+}
+
+// === FUNGSI KELOLA KARYAWAN ===
+function buatPinKasir(){
+  const nama = document.getElementById('namaKasirBaru').value.trim();
+  const hp = document.getElementById('nomorHPKaryawan').value.trim();
+  const pin = document.getElementById('pinKasirBaru').value.trim();
+  
+  if(!nama || !pin) return alert('Nama dan PIN wajib diisi!');
+  if(pin.length !== 4) return alert('PIN harus 4 angka!');
+  if(daftarPinKasir.find(d=>d.pin === pin)) return alert('PIN sudah digunakan, gunakan PIN lain!');
+  
+  daftarPinKasir.push({
+    id: Date.now(),
+    nama: nama,
+    nomorHP: hp,
+    pin: pin
+  });
+  
+  document.getElementById('namaKasirBaru').value = '';
+  document.getElementById('nomorHPKaryawan').value = '';
+  document.getElementById('pinKasirBaru').value = '';
   
   simpanSemua();
-  tampilHutang();
+  tampilDaftarPinKasir();
+  alert('✅ Karyawan terdaftar!');
 }
 
-function tandaiLunas(idx){
-  if(!confirm('Tandai hutang ini sudah lunas?')) return;
-  const daftarBelumLunas = daftarHutang.filter(h=>!h.lunas);
-  const hutang = daftarBelumLunas[idx];
-  if(!hutang) return;
-  const indeksAsli = daftarHutang.indexOf(hutang);
-  daftarHutang[indeksAsli].lunas = true;
+function tampilDaftarPinKasir(){
+  const tbody = document.getElementById('tabelPinKasirBody');
+  if(daftarPinKasir.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada karyawan</td></tr>';
+    return;
+  }
+  tbody.innerHTML = daftarPinKasir.map((d,i)=>'<tr>'
+    + '<td>' + (i+1) + '</td>'
+    + '<td>' + d.nama + '</td>'
+    + '<td>' + (d.nomorHP || '-') + '</td>'
+    + '<td>' + d.pin + '</td>'
+    + '<td><button class="btn-kecil btn-merah" onclick="hapusPinKasir('+i+')">🗑️ Hapus</button></td>'
+    + '</tr>').join('');
+}
+
+function hapusPinKasir(index){
+  if(!confirm('Yakin hapus karyawan ini?')) return;
+  daftarPinKasir.splice(index,1);
   simpanSemua();
-  tampilHutang();
+  tampilDaftarPinKasir();
 }
 
-// === INISIALISASI AWAL ===
-window.onload = function(){
-  muatSemua();
-  console.log('✅ Aplikasi Toko Siap — Versi Demo 72 Jam & Versi Penuh');
-};
+// === FUNGSI RIWAYAT MASUK ===
+function tampilRiwayatMasuk(){
+  const tbody = document.getElementById('tabelRiwayatMasukBody');
+  if(riwayatMasukKaryawan.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#666;">Belum ada riwayat</td></tr>';
+    return;
+  }
+  tbody.innerHTML = riwayatMasukKaryawan.map((d,i)=>'<tr>'
+    + '<td>' + (i+1) + '</td>'
+    + '<td>' + d.nama + '</td>'
+    + '<td>' + (d.nomorHP || '-') + '</td>'
+    + '<td>' + d.pin + '</td>'
+    + '<td>' + d.jamMasuk + '</td>'
+    + '</tr>').join('');
+}
 
+// === INISIALISASI ===
+document.addEventListener('DOMContentLoaded', function(){
+  muatSemua();
+});
 </script>
+
 </body>
 </html>
